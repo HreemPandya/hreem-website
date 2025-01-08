@@ -50,7 +50,7 @@ const AboutMe = () => {
             {/* Drawing 1 (Smallest) */}
             <div className="w-36 h-28 bg-gray-400 flex items-center justify-center border-4 border-green-500 hover:scale-110 transition-transform duration-300">
               <img
-                src="./assets/drawing1.png"
+                src={`${process.env.PUBLIC_URL}/assets/drawing1.png`}
                 alt="Drawing 1"
                 className="w-full h-full object-cover"
               />
@@ -58,7 +58,7 @@ const AboutMe = () => {
             {/* Drawing 2 (Medium) */}
             <div className="w-48 h-36 bg-gray-400 flex items-center justify-center border-4 border-green-500 hover:scale-110 transition-transform duration-300">
               <img
-                src="./assets/drawing2.png"
+                src= {`${process.env.PUBLIC_URL}/assets/drawing2.png`}
                 alt="Drawing 2"
                 className="w-full h-full object-cover"
               />
@@ -66,7 +66,7 @@ const AboutMe = () => {
             {/* Drawing 3 (Largest) */}
             <div className="w-56 h-44 bg-gray-400 flex items-center justify-center border-4 border-green-500 hover:scale-110 transition-transform duration-300">
               <img
-                src="./assets/drawing3.png"
+                src={`${process.env.PUBLIC_URL}/assets/drawing3.png`}
                 alt="Drawing 3"
                 className="w-full h-full object-cover"
               />
