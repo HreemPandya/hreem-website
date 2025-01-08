@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/hreem-website/static/css/main.48e721f2.css",
-    "main.js": "/hreem-website/static/js/main.3bd9317d.js",
+    "main.js": "/hreem-website/static/js/main.67c0a8a4.js",
     "static/media/paint-stroke.png": "/hreem-website/static/media/paint-stroke.4cd02ec26a14056db61d.png",
     "static/media/green-brush.png": "/hreem-website/static/media/green-brush.d19b15157934dd3bc5fc.png",
     "index.html": "/hreem-website/index.html",
     "main.48e721f2.css.map": "/hreem-website/static/css/main.48e721f2.css.map",
-    "main.3bd9317d.js.map": "/hreem-website/static/js/main.3bd9317d.js.map"
+    "main.67c0a8a4.js.map": "/hreem-website/static/js/main.67c0a8a4.js.map"
   },
   "entrypoints": [
     "static/css/main.48e721f2.css",
-    "static/js/main.3bd9317d.js"
+    "static/js/main.67c0a8a4.js"
   ]
 }
