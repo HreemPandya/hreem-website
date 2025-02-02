@@ -1,27 +1,28 @@
+import React from 'react';
 import SocialMediaIcons from "../components/SocialMediaIcons";
 import { motion } from "framer-motion";
 import AnchorLink from "react-anchor-link-smooth-scroll";
 
-const Landing = ({ setSelectedPage }) => {
+const Landing = ({ setSelectedPage, isDarkMode }) => {
+  // Theme variables
+  const backgroundColor = isDarkMode ? 'bg-deep-blue' : 'bg-[#F5E6D3]';
+  const textColor = isDarkMode ? 'text-white' : 'text-gray-800';
+
   return (
     <section
       id="home"
-      className="md:flex md:justify-between md:items-center gap-16 md:h-full py-10"
+      className={`${backgroundColor} md:flex md:justify-between md:items-center gap-16 md:h-full py-10 transition-colors duration-300 pt-32`}
     >
       {/* IMAGE SECTION */}
-<div className="basis-3/5 z-10 mt-1 md:mt-8 flex justify-center md:order-2">
-  <div
-    className="relative z-0 ml-20 w-full max-w-[400px] md:max-w-[600px] mask-image"
-  >
-    <img
-      alt="profile"
-      className="w-full h-full object-cover"
-      src="assets/profile-image.png"
-    />
-  </div>
-</div>
-
-
+      <div className="basis-3/5 z-10 mt-16 md:mt-24 flex justify-center md:order-2">
+        <div className="relative z-0 ml-20 w-full max-w-[400px] md:max-w-[600px] mask-image">
+          <img
+            alt="profile"
+            className="w-full h-full object-cover"
+            src={`${process.env.PUBLIC_URL}/assets/light-mode-pic.png`}
+          />
+        </div>
+      </div>
 
       {/* MAIN TEXT */}
       <div className="z-30 basis-2/5 mt-12 md:mt-32">
@@ -36,29 +37,27 @@ const Landing = ({ setSelectedPage }) => {
             visible: { opacity: 1, x: 0 },
           }}
         >
-          {/* New "Hi, I'm" text */}
-          <p className="text-4xl font-playfair text-white text-center md:text-start mb-2">
+          <p className={`text-4xl font-playfair ${textColor} text-center md:text-start mb-2`}>
             Hi, I'm
           </p>
 
-          {/* Main heading */}
-          <p className="text-6xl font-playfair z-10 text-center md:text-start">
+          <p className={`text-6xl font-playfair z-10 text-center md:text-start ${textColor}`}>
             Hreem {""}
-            <span
-              className="relative text-deep-blue font-semibold z-20 before:content-brush
-    before:absolute before:-left-[43px] before:-top-[141px] before:bg-contain before:bg-no-repeat before:z-[-1]"
-            >
+            <span className={`relative font-semibold z-10 
+                before:absolute before:-left-[47px] before:-top-[130px] before:w-[350px] before:h-[350px] before:bg-contain before:bg-no-repeat before:z-[-1]
+                after:absolute after:-left-[27px] after:-top-[0px] after:w-[300px] after:h-[100px] after:bg-contain after:bg-no-repeat after:z-[-1]
+                ${isDarkMode
+                ? "before:bg-green-brush text-deep-blue after:hidden"
+                : "after:bg-red-brush text-gray-800 before:hidden"
+              }`}>
               Pandya
             </span>
-
-
           </p>
 
-          <p className="mt-10 mb-7 text-sm text-center md:text-start">
+          <p className={`mt-10 mb-7 text-sm text-center md:text-start ${textColor}`}>
             An aspiring computer engineer passionate about AI, quantum computing, and web development, I love creating innovative solutions that blend hardware and software seamlessly.
           </p>
         </motion.div>
-
 
         {/* CALL TO ACTIONS */}
         <motion.div
@@ -72,28 +71,26 @@ const Landing = ({ setSelectedPage }) => {
             visible: { opacity: 1, x: 0 },
           }}
         >
-          {/* Contact Me Button */}
           <AnchorLink
-            className="bg-gradient-to-r from-green-400 to-green-600 text-deep-blue rounded-sm py-3 px-7 font-semibold
-              hover:bg-green-500 hover:text-white transition duration-500"
+            className={`${isDarkMode ? 'bg-gradient-to-r from-green-400 to-green-600' : 'bg-gradient-to-r from-[#E76F51] to-[#E76F51]'} text-deep-blue rounded-sm py-3 px-7 font-semibold hover:opacity-90 transition duration-500`}
             onClick={() => setSelectedPage("contact")}
             href="#contact"
           >
             Contact Me
           </AnchorLink>
 
-          {/* Let's Talk Button */}
           <AnchorLink
-            className="rounded-r-sm bg-gradient-to-r from-green-400 to-green-600 py-0.5 pr-0.5"
+            className={`rounded-r-sm ${isDarkMode ? 'bg-gradient-to-r from-green-400 to-green-600' : 'bg-gradient-to-r from-[#E76F51] to-[#E76F51]'} py-0.5 pr-0.5`}
             onClick={() => setSelectedPage("contact")}
             href="#contact"
           >
-            <div className="bg-deep-blue hover:text-yellow transition duration-500 w-full h-full flex items-center justify-center px-10 font-playfair border-2 border-transparent hover:border-green-500">
+            <div className={`${backgroundColor} ${isDarkMode ? "hover:text-yellow" : "hover:text-[#E76F51]"} transition duration-500 w-full h-full flex items-center justify-center px-10 font-playfair ${textColor}`}>
               Let's talk.
             </div>
+
+
           </AnchorLink>
         </motion.div>
-
 
         <motion.div
           className="flex mt-5 justify-center md:justify-start"
@@ -106,7 +103,7 @@ const Landing = ({ setSelectedPage }) => {
             visible: { opacity: 1, x: 0 },
           }}
         >
-          <SocialMediaIcons />
+          <SocialMediaIcons isDarkMode={isDarkMode} forceWhite={isDarkMode} />
         </motion.div>
       </div>
     </section>

@@ -1,9 +1,9 @@
 import LineGradient from "../components/LineGradient";
 import { motion } from "framer-motion";
 
-const AboutMe = () => {
+const AboutMe = ({ isDarkMode }) => {
   return (
-    <section id="about me" className="pt-32 pb-16 relative">
+    <section id="about me" className={`pt-32 pb-16 relative transition-colors duration-300 ${isDarkMode ? 'bg-[#010026] text-white' : 'bg-[#F5E6D3] text-gray-800'}`}>
       {/* HEADING */}
       <motion.div
         className="md:w-1/3"
@@ -19,7 +19,7 @@ const AboutMe = () => {
           marginLeft: "-4px",
         }}
       >
-        <p className="font-playfair font-semibold text-4xl mb-2 text-green-300 text-center">
+        <p className={`font-playfair font-semibold text-4xl mb-2 text-center ${isDarkMode ? 'text-green-300' : 'text-[#E76F51]'}`}>
           ABOUT ME
         </p>
         <div className="flex justify-center">
@@ -40,15 +40,14 @@ const AboutMe = () => {
             hidden: { opacity: 0, x: -50 },
             visible: { opacity: 1, x: 0 },
           }}
-          
         >
           {/* Label */}
-          <h2 className="font-playfair text-xl text-white mb-5">My Drawings</h2>
+          <h2 className={`font-playfair text-xl mb-5 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>My Drawings</h2>
 
           {/* Images */}
           <div className="flex flex-col items-center gap-4">
             {/* Drawing 1 (Smallest) */}
-            <div className="w-36 h-28 bg-gray-400 flex items-center justify-center border-4 border-green-500 hover:scale-110 transition-transform duration-300">
+            <div className={`w-36 h-28 bg-gray-400 flex items-center justify-center border-4 ${isDarkMode ? 'border-green-500' : 'border-[#E76F51]'} hover:scale-110 transition-transform duration-300`}>
               <img
                 src={`${process.env.PUBLIC_URL}/assets/drawing1.png`}
                 alt="Drawing 1"
@@ -56,15 +55,15 @@ const AboutMe = () => {
               />
             </div>
             {/* Drawing 2 (Medium) */}
-            <div className="w-48 h-36 bg-gray-400 flex items-center justify-center border-4 border-green-500 hover:scale-110 transition-transform duration-300">
+            <div className={`w-48 h-36 bg-gray-400 flex items-center justify-center border-4 ${isDarkMode ? 'border-green-500' : 'border-[#E76F51]'} hover:scale-110 transition-transform duration-300`}>
               <img
-                src= {`${process.env.PUBLIC_URL}/assets/drawing2.png`}
+                src={`${process.env.PUBLIC_URL}/assets/drawing2.png`}
                 alt="Drawing 2"
                 className="w-full h-full object-cover"
               />
             </div>
             {/* Drawing 3 (Largest) */}
-            <div className="w-56 h-44 bg-gray-400 flex items-center justify-center border-4 border-green-500 hover:scale-110 transition-transform duration-300">
+            <div className={`w-56 h-44 bg-gray-400 flex items-center justify-center border-4 ${isDarkMode ? 'border-green-500' : 'border-[#E76F51]'} hover:scale-110 transition-transform duration-300`}>
               <img
                 src={`${process.env.PUBLIC_URL}/assets/drawing3.png`}
                 alt="Drawing 3"
@@ -90,10 +89,8 @@ const AboutMe = () => {
           }}
         >
           <div
-            className="p-6 rounded-lg shadow-lg"
+            className={`p-6 rounded-lg shadow-lg transition-colors duration-300 ${isDarkMode ? 'bg-[#1E2A47] text-white' : 'bg-[#E6D3C1] text-gray-900'}`}
             style={{
-              backgroundColor: "#1E2A47",
-              color: "white",
               height: "auto",
             }}
           >

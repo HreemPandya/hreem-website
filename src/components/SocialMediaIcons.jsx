@@ -1,4 +1,11 @@
-const SocialMediaIcons = () => {
+import React from 'react';
+import { Linkedin, Github, Youtube, Instagram } from 'lucide-react';
+
+const SocialMediaIcons = ({ isDarkMode, forceWhite = false }) => {
+  // Use white if forceWhite is true, otherwise use theme-based color
+  const iconColor = forceWhite ? '#FFFFFF' : isDarkMode ? '#000000' : '#000000';
+  const iconSize = 24;
+
   return (
     <div className="flex justify-center md:justify-start my-10 gap-7">
       <a
@@ -7,7 +14,7 @@ const SocialMediaIcons = () => {
         target="_blank"
         rel="noreferrer"
       >
-        <img alt="linkedin-link" src="./assets/linkedin.png" />
+        <Linkedin size={iconSize} color={iconColor} />
       </a>
       <a
         className="hover:opacity-50 transition duration-500"
@@ -15,7 +22,7 @@ const SocialMediaIcons = () => {
         target="_blank"
         rel="noreferrer"
       >
-        <img alt="git-link" src="./assets/gitlogo.png" />
+        <Github size={iconSize} color={iconColor} />
       </a>
       <a
         className="hover:opacity-50 transition duration-500"
@@ -23,7 +30,7 @@ const SocialMediaIcons = () => {
         target="_blank"
         rel="noreferrer"
       >
-        <img alt="youtube-link" src="./assets/youtube.png" />
+        <Youtube size={iconSize} color={iconColor} />
       </a>
       <a
         className="hover:opacity-50 transition duration-500"
@@ -31,7 +38,7 @@ const SocialMediaIcons = () => {
         target="_blank"
         rel="noreferrer"
       >
-        <img alt="instagram-link" src="./assets/instagram.png" />
+        <Instagram size={iconSize} color={iconColor} />
       </a>
     </div>
   );

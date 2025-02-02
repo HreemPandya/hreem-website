@@ -10,6 +10,8 @@ module.exports = {
         "green-500": "#48BB78",
         "green-600": "#38A169",
         "green-700": "#2F855A",
+        'terracotta': '#E76F51',
+        'light-beige': '#F5E6D3',
         blue: "#2CBCE9",
         red: "#DC4492",
         yellow: "#FDCC49",
@@ -23,13 +25,15 @@ module.exports = {
 
         "gradient-rainblue":
           "linear-gradient(90deg, #24CBFF 14.53%, #FC59FF 69.36%, #FFBD0C 117.73%)",
+        "green-brush": "url('./assets/green-brush.png')",
+        "red-brush": "url('./assets/red-brush.png')",
       }),
       fontFamily: {
         playfair: ["Playfair Display", "serif"],
         opensans: ["Open Sans", "sans-serif"],
       },
       content: {
-        brush: "url('./assets/green-brush.png')", // Updated brush image
+        brush: "url('./assets/green-brush.png')",
         react: "url('./assets/react.png')",
       },
       maskImage: {

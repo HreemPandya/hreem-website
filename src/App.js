@@ -15,8 +15,17 @@ function App() {
   const [selectedPage, setSelectedPage] = useState("home");
   const [isTopOfPage, setIsTopOfPage] = useState(true);
   const isDesktop = useMediaQuery("(min-width: 1060px)");
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  // Toggle Theme Function
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
 
   useEffect(() => {
+    document.documentElement.classList.remove("light-mode", "dark-mode");
+    document.documentElement.classList.add(isDarkMode ? "dark-mode" : "light-mode");
+
     const handleScroll = () => {
       if (window.scrollY === 0) {
         setIsTopOfPage(true);
@@ -24,73 +33,69 @@ function App() {
       }
       if (window.scrollY !== 0) setIsTopOfPage(false);
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isDarkMode]);
 
   return (
-    <div className="app bg-deep-blue">
+    <div className={`app transition-colors duration-500`}>
       <Navbar
         isTopOfPage={isTopOfPage}
         selectedPage={selectedPage}
         setSelectedPage={setSelectedPage}
+        isDarkMode={isDarkMode}
+        toggleTheme={toggleTheme}
       />
-      <div className="w-5/6 mx-auto md:h-full">
-        {isDesktop && (
-          <DotGroup
-            selectedPage={selectedPage}
-            setSelectedPage={setSelectedPage}
-          />
-        )}
-        <motion.div
-          margin="0 0 -200px 0"
-          amount="all"
-          onViewportEnter={() => setSelectedPage("home")}
-        >
-          <Landing setSelectedPage={setSelectedPage} />
+
+      {isDesktop && (
+        <DotGroup
+          selectedPage={selectedPage}
+          setSelectedPage={setSelectedPage}
+          isDarkMode={isDarkMode}
+        />
+      )}
+
+      {/* Content Sections - No Individual Background Transitions */}
+      <div className="max-w-7xl mx-auto px-6">
+        <motion.div onViewportEnter={() => setSelectedPage("home")}>
+          <Landing setSelectedPage={setSelectedPage} isDarkMode={isDarkMode} />
         </motion.div>
       </div>
+
       <LineGradient />
-      <div className="w-5/6 mx-auto md:h-full ">
-        <motion.div
-          margin="0 0 -200px 0"
-          amount="all"
-          onViewportEnter={() => setSelectedPage("skills")}
-        >
-          <MySkills />
+
+      <div className="max-w-7xl mx-auto px-6">
+        <motion.div onViewportEnter={() => setSelectedPage("skills")}>
+          <MySkills isDarkMode={isDarkMode} />
         </motion.div>
       </div>
+
       <LineGradient />
-      <div className="w-5/6 mx-auto">
-        <motion.div
-          margin="0 0 -200px 0"
-          amount="all"
-          onViewportEnter={() => setSelectedPage("projects")}
-        >
-          <Projects />
+
+      <div className="max-w-7xl mx-auto px-6">
+        <motion.div onViewportEnter={() => setSelectedPage("projects")}>
+          <Projects isDarkMode={isDarkMode} />
         </motion.div>
       </div>
+
       <LineGradient />
-      <div className="w-5/6 mx-auto md:h-full">
-        <motion.div
-          margin="0 0 -200px 0"
-          amount="all"
-          onViewportEnter={() => setSelectedPage("about me")}
-        >
-          <AboutMe />
+
+      <div className="max-w-7xl mx-auto px-6">
+        <motion.div onViewportEnter={() => setSelectedPage("about me")}>
+          <AboutMe isDarkMode={isDarkMode} />
         </motion.div>
       </div>
+
       <LineGradient />
-      <div className="w-5/6 mx-auto md:h-full">
-        <motion.div
-          margin="0 0 -200px 0"
-          amount="all"
-          onViewportEnter={() => setSelectedPage("contact")}
-        >
-          <Contact />
+
+      <div className="max-w-7xl mx-auto px-6">
+        <motion.div onViewportEnter={() => setSelectedPage("contact")}>
+          <Contact isDarkMode={isDarkMode} />
         </motion.div>
       </div>
-      <Footer />
+
+      <Footer isDarkMode={isDarkMode} />
     </div>
   );
 }
