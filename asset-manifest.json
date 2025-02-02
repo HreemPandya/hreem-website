@@ -1,15 +1,16 @@
 {
   "files": {
-    "main.css": "/hreem-website/static/css/main.48e721f2.css",
-    "main.js": "/hreem-website/static/js/main.c0a787f4.js",
+    "main.css": "/hreem-website/static/css/main.2b9fe8ff.css",
+    "main.js": "/hreem-website/static/js/main.593246ac.js",
+    "static/media/red-brush.png": "/hreem-website/static/media/red-brush.97293077565adb0d61b1.png",
     "static/media/paint-stroke.png": "/hreem-website/static/media/paint-stroke.4cd02ec26a14056db61d.png",
     "static/media/green-brush.png": "/hreem-website/static/media/green-brush.d19b15157934dd3bc5fc.png",
     "index.html": "/hreem-website/index.html",
-    "main.48e721f2.css.map": "/hreem-website/static/css/main.48e721f2.css.map",
-    "main.c0a787f4.js.map": "/hreem-website/static/js/main.c0a787f4.js.map"
+    "main.2b9fe8ff.css.map": "/hreem-website/static/css/main.2b9fe8ff.css.map",
+    "main.593246ac.js.map": "/hreem-website/static/js/main.593246ac.js.map"
   },
   "entrypoints": [
-    "static/css/main.48e721f2.css",
-    "static/js/main.c0a787f4.js"
+    "static/css/main.2b9fe8ff.css",
+    "static/js/main.593246ac.js"
   ]
 }
