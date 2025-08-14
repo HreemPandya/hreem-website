@@ -2,13 +2,13 @@ import React from "react";
 import AnchorLink from "react-anchor-link-smooth-scroll";
 
 const DotGroup = ({ selectedPage, setSelectedPage, isDarkMode }) => {
-  const selectedStyles = isDarkMode
-    ? `relative bg-[#f8cc54] w-3 h-3 rounded-full before:absolute before:w-6 before:h-6 before:rounded-full before:border-2 before:border-[#f8cc54] before:left-[-50%] before:top-[-50%] z-10`
-    : `relative bg-[#6BA7A5] w-3 h-3 rounded-full before:absolute before:w-6 before:h-6 before:rounded-full before:border-2 before:border-[#6BA7A5] before:left-[-50%] before:top-[-50%] z-10`;
+  const selectedStyles = `relative bg-gradient-to-r from-purple-500 via-pink-500 to-teal-500 w-3 h-3 rounded-full 
+    before:absolute before:w-6 before:h-6 before:rounded-full before:border-2 before:border-white/30 
+    before:left-[-50%] before:top-[-50%] z-10 shadow-lg shadow-purple-500/25`;
 
-  const unselectedStyles = isDarkMode
-    ? "bg-gray-500 w-3 h-3 rounded-full"
-    : "bg-[#D3B8A1] w-3 h-3 rounded-full";
+  const unselectedStyles = isDarkMode 
+    ? "bg-white/30 w-3 h-3 rounded-full hover:bg-white/50 transition-all duration-300 hover:scale-110"
+    : "bg-amber-800/60 w-3 h-3 rounded-full hover:bg-amber-800/80 transition-all duration-300 hover:scale-110";
 
   return (
     <div className="fixed right-7 top-[60%] flex flex-col gap-6">

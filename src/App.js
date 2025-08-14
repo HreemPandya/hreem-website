@@ -38,8 +38,22 @@ function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isDarkMode]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrollProgress = (scrollTop / scrollHeight) * 100;
+      const indicator = document.querySelector('.scroll-indicator');
+      if (indicator) indicator.style.width = scrollProgress + '%';
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div className={`app transition-colors duration-500`}>
+      <div className="scroll-indicator"></div>
       <Navbar
         isTopOfPage={isTopOfPage}
         selectedPage={selectedPage}
@@ -56,8 +70,8 @@ function App() {
         />
       )}
 
-      {/* Content Sections - No Individual Background Transitions */}
-      <div className="max-w-7xl mx-auto px-6">
+      {/* Content Sections - Added proper IDs for navigation */}
+      <div id="home" className="max-w-7xl mx-auto px-6">
         <motion.div onViewportEnter={() => setSelectedPage("home")}>
           <Landing setSelectedPage={setSelectedPage} isDarkMode={isDarkMode} />
         </motion.div>
@@ -65,7 +79,7 @@ function App() {
 
       <LineGradient />
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div id="skills" className="max-w-7xl mx-auto px-6">
         <motion.div onViewportEnter={() => setSelectedPage("skills")}>
           <MySkills isDarkMode={isDarkMode} />
         </motion.div>
@@ -73,7 +87,7 @@ function App() {
 
       <LineGradient />
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div id="projects" className="max-w-7xl mx-auto px-6">
         <motion.div onViewportEnter={() => setSelectedPage("projects")}>
           <Projects isDarkMode={isDarkMode} />
         </motion.div>
@@ -81,7 +95,7 @@ function App() {
 
       <LineGradient />
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div id="about me" className="max-w-7xl mx-auto px-6">
         <motion.div onViewportEnter={() => setSelectedPage("about me")}>
           <AboutMe isDarkMode={isDarkMode} />
         </motion.div>
@@ -89,7 +103,7 @@ function App() {
 
       <LineGradient />
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div id="contact" className="max-w-7xl mx-auto px-6">
         <motion.div onViewportEnter={() => setSelectedPage("contact")}>
           <Contact isDarkMode={isDarkMode} />
         </motion.div>
