@@ -51,81 +51,55 @@ const TypewriterEffect = ({ isDarkMode }) => {
 
   return (
     <div className="w-full max-w-md mx-auto md:mx-0">
-      <h2 className={`text-xl md:text-2xl lg:text-3xl font-medium font-playfair ${isDarkMode ? 'text-teal-400' : 'text-blue-600'} tracking-wide text-center md:text-left leading-relaxed`}>
+      <h2 className={`text-lg md:text-xl lg:text-2xl xl:text-3xl font-medium font-playfair ${isDarkMode ? 'text-cyan-400' : 'text-blue-600'} tracking-wide text-center md:text-left leading-relaxed`}>
         {currentText}
-        <span className="animate-pulse text-purple-500">|</span>
+        <span className={isDarkMode ? 'text-violet-400' : 'text-purple-500'}>|</span>
       </h2>
     </div>
   );
 };
 
 const Landing = ({ setSelectedPage, isDarkMode }) => {
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrolled = window.pageYOffset;
-      const shapes = document.querySelectorAll('.floating-shape');
-      
-      shapes.forEach((shape, index) => {
-        const speed = 0.5 + (index * 0.2);
-        if (shape) {
-          shape.style.transform = `translateY(${scrolled * speed}px) rotate(${scrolled * 0.1}deg)`;
-        }
-      });
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
     <>
-      {/* Dynamic Background Elements */}
-      <div className="fixed inset-0 z-[-2] overflow-hidden">
-        <div className={`absolute inset-0 ${isDarkMode ? 'bg-gradient-to-br from-purple-900/20 via-transparent to-teal-500/20' : 'bg-gradient-to-br from-purple-100/30 via-transparent to-teal-100/30'}`} />
-        
-        {/* Floating shapes */}
-        <div className={`floating-shape absolute w-64 h-64 rounded-full ${isDarkMode ? 'opacity-10' : 'opacity-5'} bg-gradient-to-r from-purple-500 to-pink-500 top-1/4 left-1/4 animate-pulse`} 
-             style={{ animationDelay: '0s', animationDuration: '4s' }} />
-        <div className={`floating-shape absolute w-48 h-48 rounded-full ${isDarkMode ? 'opacity-10' : 'opacity-5'} bg-gradient-to-r from-blue-500 to-teal-500 top-3/4 right-1/4 animate-pulse`} 
-             style={{ animationDelay: '2s', animationDuration: '6s' }} />
-        <div className={`floating-shape absolute w-32 h-32 rounded-full ${isDarkMode ? 'opacity-10' : 'opacity-5'} bg-gradient-to-r from-green-500 to-blue-500 bottom-1/4 left-3/4 animate-pulse`} 
-             style={{ animationDelay: '4s', animationDuration: '5s' }} />
-      </div>
+      {/* Background Decorations */}
+      {isDarkMode && (
+        <div className="fixed inset-0 z-[-2] overflow-hidden pointer-events-none">
+          <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-violet-600/[0.06] blur-[120px]" />
+          <div className="absolute bottom-0 -left-32 w-[400px] h-[400px] rounded-full bg-cyan-400/[0.04] blur-[100px]" />
+        </div>
+      )}
+      {!isDarkMode && (
+        <div className="fixed inset-0 z-[-2] overflow-hidden pointer-events-none">
+          <div className={`absolute inset-0 bg-gradient-to-br from-purple-100/30 via-transparent to-teal-100/30`} />
+        </div>
+      )}
 
       <section
-        className={`${isDarkMode ? 'bg-transparent' : 'bg-transparent'} md:flex md:justify-between md:items-center gap-16 md:h-full py-10 transition-colors duration-300 pt-32 relative z-10`}
+        className={`${isDarkMode ? 'bg-transparent' : 'bg-transparent'} flex flex-col md:flex-row md:justify-between md:items-center gap-8 md:gap-16 min-h-screen py-8 md:py-10 transition-colors duration-300 pt-20 md:pt-32 relative z-10 px-4`}
       >
         {/* Glass morphism overlay */}
-        <div className={`absolute inset-0 backdrop-blur-sm rounded-3xl border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/20 border-gray-200/30'}`} 
-             style={{ margin: '2rem', zIndex: -1 }} />
+        <div className={`absolute inset-0 backdrop-blur-sm rounded-3xl border ${isDarkMode ? 'bg-transparent border-white/[0.06]' : 'bg-white/20 border-gray-200/30'}`} 
+             style={{ margin: '1rem md:2rem', zIndex: -1 }} />
 
-        {/* IMAGE SECTION */}
-        <div className="basis-3/5 z-10 mt-16 md:mt-24 flex justify-center md:order-2">
+        {/* IMAGE SECTION - On top for mobile */}
+        <div className="basis-3/5 z-10 flex justify-center md:order-2 order-1">
           <motion.div 
-            className="relative z-0 ml-20 w-full max-w-[400px] md:max-w-[600px]"
+            className="relative z-0 w-full max-w-[280px] md:max-w-[400px] lg:max-w-[600px]"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.3 }}
           >
-            {/* Glowing border effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-teal-500 rounded-3xl blur-2xl opacity-30 animate-pulse" />
-            
             <img
               alt="profile"
-              className="relative w-full h-full object-cover rounded-3xl shadow-2xl hover:scale-105 transition-transform duration-500"
+              className={`relative w-full h-full object-cover rounded-3xl hover:scale-105 transition-transform duration-500 ${isDarkMode ? 'shadow-[0_0_60px_rgba(124,58,237,0.18)] border border-violet-500/20' : 'shadow-2xl'}`}
               src={`${process.env.PUBLIC_URL}/assets/light-mode-pic.png`}
             />
-            
-            {/* Floating elements around image */}
-            <div className="absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-bounce" 
-                 style={{ animationDelay: '1s' }} />
-            <div className="absolute -bottom-4 -left-4 w-6 h-6 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full animate-bounce" 
-                 style={{ animationDelay: '2s' }} />
           </motion.div>
         </div>
 
-        {/* MAIN TEXT */}
-        <div className="z-30 basis-2/5 mt-12 md:mt-32">
+        {/* MAIN TEXT - Below image on mobile */}
+        <div className="z-30 basis-2/5 order-2 md:order-1">
           {/* HEADINGS */}
           <motion.div
             initial="hidden"
@@ -138,7 +112,7 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
             }}
           >
             <motion.p 
-              className={`text-5xl md:text-6xl lg:text-7xl font-playfair ${isDarkMode ? 'text-white' : 'text-gray-900'} text-center md:text-start mb-6 animate-fade-in font-bold leading-tight`}
+              className={`text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-playfair ${isDarkMode ? 'text-white' : 'text-gray-900'} text-center md:text-start mb-4 md:mb-6 animate-fade-in font-bold leading-tight`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -147,22 +121,20 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
             </motion.p>
 
             <motion.p 
-              className={`text-6xl md:text-7xl lg:text-8xl font-playfair z-10 text-center md:text-start ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-8 leading-tight`}
+              className={`text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-playfair z-10 text-center md:text-start ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-6 md:mb-8 leading-tight`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               Hreem {""}
-              <span className={`relative font-semibold z-10 bg-gradient-to-r from-purple-500 via-pink-500 to-teal-500 bg-clip-text text-transparent animate-pulse
-                  before:absolute before:-left-[47px] before:-top-[130px] before:w-[350px] before:h-[350px] before:bg-contain before:bg-no-repeat before:z-[-1]
-                  after:absolute after:-left-[27px] after:-top-[0px] after:w-[300px] after:h-[100px] after:bg-contain after:bg-no-repeat after:z-[-1]`}>
+              <span className="relative font-semibold z-10 bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
                 Pandya
               </span>
             </motion.p>
 
             {/* Auto-typing job titles */}
             <motion.div
-              className="mt-8 mb-8 text-center md:text-start flex justify-center md:justify-start"
+              className="mt-6 md:mt-8 mb-6 md:mb-8 text-center md:text-start flex justify-center md:justify-start"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
@@ -173,7 +145,7 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
 
           {/* CALL TO ACTIONS */}
           <motion.div
-            className="flex mt-5 justify-center md:justify-start gap-4 flex-wrap"
+            className="flex mt-5 justify-center md:justify-start gap-3 md:gap-4 flex-wrap"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.5 }}
@@ -184,16 +156,15 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
             }}
           >
             <AnchorLink
-              className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full py-3 px-7 font-semibold hover:scale-105 hover:shadow-2xl transition-all duration-500 relative overflow-hidden group"
+              className="btn-enhanced bg-gradient-to-r from-violet-600 to-cyan-500 text-white rounded-full py-2.5 px-5 md:py-3 md:px-7 font-semibold transition-all duration-200 text-sm md:text-base hover:opacity-90 hover:scale-[1.02]"
               onClick={() => setSelectedPage("contact")}
               href="#contact"
             >
-              <span className="relative z-10">Contact Me</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              Contact Me
             </AnchorLink>
 
             <AnchorLink
-              className={`border-2 border-teal-500 text-teal-500 rounded-full py-3 px-7 font-semibold hover:bg-teal-500 hover:text-white hover:scale-105 transition-all duration-500 backdrop-blur-sm ${isDarkMode ? 'bg-white/10' : 'bg-white/30'}`}
+              className={`rounded-full py-2.5 px-5 md:py-3 md:px-7 font-semibold transition-all duration-200 backdrop-blur-sm text-sm md:text-base ${isDarkMode ? 'border border-white/[0.12] text-[#F0F4F8] hover:bg-white/[0.05]' : 'border-2 border-teal-500 text-teal-500 hover:bg-teal-500 hover:text-white bg-white/30'}`}
               onClick={() => setSelectedPage("projects")}
               href="#projects"
             >
@@ -219,18 +190,13 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
         </div>
       </section>
 
-      <style jsx>{`
+      <style>{`
         @keyframes fade-in {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        
         .animate-fade-in {
           animation: fade-in 0.8s ease-out;
-        }
-
-        .floating-shape {
-          filter: blur(1px);
         }
       `}</style>
     </>

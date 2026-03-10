@@ -5,6 +5,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        'noir-base':    '#07090D',
+        'noir-deep':    '#0B0F18',
+        'noir-surface': '#111827',
+        'violet-noir':  '#7C3AED',
+        'cyan-noir':    '#22D3EE',
+        'amber-noir':   '#F59E0B',
         "deep-blue": "#010026",
         "green-400": "#68D391",
         "green-500": "#48BB78",
@@ -20,6 +26,8 @@ module.exports = {
         "opaque-black": "rgba(0,0,0,0.35)",
       },
       backgroundImage: (theme) => ({
+        'gradient-noir': 'linear-gradient(135deg, #7C3AED 0%, #22D3EE 100%)',
+        'gradient-noir-subtle': 'linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(34,211,238,0.08) 100%)',
         "gradient-rainbow":
           "linear-gradient(81.66deg, #00B5EE 7.21%, #FF45A4 45.05%, #FFBA00 78.07%)",
 

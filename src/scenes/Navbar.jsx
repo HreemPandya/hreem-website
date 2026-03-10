@@ -9,15 +9,15 @@ const Link = ({ page, selectedPage, setSelectedPage, isDarkMode }) => {
     <AnchorLink
       className={`${
         selectedPage === lowerCasePage
-          ? `${isDarkMode ? 'text-white' : 'text-gray-900'} font-bold scale-110 bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent`
-          : `${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`
-      } transition-all duration-300 ${isDarkMode ? 'hover:text-white' : 'hover:text-gray-900'} hover:scale-105 relative group px-3 py-2 rounded-lg`}
+          ? `${isDarkMode ? 'text-[#F0F4F8] border-b border-violet-500/60' : 'text-gray-900'} font-bold scale-110`
+          : `${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`
+      } transition-all duration-300 ${isDarkMode ? 'hover:text-[#F0F4F8]' : 'hover:text-gray-900'} hover:scale-105 relative group px-3 py-2 rounded-lg`}
       href={`#${lowerCasePage}`}
       onClick={() => setSelectedPage(lowerCasePage)}
     >
       {page}
       {/* Hover effect underline */}
-      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 group-hover:w-full transition-all duration-300"></span>
+      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-violet-500 to-cyan-400 group-hover:w-full transition-all duration-300"></span>
     </AnchorLink>
   );
 };
@@ -30,7 +30,7 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
     <>
       {/* Scroll Progress Indicator */}
       <div 
-        className="fixed top-0 left-0 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-teal-500 z-50 transition-all duration-100"
+        className="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-violet-600 to-cyan-400 z-50 transition-all duration-100"
         style={{ 
           width: `${Math.min(100, (window.pageYOffset / (document.documentElement.scrollHeight - document.documentElement.clientHeight)) * 100)}%` 
         }}
@@ -40,26 +40,24 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
         isTopOfPage 
           ? 'bg-transparent backdrop-blur-none' 
           : isDarkMode 
-            ? 'bg-black/20 backdrop-blur-xl border-b border-white/10'
+            ? 'bg-[#07090D]/80 backdrop-blur-xl border-b border-white/[0.06]'
             : 'bg-white/80 backdrop-blur-xl border-b border-gray-200/50 shadow-lg'
       }`}>
         <div className="flex items-center justify-between mx-auto w-5/6">
           {/* Enhanced Logo */}
           <div className="relative group">
-            <h4 className="font-playfair text-4xl font-extrabold bg-gradient-to-r from-purple-500 via-pink-500 to-teal-500 bg-clip-text text-transparent hover:scale-110 transition-transform duration-300 cursor-pointer">
+            <h4 className="font-playfair text-4xl font-extrabold bg-gradient-to-r from-violet-500 to-cyan-400 bg-clip-text text-transparent hover:scale-110 transition-transform duration-300 cursor-pointer">
               HP
             </h4>
-            {/* Glowing effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-teal-500 opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-300" />
           </div>
 
           {/* DESKTOP NAV */}
           {isDesktop ? (
             <div className="flex items-center justify-between gap-8 font-opensans text-sm font-semibold">
               {/* Navigation Links with glass effect */}
-              <div className={`flex items-center gap-6 backdrop-blur-lg rounded-full px-6 py-3 border transition-all duration-300 ${
+              <div className={`flex items-center gap-6 backdrop-blur-xl rounded-full px-6 py-3 border transition-all duration-300 ${
                 isDarkMode 
-                  ? 'bg-white/5 border-white/10' 
+                  ? 'bg-white/[0.04] border-white/[0.06]' 
                   : 'bg-white/70 border-gray-200/50 shadow-md'
               }`}>
                 <Link page="Home" selectedPage={selectedPage} setSelectedPage={setSelectedPage} isDarkMode={isDarkMode} />
@@ -80,7 +78,7 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
                   />
                   <div className={`relative w-14 h-7 rounded-full transition-all duration-300 shadow-lg ${
                     isDarkMode 
-                      ? "bg-gradient-to-r from-purple-500 to-pink-500" 
+                      ? "bg-gradient-to-r from-violet-600 to-cyan-500" 
                       : "bg-gradient-to-r from-teal-400 to-blue-500"
                   }`}>
                     <div
@@ -88,20 +86,13 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
                         ${isDarkMode ? "translate-x-7" : ""}`}
                     >
                       {isDarkMode ? (
-                        <FiMoon className="text-purple-500 w-3 h-3" />
+                        <FiMoon className="text-violet-500 w-3 h-3" />
                       ) : (
                         <FiSun className="text-yellow-500 w-3 h-3" />
                       )}
                     </div>
                   </div>
                 </label>
-                
-                {/* Fixed glow effect - now properly contained */}
-                <div className={`absolute inset-0 w-14 h-7 rounded-full opacity-0 group-hover:opacity-30 blur-md transition-opacity duration-300 pointer-events-none ${
-                  isDarkMode 
-                    ? "bg-gradient-to-r from-purple-500 to-pink-500" 
-                    : "bg-gradient-to-r from-teal-400 to-blue-500"
-                }`} />
               </div>
             </div>
           ) : (
@@ -128,89 +119,146 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
             </button>
           )}
 
-          {/* ENHANCED MOBILE MENU POPUP */}
+          {/* ENHANCED DROPDOWN MOBILE MENU */}
           {!isDesktop && isMenuToggled && (
-            <div className={`fixed right-0 top-0 h-full w-80 backdrop-blur-xl border-l transform transition-transform duration-300 ${
-              isDarkMode 
-                ? 'bg-black/90 border-white/10' 
-                : 'bg-white/95 border-gray-200/50 shadow-2xl'
-            } ${isMenuToggled ? 'translate-x-0' : 'translate-x-full'}`}>
-              {/* Close Button */}
-              <div className="flex justify-end p-8">
-                <button 
-                  onClick={() => setIsMenuToggled(!isMenuToggled)}
-                  className={`p-2 rounded-full transition-colors duration-300 ${
-                    isDarkMode 
-                      ? 'bg-white/10 hover:bg-white/20' 
-                      : 'bg-gray-100 hover:bg-gray-200'
-                  }`}
-                >
-                  <svg className={`w-6 h-6 ${isDarkMode ? 'text-white' : 'text-gray-700'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Menu Items */}
-              <div className="flex flex-col gap-6 px-8 py-4">
-                {['Home', 'Skills', 'Projects', 'About Me', 'Contact'].map((page, index) => (
-                  <div key={page} 
-                       className="transform translate-x-8 opacity-0 animate-slide-in"
-                       style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'forwards' }}>
-                    <AnchorLink
-                      className={`block text-2xl transition-all duration-300 py-2 ${
-                        isDarkMode 
-                          ? 'text-white hover:text-transparent hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500 hover:bg-clip-text'
-                          : 'text-gray-800 hover:text-transparent hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500 hover:bg-clip-text'
-                      }`}
-                      href={`#${page.toLowerCase()}`}
-                      onClick={() => {
-                        setSelectedPage(page.toLowerCase());
-                        setIsMenuToggled(false);
-                      }}
-                    >
-                      {page}
-                    </AnchorLink>
+            <>
+              {/* Backdrop overlay for better UX */}
+              <div 
+                className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30"
+                onClick={() => setIsMenuToggled(false)}
+              />
+              
+              {/* Enhanced dropdown menu */}
+              <div className="absolute top-full left-0 right-0 mt-3 mx-4 rounded-2xl overflow-hidden z-40"
+                   style={{ 
+                     backgroundColor: isDarkMode ? '#0B0F18' : '#ffffff',
+                     boxShadow: isDarkMode 
+                       ? '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2)' 
+                       : '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                     border: isDarkMode ? '1px solid rgba(255,255,255,0.06)' : '1px solid #e5e7eb'
+                   }}>
+                
+                {/* Menu header */}
+                <div className="px-6 py-4 border-b" 
+                     style={{ 
+                       backgroundColor: isDarkMode ? '#111827' : '#f8fafc',
+                       borderBottomColor: isDarkMode ? 'rgba(255,255,255,0.06)' : '#e2e8f0'
+                     }}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold" 
+                          style={{ color: isDarkMode ? '#F0F4F8' : '#475569' }}>
+                      Navigation
+                    </span>
+                    <div className="w-8 h-[2px] rounded-full bg-gradient-to-r from-violet-500 to-cyan-400"></div>
                   </div>
-                ))}
+                </div>
 
-                {/* Mobile Toggle Switch */}
-                <div className="mt-8 transform translate-x-8 opacity-0 animate-slide-in" style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}>
-                  <label className="flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={isDarkMode}
-                      onChange={toggleTheme}
-                      className="sr-only"
-                    />
-                    <div className={`relative w-14 h-7 rounded-full transition-all duration-300 ${
-                      isDarkMode 
-                        ? "bg-gradient-to-r from-purple-500 to-pink-500" 
-                        : "bg-gradient-to-r from-teal-400 to-blue-500"
-                    }`}>
-                      <div
-                        className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white transition-all duration-300 flex items-center justify-center
-                          ${isDarkMode ? "translate-x-7" : ""}`}
+                {/* Menu items with enhanced styling */}
+                <div className="py-2">
+                  {['Home', 'Skills', 'Projects', 'About Me', 'Contact'].map((page) => {
+                    const isActive = selectedPage === page.toLowerCase();
+
+                    return (
+                      <AnchorLink
+                        key={page}
+                        className="flex items-center px-6 py-4 text-base font-medium transition-all duration-300 relative group"
+                        style={{
+                          color: isActive 
+                            ? '#F0F4F8'
+                            : isDarkMode ? '#8B9DB0' : '#374151',
+                          backgroundColor: isActive 
+                            ? 'rgba(124, 58, 237, 0.15)'
+                            : 'transparent'
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!isActive) {
+                            e.target.style.backgroundColor = isDarkMode ? 'rgba(255,255,255,0.04)' : '#f1f5f9';
+                            e.target.style.transform = 'translateX(4px)';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!isActive) {
+                            e.target.style.backgroundColor = 'transparent';
+                            e.target.style.transform = 'translateX(0px)';
+                          }
+                        }}
+                        href={`#${page.toLowerCase()}`}
+                        onClick={() => {
+                          setSelectedPage(page.toLowerCase());
+                          setIsMenuToggled(false);
+                        }}
                       >
-                        {isDarkMode ? (
-                          <FiMoon className="text-purple-500 w-3 h-3" />
-                        ) : (
-                          <FiSun className="text-yellow-500 w-3 h-3" />
+                        {/* Dot indicator */}
+                        <div className={`mr-3 w-1.5 h-1.5 rounded-full flex-shrink-0 ${isActive ? 'bg-violet-500' : isDarkMode ? 'bg-white/20' : 'bg-gray-400/50'}`} />
+                        
+                        {/* Page name */}
+                        <span className="flex-1">{page}</span>
+                        
+                        {/* Active indicator */}
+                        {isActive && (
+                          <div className="w-1.5 h-1.5 rounded-full bg-violet-500 ml-2"></div>
                         )}
+                      </AnchorLink>
+                    );
+                  })}
+                </div>
+
+                {/* Theme toggle section with enhanced design */}
+                <div className="px-6 py-4 border-t" 
+                     style={{ 
+                       backgroundColor: isDarkMode ? '#111827' : '#f8fafc',
+                       borderTopColor: isDarkMode ? 'rgba(255,255,255,0.06)' : '#e2e8f0'
+                     }}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <span className="mr-3 text-lg">
+                        {isDarkMode ? '🌙' : '☀️'}
+                      </span>
+                      <div>
+                        <span className="text-sm font-medium" 
+                              style={{ color: isDarkMode ? '#e2e8f0' : '#374151' }}>
+                          {isDarkMode ? 'Dark Mode' : 'Light Mode'}
+                        </span>
+                        <p className="text-xs" 
+                           style={{ color: isDarkMode ? '#94a3b8' : '#64748b' }}>
+                          {isDarkMode ? 'Currently active' : 'Currently active'}
+                        </p>
                       </div>
                     </div>
-                    <span className={`ml-4 text-lg ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-                      {isDarkMode ? 'Dark Mode' : 'Light Mode'}
-                    </span>
-                  </label>
+                    
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={isDarkMode}
+                        onChange={toggleTheme}
+                        className="sr-only peer"
+                      />
+                      <div className={`relative w-12 h-6 rounded-full transition-all duration-300 ${
+                        isDarkMode 
+                          ? "bg-gradient-to-r from-violet-600 to-cyan-500" 
+                          : "bg-gradient-to-r from-teal-400 to-blue-500"
+                      }`}>
+                        <div
+                          className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-all duration-300 shadow-md flex items-center justify-center
+                            ${isDarkMode ? "translate-x-6" : ""}`}
+                        >
+                          {isDarkMode ? (
+                            <FiMoon className="text-violet-500 w-2.5 h-2.5" />
+                          ) : (
+                            <FiSun className="text-yellow-500 w-2.5 h-2.5" />
+                          )}
+                        </div>
+                      </div>
+                    </label>
+                  </div>
                 </div>
               </div>
-            </div>
+            </>
           )}
         </div>
       </nav>
 
-      <style jsx>{`
+      <style>{`
         @keyframes slide-in {
           to {
             transform: translateX(0);

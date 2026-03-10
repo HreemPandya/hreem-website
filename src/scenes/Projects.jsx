@@ -35,9 +35,9 @@ const projects = [
     titleColor: "text-orange-600", // Orange to match FridgeMind tags
     tags: ['Raspberry Pi/QNX', 'Yolov5', 'Python', 'FastAPI', 'Expo Go' ],
     links: [
-      { href: "https://devpost.com/software/fridge-mind", icon: <FaExternalLinkAlt size={24} />, label: "Devpost" },
-      { href: "https://youtube.com/shorts/sylrchlKfYk?feature=share", icon: <FaYoutube size={24} />, label: "Watch Demo" },
-      { href: "https://github.com/HreemPandya/fridge-mind", icon: <FaGithub size={24} />, label: "View Code" },
+      { href: "https://devpost.com/software/fridge-mind", icon: <FaExternalLinkAlt size={20} />, label: "Devpost" },
+      { href: "https://youtube.com/shorts/sylrchlKfYk?feature=share", icon: <FaYoutube size={20} />, label: "Demo" },
+      { href: "https://github.com/HreemPandya/fridge-mind", icon: <FaGithub size={20} />, label: "Code" },
     ],
   },
   {
@@ -50,8 +50,8 @@ const projects = [
     titleColor: "text-cyan-600", // Cyan to match BeMyEyes tags
     tags: ['Arduino', 'OpenCV', 'IoT', 'Embedded System'],
     links: [
-      { href: "https://devpost.com/software/bemyeyes", icon: <FaExternalLinkAlt size={24} />, label: "Devpost" },
-      { href: "https://github.com/HreemPandya/be-my-eyes", icon: <FaGithub size={24} />, label: "View Code" },
+      { href: "https://devpost.com/software/bemyeyes", icon: <FaExternalLinkAlt size={20} />, label: "Devpost" },
+      { href: "https://github.com/HreemPandya/be-my-eyes", icon: <FaGithub size={20} />, label: "Code" },
     ],
   },
   {
@@ -64,8 +64,8 @@ const projects = [
     titleColor: "text-green-600", // Green to match GestureGroove tags
     tags: ['OpenCV', 'MediaPipe', 'Spotify API', 'React'],
     links: [
-      { href: "https://gesturegroove.vercel.app/", icon: <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.559-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.559.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clipRule="evenodd"></path></svg>, label: "Live Demo" },
-      { href: "https://github.com/HreemPandya/GestureGroove", icon: <FaGithub size={24} />, label: "View Code" },
+      { href: "https://gesturegroove.vercel.app/", icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.559-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.559.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clipRule="evenodd"></path></svg>, label: "Demo" },
+      { href: "https://github.com/HreemPandya/GestureGroove", icon: <FaGithub size={20} />, label: "Code" },
     ],
   },
   {
@@ -78,8 +78,8 @@ const projects = [
     titleColor: "text-orange-600", // Orange to match CrisisCompass tags (changed from red)
     tags: ['React', 'OpenAI API', 'Flask', 'Web Scraping'],
     links: [
-      { href: "https://github.com/HreemPandya/Crisis-Compass", icon: <FaGithub size={24} />, label: "View Code" },
-      { href: "https://youtu.be/pfCfrTvsKqc", icon: <FaYoutube size={24} />, label: "Watch Demo" },
+      { href: "https://github.com/HreemPandya/Crisis-Compass", icon: <FaGithub size={20} />, label: "Code" },
+      { href: "https://youtu.be/pfCfrTvsKqc", icon: <FaYoutube size={20} />, label: "Demo" },
     ],
   },
   {
@@ -92,8 +92,8 @@ const projects = [
     titleColor: "text-teal-600", // Teal to match SecureEdu tags (changed from blue)
     tags: ['STM32', 'C Programming', 'Embedded Systems','AES Encryption'],
     links: [
-      { href: "https://github.com/HreemPandya/SecureEdu", icon: <FaGithub size={24} />, label: "View Code" },
-      { href: "https://youtube.com/shorts/-U43X7I6Ihs?feature=share", icon: <FaYoutube size={24} />, label: "Watch Demo" },
+      { href: "https://github.com/HreemPandya/SecureEdu", icon: <FaGithub size={20} />, label: "Code" },
+      { href: "https://youtube.com/shorts/-U43X7I6Ihs?feature=share", icon: <FaYoutube size={20} />, label: "Demo" },
     ],
   },
   {
@@ -106,8 +106,8 @@ const projects = [
     titleColor: "text-purple-600", // Purple to match TaxWiz tags
     tags: ['TypeScript', 'Next.js', 'Tailwind CSS', 'OpenAI API'],
     links: [
-      { href: "https://github.com/HreemPandya/taxwiz-chatbot", icon: <FaGithub size={24} />, label: "View Code" },
-      { href: "https://taxwiz-chatbot.vercel.app/", icon: <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.559-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.559.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clipRule="evenodd"></path></svg>, label: "Live Demo" },
+      { href: "https://github.com/HreemPandya/taxwiz-chatbot", icon: <FaGithub size={20} />, label: "Code" },
+      { href: "https://taxwiz-chatbot.vercel.app/", icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.559-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.559.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clipRule="evenodd"></path></svg>, label: "Demo" },
     ],
   },
 ];
@@ -126,22 +126,20 @@ const Projects = ({ isDarkMode }) => {
   return (
     <section
       id="projects"
-      className={`pt-48 pb-48 transition-colors duration-300 ${isDarkMode ? "bg-transparent" : "bg-transparent"} relative overflow-hidden`}
+      className={`pt-32 md:pt-48 pb-32 md:pb-48 transition-colors duration-300 ${isDarkMode ? "bg-transparent" : "bg-transparent"} relative overflow-hidden`}
     >
-      {/* Dynamic Background Elements */}
-      <div className="absolute inset-0">
-        <div className={`absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse ${isDarkMode ? 'opacity-100' : 'opacity-50'}`} 
-             style={{ animationDelay: '0s', animationDuration: '8s' }} />
-        <div className={`absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-r from-teal-500/10 to-blue-500/10 rounded-full blur-3xl animate-pulse ${isDarkMode ? 'opacity-100' : 'opacity-50'}`} 
-             style={{ animationDelay: '4s', animationDuration: '6s' }} />
-        <div className={`absolute top-1/2 left-0 w-64 h-64 bg-gradient-to-r from-green-500/10 to-yellow-500/10 rounded-full blur-3xl animate-pulse ${isDarkMode ? 'opacity-100' : 'opacity-50'}`} 
-             style={{ animationDelay: '2s', animationDuration: '7s' }} />
-      </div>
+      {/* Static background orbs */}
+      {isDarkMode && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -top-32 left-1/4 w-[500px] h-[500px] rounded-full bg-violet-600/[0.05] blur-[120px]" />
+          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-cyan-400/[0.04] blur-[100px]" />
+        </div>
+      )}
 
       <div className="relative z-10">
         {/* HEADINGS */}
         <motion.div
-          className="md:w-2/5 mx-auto text-center"
+          className="md:w-2/5 mx-auto text-center px-4"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.5 }}
@@ -151,24 +149,24 @@ const Projects = ({ isDarkMode }) => {
             visible: { opacity: 1, y: 0 },
           }}
         >
-          <div className={`backdrop-blur-lg rounded-2xl p-8 border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/30 border-gray-200/30 shadow-lg'}`}>
-            <p className="font-playfair font-semibold text-4xl mb-4">
-              <span className="bg-gradient-to-r from-purple-500 via-pink-500 to-teal-500 bg-clip-text text-transparent">
+          <div className={`backdrop-blur-xl rounded-2xl p-6 md:p-8 border ${isDarkMode ? 'bg-[#111827] border-white/[0.06]' : 'bg-white/30 border-gray-200/30 shadow-lg'}`}>
+            <p className="font-playfair font-semibold text-3xl md:text-4xl mb-4">
+              <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
                 FEATURED PROJECTS
               </span>
             </p>
             <div className="flex justify-center mt-5">
-              <div className="w-2/3 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-teal-500 rounded-full" />
+              <div className="w-2/3 h-[2px] bg-gradient-to-r from-violet-600 to-cyan-400 rounded-full" />
             </div>
-            <p className={`mt-6 text-md leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+            <p className={`mt-6 text-sm md:text-md leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
               Below are some of my favourite projects I worked on. Some are embedded, others are full stack. But all are made with 💙. Click on any project to see more details.
             </p>
           </div>
         </motion.div>
 
-        {/* PROJECTS GRID */}
+        {/* PROJECTS GRID - Single column on mobile, responsive grid on larger screens */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16 max-w-7xl mx-auto px-4"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-12 md:mt-16 max-w-7xl mx-auto px-4"
           variants={container}
           initial="hidden"
           whileInView="visible"
@@ -184,125 +182,74 @@ const Projects = ({ isDarkMode }) => {
               }}
               transition={{ delay: index * 0.1 }}
               onClick={() => openModal(project)}
-              whileHover={{ scale: 1.03 }}
+              whileHover={{ scale: window.innerWidth < 768 ? 1 : 1.03 }}
               whileTap={{ scale: 0.98 }}
             >
               {/* Project Card */}
-              <div className={`backdrop-blur-lg rounded-2xl border overflow-hidden transition-all duration-500 h-full ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10 group-hover:shadow-2xl group-hover:shadow-purple-500/20' : 'bg-white/30 border-gray-200/30 hover:bg-white/50 shadow-lg group-hover:shadow-xl'}`}>
+              <div className={`backdrop-blur-xl rounded-2xl border overflow-hidden transition-all duration-300 h-full ${isDarkMode ? 'bg-[#111827] border-white/[0.06] group-hover:translate-y-[-6px] group-hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)] group-hover:border-violet-500/20' : 'bg-white/30 border-gray-200/30 hover:bg-white/50 shadow-lg group-hover:shadow-xl'}`}>
                 
                 {/* Image Section */}
-                <div className="relative overflow-hidden h-48">
+                <div className="relative overflow-hidden h-36 md:h-48">
                   <img
                     src={project.image}
                     alt={project.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className={`absolute inset-0 bg-gradient-to-t ${project.gradient} opacity-20 group-hover:opacity-40 transition-opacity duration-500`} />
-
-                  {/* Decorative elements - Subtle colored circles with blur effect */}
-                  <div className={`absolute top-4 right-4 w-8 h-8 rounded-full ${getProjectCircleColor(project.id)} opacity-30 blur-sm`} />
-                  <div className={`absolute top-2 right-8 w-4 h-4 rounded-full ${getProjectCircleColor(project.id)} opacity-40`} />
-                  <div className={`absolute top-6 right-2 w-3 h-3 rounded-full ${getProjectCircleColor(project.id)} opacity-20`} />
                 </div>
 
                 {/* Content Section */}
-                <div className="p-6">
-                  <h3 className={`font-playfair text-xl font-bold mb-3 group-hover:underline underline-offset-4 decoration-2 transition-all duration-300 cursor-pointer ${isDarkMode ? 'text-white' : project.titleColor}`}>
+                <div className="p-4 md:p-6">
+                  <h3 className={`font-playfair text-lg md:text-xl font-bold mb-2 md:mb-3 group-hover:underline underline-offset-4 decoration-2 transition-all duration-300 cursor-pointer ${isDarkMode ? 'text-white' : project.titleColor} line-clamp-2`}>
                     {project.title}
                   </h3>
                   
-                  <p className={`text-sm leading-relaxed mb-4 line-clamp-3 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <p className={`text-sm leading-relaxed mb-3 md:mb-4 line-clamp-3 ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
                     {project.description}
                   </p>
 
                   {/* Tags */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {project.tags.slice(0, 2).map(tag => {
-                      // Define color schemes for each project using reliable Tailwind colors
-                      const getTagColors = (projectId) => {
-                        if (isDarkMode) {
-                          const darkColors = {
-                            1: 'bg-orange-500/30 text-orange-200 border-orange-400/50', // FridgeMind - orange
-                            2: 'bg-cyan-500/30 text-cyan-200 border-cyan-400/50', // BeMyEyes - cyan
-                            3: 'bg-green-500/30 text-green-200 border-green-400/50', // GestureGroove - green
-                            4: 'bg-orange-500/30 text-orange-200 border-orange-400/50', // CrisisCompass - orange
-                            5: 'bg-teal-500/30 text-teal-200 border-teal-400/50', // SecureEdu - teal
-                            6: 'bg-purple-500/30 text-purple-200 border-purple-400/50', // TaxWiz - purple
-                          };
-                          return darkColors[projectId] || 'bg-gray-500/30 text-gray-200 border-gray-400/50';
-                        } else {
-                          const lightColors = {
-                            1: 'bg-orange-100 text-orange-800 border-orange-300', // FridgeMind - orange
-                            2: 'bg-cyan-100 text-cyan-800 border-cyan-300', // BeMyEyes - cyan
-                            3: 'bg-green-100 text-green-800 border-green-300', // GestureGroove - green
-                            4: 'bg-orange-100 text-orange-800 border-orange-300', // CrisisCompass - orange
-                            5: 'bg-teal-100 text-teal-800 border-teal-300', // SecureEdu - teal
-                            6: 'bg-purple-100 text-purple-800 border-purple-300', // TaxWiz - purple
-                          };
-                          return lightColors[projectId] || 'bg-gray-100 text-gray-800 border-gray-300';
-                        }
-                      };
-
-                      return (
-                        <span key={tag} className={`px-2 py-1 ${getTagColors(project.id)} text-xs rounded-full border font-medium`}>
-                          {tag}
-                        </span>
-                      );
-                    })}
-                    {project.tags.length > 2 && (
-                      <span className={`px-2 py-1 text-xs rounded-full border font-medium ${isDarkMode ? 'bg-gray-500/30 text-gray-200 border-gray-400/50' : 'bg-gray-100 text-gray-800 border-gray-300'}`}>
-                        +{project.tags.length - 2} more
+                  <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-4">
+                    {project.tags.slice(0, window.innerWidth < 768 ? 2 : 3).map(tag => (
+                      <span key={tag} className={`px-2.5 py-0.5 text-xs rounded-full border font-medium ${
+                        isDarkMode
+                          ? 'bg-amber-500/[0.12] text-amber-300 border-amber-500/[0.2]'
+                          : 'bg-orange-100 text-orange-800 border-orange-300'
+                      }`}>
+                        {tag}
+                      </span>
+                    ))}
+                    {project.tags.length > (window.innerWidth < 768 ? 2 : 3) && (
+                      <span className={`px-2.5 py-0.5 text-xs rounded-full border font-medium ${isDarkMode ? 'bg-amber-500/[0.12] text-amber-300 border-amber-500/[0.2]' : 'bg-gray-100 text-gray-800 border-gray-300'}`}>
+                        +{project.tags.length - (window.innerWidth < 768 ? 2 : 3)} more
                       </span>
                     )}
                   </div>
 
                   {/* Links Preview */}
                   <div className="flex gap-2">
-                    {project.links.slice(0, 2).map((link, idx) => {
-                      // Get project-specific colors for links
-                      const getLinkColors = (projectId) => {
-                        if (isDarkMode) {
-                          const darkColors = {
-                            1: 'bg-orange-500/30 text-orange-200 border-orange-400/50 hover:bg-orange-500/40', // FridgeMind - orange
-                            2: 'bg-cyan-500/30 text-cyan-200 border-cyan-400/50 hover:bg-cyan-500/40', // BeMyEyes - cyan
-                            3: 'bg-green-500/30 text-green-200 border-green-400/50 hover:bg-green-500/40', // GestureGroove - green
-                            4: 'bg-orange-500/30 text-orange-200 border-orange-400/50 hover:bg-orange-500/40', // CrisisCompass - orange
-                            5: 'bg-teal-500/30 text-teal-200 border-teal-400/50 hover:bg-teal-500/40', // SecureEdu - teal
-                            6: 'bg-purple-500/30 text-purple-200 border-purple-400/50 hover:bg-purple-500/40', // TaxWiz - purple
-                          };
-                          return darkColors[projectId] || 'bg-gray-500/30 text-gray-200 border-gray-400/50 hover:bg-gray-500/40';
-                        } else {
-                          const lightColors = {
-                            1: 'bg-orange-100 text-orange-800 border-orange-300 hover:bg-orange-200', // FridgeMind - orange
-                            2: 'bg-cyan-100 text-cyan-800 border-cyan-300 hover:bg-cyan-200', // BeMyEyes - cyan
-                            3: 'bg-green-100 text-green-800 border-green-300 hover:bg-green-200', // GestureGroove - green
-                            4: 'bg-orange-100 text-orange-800 border-orange-300 hover:bg-orange-200', // CrisisCompass - orange
-                            5: 'bg-teal-100 text-teal-800 border-teal-300 hover:bg-teal-200', // SecureEdu - teal
-                            6: 'bg-purple-100 text-purple-800 border-purple-300 hover:bg-purple-200', // TaxWiz - purple
-                          };
-                          return lightColors[projectId] || 'bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200';
-                        }
-                      };
-
-                      return (
-                        <div
-                          key={idx}
-                          className={`flex items-center gap-1 px-3 py-2 ${getLinkColors(project.id)} text-xs rounded-full border font-medium transition-all duration-300 cursor-pointer`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            window.open(link.href, '_blank');
-                          }}
-                        >
-                          {link.icon}
-                          <span className="hidden sm:inline">{link.label}</span>
-                        </div>
-                      );
-                    })}
+                    {project.links.slice(0, 2).map((link, idx) => (
+                      <div
+                        key={idx}
+                        className={`flex items-center gap-1 px-2 py-1.5 md:px-3 md:py-2 text-xs rounded-full border font-medium transition-all duration-300 cursor-pointer ${
+                          isDarkMode
+                            ? 'bg-white/[0.04] border-white/[0.06] text-[#8B9DB0] hover:bg-white/[0.08] hover:text-[#F0F4F8] hover:border-violet-500/20'
+                            : 'bg-orange-100 text-orange-800 border-orange-300 hover:bg-orange-200'
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(link.href, '_blank');
+                        }}
+                      >
+                        {link.icon}
+                        <span className="hidden sm:inline">{link.label}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
 
-              {/* Glowing border effect */}
+              {/* Glowing border effect - Reduced on mobile */}
               <div className={`absolute inset-0 bg-gradient-to-r ${project.gradient} opacity-0 group-hover:opacity-10 blur-xl transition-opacity duration-500 rounded-2xl -z-10`} />
             </motion.div>
           ))}
@@ -310,26 +257,26 @@ const Projects = ({ isDarkMode }) => {
 
         {/* Call to Action */}
         <motion.div
-          className="text-center mt-20"
+          className="text-center mt-16 md:mt-20 px-4"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <div className={`backdrop-blur-lg rounded-2xl p-8 border max-w-2xl mx-auto ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/30 border-gray-200/30 shadow-lg'}`}>
-            <h3 className="text-2xl font-playfair mb-4 bg-gradient-to-r from-purple-500 to-teal-500 bg-clip-text text-transparent">
+          <div className={`backdrop-blur-xl rounded-2xl p-6 md:p-8 border max-w-2xl mx-auto ${isDarkMode ? 'bg-[#111827] border-white/[0.06]' : 'bg-white/30 border-gray-200/30 shadow-lg'}`}>
+            <h3 className="text-xl md:text-2xl font-playfair mb-4 bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
               Interested in collaborating?
             </h3>
-            <p className={`mb-6 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+            <p className={`mb-6 text-sm md:text-base ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
               I'm always excited to work on new projects and learn from different perspectives.
             </p>
             <motion.a
               href="#contact"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-500 to-teal-500 text-white rounded-full font-semibold hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300"
+              className="inline-flex items-center gap-2 px-6 py-3 md:px-8 md:py-4 bg-gradient-to-r from-violet-600 to-cyan-500 text-white rounded-full font-semibold hover:opacity-90 hover:scale-[1.02] transition-all duration-200 text-sm md:text-base"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               Let's Connect
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </motion.a>
@@ -337,18 +284,18 @@ const Projects = ({ isDarkMode }) => {
         </motion.div>
       </div>
 
-      {/* PROJECT MODAL */}
+      {/* PROJECT MODAL - Mobile optimized */}
       <AnimatePresence>
         {selectedProject && (
           <motion.div
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-[#07090D]/95 backdrop-blur-xl z-50 flex items-center justify-center p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closeModal}
           >
             <motion.div
-              className={`backdrop-blur-lg rounded-3xl border max-w-6xl w-full max-h-[85vh] overflow-y-auto ${isDarkMode ? 'bg-gray-900/90 border-white/20' : 'bg-white/95 border-gray-200/30 shadow-2xl'}`}
+              className={`backdrop-blur-xl rounded-3xl border max-w-6xl w-full max-h-[90vh] overflow-y-auto ${isDarkMode ? 'bg-[#0B0F18] border-white/[0.06]' : 'bg-white/95 border-gray-200/30 shadow-2xl'}`}
               initial={{ scale: 0.5, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.5, opacity: 0 }}
@@ -358,123 +305,69 @@ const Projects = ({ isDarkMode }) => {
               {/* Close Button */}
               <button
                 onClick={closeModal}
-                className={`absolute top-6 right-6 z-10 p-2 rounded-full transition-colors ${isDarkMode ? 'bg-black/50 hover:bg-black/70' : 'bg-white/80 hover:bg-white/90 shadow-lg'}`}
+                className={`absolute top-4 right-4 md:top-6 md:right-6 z-10 p-2 rounded-full transition-colors ${isDarkMode ? 'bg-black/50 hover:bg-black/70' : 'bg-white/80 hover:bg-white/90 shadow-lg'}`}
               >
-                <FaTimes className={`${isDarkMode ? 'text-white' : 'text-gray-700'}`} size={20} />
+                <FaTimes className={`${isDarkMode ? 'text-white' : 'text-gray-700'}`} size={window.innerWidth < 768 ? 16 : 20} />
               </button>
 
-              <div className="grid md:grid-cols-2 min-h-[700px]">
+              {/* Mobile: Stack layout, Desktop: Side by side */}
+              <div className="grid grid-cols-1 md:grid-cols-2 min-h-[400px] md:min-h-[700px]">
                 {/* Image Section */}
-                <div className="relative overflow-hidden">
+                <div className="relative overflow-hidden h-64 md:h-auto">
                   <img
                     src={selectedProject.image}
                     alt={selectedProject.title}
                     className="w-full h-full object-cover"
                   />
                   <div className={`absolute inset-0 bg-gradient-to-t ${selectedProject.gradient} opacity-30`} />
-                  
-                  {/* Decorative elements - Matching circles with project tag colors */}
-                  <div className={`absolute top-6 right-6 w-16 h-16 rounded-full ${getProjectCircleColor(selectedProject.id)} opacity-30 blur-sm animate-pulse`} />
-                  <div className={`absolute top-4 right-10 w-8 h-8 rounded-full ${getProjectCircleColor(selectedProject.id)} opacity-40 animate-pulse`} style={{ animationDelay: '0.5s' }} />
-                  <div className={`absolute top-10 right-4 w-6 h-6 rounded-full ${getProjectCircleColor(selectedProject.id)} opacity-20`} />
-                  <div className={`absolute bottom-6 left-6 w-12 h-12 rounded-full ${getProjectCircleColor(selectedProject.id)} opacity-30 blur-sm animate-pulse`} style={{ animationDelay: '1s' }} />
-                  <div className={`absolute bottom-8 left-10 w-4 h-4 rounded-full ${getProjectCircleColor(selectedProject.id)} opacity-25`} />
                 </div>
 
                 {/* Content Section */}
-                <div className="p-8 flex flex-col justify-center">
-                  <h2 className={`font-playfair text-4xl font-bold mb-6 ${isDarkMode ? 'text-white' : selectedProject.titleColor}`}>
+                <div className="p-6 md:p-8 flex flex-col justify-center">
+                  <h2 className={`font-playfair text-2xl md:text-4xl font-bold mb-4 md:mb-6 ${isDarkMode ? 'text-[#F0F4F8]' : selectedProject.titleColor}`}>
                     {selectedProject.title}
                   </h2>
                   
-                  <p className={`text-lg leading-relaxed mb-6 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <p className={`text-base md:text-lg leading-relaxed mb-4 md:mb-6 ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
                     {selectedProject.description}
                   </p>
 
-                  <div className="mb-6">
-                    <h4 className={`text-xl font-semibold mb-3 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Technical Details</h4>
-                    <p className={`leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <div className="mb-4 md:mb-6">
+                    <h4 className={`text-lg md:text-xl font-semibold mb-2 md:mb-3 ${isDarkMode ? 'text-[#F0F4F8]' : 'text-gray-900'}`}>Technical Details</h4>
+                    <p className={`leading-relaxed text-sm md:text-base ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
                       {selectedProject.hoverText}
                     </p>
                   </div>
 
                   {/* All Tags */}
-                  <div className="flex flex-wrap gap-2 mb-8">
-                    {selectedProject.tags.map(tag => {
-                      const getModalTagColors = (projectId) => {
-                        if (isDarkMode) {
-                          const darkColors = {
-                            1: 'bg-orange-500/20 text-orange-300 border-orange-500/30', // FridgeMind - orange
-                            2: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30', // BeMyEyes - cyan
-                            3: 'bg-green-500/20 text-green-300 border-green-500/30', // GestureGroove - green
-                            4: 'bg-orange-500/20 text-orange-300 border-orange-500/30', // CrisisCompass - orange
-                            5: 'bg-teal-500/20 text-teal-300 border-teal-500/30', // SecureEdu - teal
-                            6: 'bg-purple-500/20 text-purple-300 border-purple-500/30', // TaxWiz - purple
-                          };
-                          return darkColors[projectId] || 'bg-gray-500/20 text-gray-300 border-gray-500/30';
-                        } else {
-                          const lightColors = {
-                            1: 'bg-orange-100 text-orange-700 border-orange-300', // FridgeMind - orange
-                            2: 'bg-cyan-100 text-cyan-700 border-cyan-300', // BeMyEyes - cyan
-                            3: 'bg-green-100 text-green-700 border-green-300', // GestureGroove - green
-                            4: 'bg-orange-100 text-orange-700 border-orange-300', // CrisisCompass - orange
-                            5: 'bg-teal-100 text-teal-700 border-teal-300', // SecureEdu - teal
-                            6: 'bg-purple-100 text-purple-700 border-purple-300', // TaxWiz - purple
-                          };
-                          return lightColors[projectId] || 'bg-gray-100 text-gray-700 border-gray-300';
-                        }
-                      };
-                      
-                      return (
-                        <span key={tag} className={`px-3 py-2 ${getModalTagColors(selectedProject.id)} rounded-full text-sm border`}>
-                          {tag}
-                        </span>
-                      );
-                    })}
+                  <div className="flex flex-wrap gap-2 mb-6 md:mb-8">
+                    {selectedProject.tags.map(tag => (
+                      <span key={tag} className={`px-2.5 py-1 md:px-3 md:py-2 rounded-full text-xs md:text-sm border ${
+                        isDarkMode
+                          ? 'bg-amber-500/[0.12] text-amber-300 border-amber-500/[0.2]'
+                          : 'bg-orange-100 text-orange-700 border-orange-300'
+                      }`}>
+                        {tag}
+                      </span>
+                    ))}
                   </div>
 
-                  {/* Project Links - Enhanced for better visibility */}
-                  <div className="flex flex-wrap gap-4">
-                    {selectedProject.links.map((link, idx) => {
-                      const getModalLinkColors = (projectId) => {
-                        if (isDarkMode) {
-                          const darkColors = {
-                            1: 'bg-orange-600 hover:bg-orange-700 text-white', // FridgeMind - orange
-                            2: 'bg-cyan-600 hover:bg-cyan-700 text-white', // BeMyEyes - cyan
-                            3: 'bg-green-600 hover:bg-green-700 text-white', // GestureGroove - green
-                            4: 'bg-orange-600 hover:bg-orange-700 text-white', // CrisisCompass - orange
-                            5: 'bg-teal-600 hover:bg-teal-700 text-white', // SecureEdu - teal
-                            6: 'bg-purple-600 hover:bg-purple-700 text-white', // TaxWiz - purple
-                          };
-                          return darkColors[projectId] || 'bg-gray-600 hover:bg-gray-700 text-white';
-                        } else {
-                          const lightColors = {
-                            1: 'bg-orange-600 hover:bg-orange-700 text-white', // FridgeMind - orange
-                            2: 'bg-cyan-600 hover:bg-cyan-700 text-white', // BeMyEyes - cyan
-                            3: 'bg-green-600 hover:bg-green-700 text-white', // GestureGroove - green
-                            4: 'bg-orange-600 hover:bg-orange-700 text-white', // CrisisCompass - orange
-                            5: 'bg-teal-600 hover:bg-teal-700 text-white', // SecureEdu - teal
-                            6: 'bg-purple-600 hover:bg-purple-700 text-white', // TaxWiz - purple
-                          };
-                          return lightColors[projectId] || 'bg-gray-600 hover:bg-gray-700 text-white';
-                        }
-                      };
-
-                      return (
-                        <motion.a
-                          key={idx}
-                          href={link.href}
-                          target="_blank"
-                          rel="noreferrer"
-                          className={`flex items-center gap-3 px-6 py-3 ${getModalLinkColors(selectedProject.id)} rounded-full font-semibold hover:scale-105 hover:shadow-lg transition-all duration-300`}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          {link.icon}
-                          {link.label}
-                        </motion.a>
-                      );
-                    })}
+                  {/* Project Links */}
+                  <div className="flex flex-wrap gap-3 md:gap-4">
+                    {selectedProject.links.map((link, idx) => (
+                      <motion.a
+                        key={idx}
+                        href={link.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-2 md:gap-3 px-4 py-2 md:px-6 md:py-3 bg-gradient-to-r from-violet-600 to-cyan-500 text-white rounded-full font-semibold hover:opacity-90 hover:scale-[1.02] transition-all duration-200 text-sm md:text-base"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        {link.icon}
+                        {link.label}
+                      </motion.a>
+                    ))}
                   </div>
                 </div>
               </div>

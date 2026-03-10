@@ -17,15 +17,17 @@
   }
 }
 
-/* Enhanced CSS Variables */
+/* Digital Noir CSS Variables */
 :root {
-  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --accent-color: #00d4aa;
-  --text-light: #ffffff;
-  --text-muted: rgba(255, 255, 255, 0.8);
-  --bg-dark: #0a0a0a;
-  --bg-card: rgba(255, 255, 255, 0.05);
-  --border-glow: rgba(0, 212, 170, 0.3);
+  --accent-primary: #7C3AED;
+  --accent-secondary: #22D3EE;
+  --accent-amber: #F59E0B;
+  --bg-base: #07090D;
+  --bg-surface: #111827;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --text-primary: #F0F4F8;
+  --text-muted: #8B9DB0;
+  --glow-violet: rgba(124, 58, 237, 0.35);
 }
 
 html,
@@ -37,14 +39,14 @@ body,
   font-family: 'Inter', sans-serif;
 }
 
-/* Enhanced Dark Mode with Dynamic Background */
+/* Digital Noir Dark Mode */
 .dark-mode {
   @apply text-white;
-  background: #0a0a0a;
-  background-image: 
-    radial-gradient(circle at 20% 80%, rgba(18, 0, 120, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 0, 110, 0.2) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(0, 212, 170, 0.2) 0%, transparent 50%);
+  background-color: #07090D;
+  color: #F0F4F8;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 15% 5%, rgba(124, 58, 237, 0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 85% 90%, rgba(34, 211, 238, 0.05) 0%, transparent 55%);
   background-attachment: fixed;
 }
 
@@ -65,63 +67,45 @@ body,
   top: 0;
   left: 0;
   width: 0%;
-  height: 3px;
-  background: linear-gradient(90deg, #667eea, #764ba2, #00d4aa);
+  height: 2px;
+  background: linear-gradient(to right, #7C3AED, #22D3EE);
   z-index: 1001;
   transition: width 0.1s ease;
-  box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
 }
 
-/* Enhanced Glassmorphism Effects */
+/* Digital Noir Glassmorphism */
 .glass-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
   transition: all 0.3s ease;
 }
 
 .glass-card:hover {
-  transform: translateY(-10px);
-  border-color: rgba(0, 212, 170, 0.3);
-  box-shadow: 0 20px 40px rgba(0, 212, 170, 0.1);
-  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-4px);
+  border-color: rgba(124, 58, 237, 0.2);
+  box-shadow: 0 8px 32px rgba(124, 58, 237, 0.12);
 }
 
-/* Enhanced Button Styles */
+/* Digital Noir Button */
 .btn-enhanced {
-  padding: 1rem 2rem;
-  border: none;
-  border-radius: 50px;
+  background: linear-gradient(135deg, #7C3AED 0%, #22D3EE 100%);
+  border-radius: 9999px;
   font-weight: 600;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.3s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease;
   cursor: pointer;
   position: relative;
-  overflow: hidden;
 }
 
 .btn-enhanced:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 212, 170, 0.3);
-}
-
-.btn-enhanced::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
-}
-
-.btn-enhanced:hover::before {
-  left: 100%;
+  opacity: 0.88;
+  transform: scale(1.02);
 }
 
 /* Enhanced Navbar Styles */
@@ -356,12 +340,12 @@ body,
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #7C3AED, #22D3EE);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #764ba2, #00d4aa);
+  background: linear-gradient(135deg, #6d28d9, #22D3EE);
 }
 
 /* Responsive Enhancements */

@@ -8,15 +8,6 @@ const MySkills = ({ isDarkMode }) => {
   const skillsData = [
     // Programming Languages
     { 
-      name: "JavaScript", 
-      image: `${process.env.PUBLIC_URL}/assets/js.png`, 
-      category: "languages",
-      experience: "3 years",
-      projects: 8,
-      hoverText: "Did a Udemy course on this... Best $30 ever spent 🤪🤪",
-      color: "from-cyan-500 to-blue-600"
-    },
-    { 
       name: "Python", 
       image: `${process.env.PUBLIC_URL}/assets/python.png`, 
       category: "languages",
@@ -208,173 +199,123 @@ const MySkills = ({ isDarkMode }) => {
         className="relative group cursor-pointer"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        whileHover={{ y: -10, rotateY: 10 }}
+        whileHover={{ y: -4 }}
       >
-        <div className={`relative backdrop-blur-lg rounded-3xl p-6 border transition-all duration-500 overflow-hidden h-48 ${isDarkMode ? 'bg-white/5 border-white/10 hover:border-white/30 group-hover:bg-white/10' : 'bg-white/30 border-gray-200/30 hover:border-gray-300 group-hover:bg-white/50 shadow-lg'}`}>
+        <div className={`relative backdrop-blur-xl rounded-3xl p-4 md:p-6 border transition-all duration-300 overflow-hidden h-40 md:h-48 ${isDarkMode ? 'bg-[#111827] border-white/[0.06] hover:border-violet-500/20 group-hover:shadow-[0_8px_32px_rgba(124,58,237,0.10)]' : 'bg-white/30 border-gray-200/30 hover:border-gray-300 group-hover:bg-white/50 shadow-lg'}`}>
           
-          <div className={`absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500 bg-gradient-to-br ${skill.color} blur-xl`} />
-          
-          <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
-            {[...Array(12)].map((_, i) => (
-              <motion.div
-                key={i}
-                className={`absolute w-1 h-1 bg-gradient-to-r ${skill.color} rounded-full opacity-50`}
-                animate={{
-                  x: [0, Math.random() * 120 - 60],
-                  y: [0, Math.random() * 120 - 60],
-                  opacity: [0.3, 0.8, 0.3],
-                  scale: [0.5, 1.5, 0.5]
-                }}
-                transition={{
-                  duration: 3 + Math.random() * 3,
-                  repeat: Infinity,
-                  delay: Math.random() * 3
-                }}
-                style={{
-                  left: `${5 + (i % 4) * 30}%`,
-                  top: `${15 + Math.floor(i / 4) * 25}%`
-                }}
-              />
-            ))}
-          </div>
+          {/* Subtle dot grid top-right corner */}
+          {isDarkMode && (
+            <div className="absolute top-3 right-3 grid grid-cols-3 gap-[3px] opacity-30 pointer-events-none">
+              {[...Array(9)].map((_, i) => (
+                <div key={i} className="w-[3px] h-[3px] rounded-full bg-violet-400" />
+              ))}
+            </div>
+          )}
           
           <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
-            <div className="mb-4">
+            <div className="mb-3 md:mb-4">
               <motion.img 
                 src={skill.image} 
                 alt={skill.name}
-                className="w-16 h-16 object-contain mx-auto"
+                className="w-12 h-12 md:w-16 md:h-16 object-contain mx-auto"
                 whileHover={{ rotate: 360 }}
                 transition={{ duration: 0.6 }}
               />
             </div>
             
-            <div className="mb-3">
-              <h3 className={`font-playfair font-bold text-lg transition-all duration-300 ${isDarkMode ? 'text-white group-hover:text-transparent' : 'text-gray-900 group-hover:text-transparent'} group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-teal-400 group-hover:bg-clip-text`}>
+            <div className="mb-2 md:mb-3">
+              <h3 className={`font-playfair font-bold text-base md:text-lg transition-all duration-300 ${isDarkMode ? 'text-white group-hover:text-transparent' : 'text-gray-900 group-hover:text-transparent'} group-hover:bg-gradient-to-r group-hover:from-violet-400 group-hover:to-cyan-400 group-hover:bg-clip-text`}>
                 {skill.name}
               </h3>
-              <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{skill.experience}</p>
+              <p className={`text-xs md:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{skill.experience}</p>
             </div>
 
             <div className="relative">
               <div className={`absolute inset-0 rounded-full bg-gradient-to-r ${skill.color} opacity-80 blur-sm`} />
-              <div className={`relative px-4 py-2 rounded-full bg-gradient-to-r ${skill.color} text-white text-sm font-semibold shadow-lg`}>
+              <div className={`relative px-3 py-1.5 md:px-4 md:py-2 rounded-full bg-gradient-to-r ${skill.color} text-white text-xs md:text-sm font-semibold shadow-lg`}>
                 {skill.projects} project{skill.projects !== 1 ? 's' : ''}
               </div>
             </div>
           </div>
 
+          {/* Mobile: Show hover text on tap/touch */}
           {isHovered && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="absolute inset-0 bg-black/90 backdrop-blur-md rounded-3xl p-6 flex items-center justify-center z-20"
+              className={`absolute inset-0 backdrop-blur-md rounded-3xl p-4 md:p-6 flex items-center justify-center z-20 ${isDarkMode ? 'bg-[#07090D]/95' : 'bg-black/90'}`}
             >
-              <p className="text-white text-center font-playfair leading-relaxed text-sm">
+              <p className="text-white text-center font-playfair leading-relaxed text-xs md:text-sm">
                 {skill.hoverText}
               </p>
             </motion.div>
           )}
 
-          <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <motion.div
-                key={i}
-                className={`absolute w-2 h-2 bg-gradient-to-r ${skill.color} rounded-full opacity-40`}
-                animate={{
-                  x: [0, 80, 0],
-                  y: [0, -50, 0],
-                  opacity: [0.4, 0.9, 0.4],
-                  scale: [0.8, 1.8, 0.8]
-                }}
-                transition={{
-                  duration: 2.5 + i * 0.4,
-                  repeat: Infinity,
-                  delay: i * 0.2
-                }}
-                style={{
-                  left: `${10 + i * 15}%`,
-                  top: `${65 + i * 3}%`
-                }}
-              />
-            ))}
-          </div>
         </div>
       </motion.div>
     );
   };
 
   return (
-    <section id="skills" className="w-full min-h-screen transition-colors duration-300 relative py-20">
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div 
-          className={`absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur-3xl ${isDarkMode ? 'opacity-100' : 'opacity-50'}`} 
-          animate={{ 
-            scale: [1, 1.2, 1],
-            opacity: isDarkMode ? [0.2, 0.4, 0.2] : [0.1, 0.2, 0.1]
-          }}
-          transition={{ duration: 4, repeat: Infinity }}
-        />
-        <motion.div 
-          className={`absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-r from-teal-500/20 to-blue-500/20 rounded-full blur-3xl ${isDarkMode ? 'opacity-100' : 'opacity-50'}`}
-          animate={{ 
-            scale: [1.2, 1, 1.2],
-            opacity: isDarkMode ? [0.3, 0.1, 0.3] : [0.15, 0.05, 0.15]
-          }}
-          transition={{ duration: 6, repeat: Infinity }}
-        />
-      </div>
+    <section id="skills" className="w-full min-h-screen transition-colors duration-300 relative py-16 md:py-20">
+      {isDarkMode && (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-20 -left-20 w-[400px] h-[400px] rounded-full bg-violet-600/[0.06] blur-[120px]" />
+          <div className="absolute -bottom-20 -right-20 w-[400px] h-[400px] rounded-full bg-cyan-400/[0.04] blur-[100px]" />
+        </div>
+      )}
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-6">
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-12 md:mb-16"
           initial={{ opacity: 0, y: -50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="font-playfair font-bold text-5xl mb-6">
-            MY <span className="bg-gradient-to-r from-purple-500 via-pink-500 to-teal-500 bg-clip-text text-transparent">SKILLSET</span>
+          <h2 className="font-playfair font-bold text-3xl md:text-5xl mb-4 md:mb-6">
+            MY <span className="bg-gradient-to-r from-violet-500 to-cyan-400 bg-clip-text text-transparent">SKILLSET</span>
           </h2>
-          <div className="w-32 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-teal-500 rounded-full mx-auto mb-6" />
-          <p className={`text-lg max-w-2xl mx-auto leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-            An interactive showcase of my technical expertise. Hover over each skill to discover my personal journey and relationship with these technologies.
+          <div className="w-24 h-[2px] md:w-32 bg-gradient-to-r from-violet-600 to-cyan-400 rounded-full mx-auto mb-4 md:mb-6" />
+          <p className={`text-base md:text-lg max-w-2xl mx-auto leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
+            An interactive showcase of my technical expertise. {window.innerWidth >= 768 ? 'Hover over' : 'Tap'} each skill to discover my personal journey and relationship with these technologies.
           </p>
         </motion.div>
 
         <motion.div 
-          className="flex justify-center mb-12"
+          className="flex justify-center mb-8 md:mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6 }}
         >
-          <div className={`flex backdrop-blur-lg rounded-2xl p-2 border ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-white/30 border-gray-200/30 shadow-lg'}`}>
+          <div className={`flex backdrop-blur-xl rounded-2xl p-1.5 md:p-2 border ${isDarkMode ? 'bg-white/[0.04] border-white/[0.06]' : 'bg-white/30 border-gray-200/30 shadow-lg'} overflow-x-auto`}>
             {categories.map((category) => (
               <motion.button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                className={`flex items-center gap-2 px-3 py-2 md:px-6 md:py-3 rounded-xl font-semibold transition-all duration-300 whitespace-nowrap text-sm md:text-base ${
                   selectedCategory === category.id
-                    ? 'bg-gradient-to-r from-purple-500 to-teal-500 text-white shadow-lg'
+                    ? 'bg-gradient-to-r from-violet-600 to-cyan-500 text-white shadow-lg'
                     : isDarkMode 
-                      ? 'text-gray-400 hover:text-white hover:bg-white/5'
+                      ? 'text-[#8B9DB0] hover:text-[#F0F4F8] hover:bg-white/[0.04]'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-white/30'
                 }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <span className="text-xl">{category.icon}</span>
-                <span>{category.name}</span>
+                <span className="hidden sm:inline">{category.name}</span>
+                <span className="sm:hidden">{category.name.split(' ')[0]}</span>
                 <span className="text-xs opacity-75">({category.count})</span>
               </motion.button>
             ))}
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {/* Skills Grid - Responsive */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           <AnimatePresence mode="wait">
             {filteredSkills.map((skill, index) => (
               <SkillCard key={`${selectedCategory}-${skill.name}`} skill={skill} index={index} />
@@ -382,8 +323,9 @@ const MySkills = ({ isDarkMode }) => {
           </AnimatePresence>
         </div>
 
+        {/* Stats Section */}
         <motion.div
-          className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="mt-16 md:mt-20 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8"
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
@@ -396,14 +338,14 @@ const MySkills = ({ isDarkMode }) => {
           ].map((stat) => (
             <motion.div
               key={stat.label}
-              className={`text-center backdrop-blur-lg rounded-2xl p-6 border transition-all duration-300 ${isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white/30 border-gray-200/30 hover:bg-white/50 shadow-lg'}`}
+              className={`text-center backdrop-blur-xl rounded-2xl p-4 md:p-6 border transition-all duration-300 ${isDarkMode ? 'bg-[#111827] border-white/[0.06] hover:border-violet-500/20' : 'bg-white/30 border-gray-200/30 hover:bg-white/50 shadow-lg'}`}
               whileHover={{ y: -5, scale: 1.02 }}
             >
-              <div className="text-4xl mb-2">{stat.icon}</div>
-              <div className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-teal-500 bg-clip-text text-transparent mb-2">
+              <div className="text-3xl md:text-4xl mb-2">{stat.icon}</div>
+              <div className={`text-2xl md:text-3xl font-bold mb-2 ${isDarkMode ? 'text-cyan-400' : 'bg-gradient-to-r from-purple-500 to-teal-500 bg-clip-text text-transparent'}`}>
                 {stat.value}
               </div>
-              <div className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>{stat.label}</div>
+              <div className={`text-sm md:text-base ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-600'}`}>{stat.label}</div>
             </motion.div>
           ))}
         </motion.div>

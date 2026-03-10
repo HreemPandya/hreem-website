@@ -21,3 +21,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Cursor skills / local helpers
+.cursor/skills/dark-theme-revamp/
+skills/skill-creator/
