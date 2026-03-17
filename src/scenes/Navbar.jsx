@@ -5,22 +5,38 @@ import { FiSun, FiMoon } from "react-icons/fi";
 
 const Link = ({ page, selectedPage, setSelectedPage, isDarkMode }) => {
   const lowerCasePage = page.toLowerCase();
+  const isSelected = selectedPage === lowerCasePage;
   return (
     <AnchorLink
       className={`${
-        selectedPage === lowerCasePage
-          ? `${isDarkMode ? 'text-[#F0F4F8] border-b border-amber-500/60' : 'text-[var(--lm-text-primary)] border-b border-[var(--lm-accent)]'} font-bold scale-110`
-          : `${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`
+        isSelected
+          ? `${isDarkMode ? 'text-[#F0F4F8]' : 'text-[var(--lm-text-primary)]'} font-bold scale-110`
+          : `${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}` 
       } transition-all duration-300 ${isDarkMode ? 'hover:text-[#F0F4F8]' : 'hover:text-[var(--lm-text-primary)]'} hover:scale-105 relative group px-3 py-2 rounded-lg`}
       href={`#${lowerCasePage}`}
       onClick={() => setSelectedPage(lowerCasePage)}
     >
       {page}
+      {/* Active state: arc-style underline (amber in dark, sage in light) */}
+      {isSelected && (
+        <span
+          className="absolute bottom-0 left-0 right-0 h-0.5"
+          style={{ 
+            backgroundColor: isDarkMode ? 'rgba(245, 158, 11, 0.6)' : '#5A7A5E',
+            borderRadius: '0 0 50% 50%'
+          }}
+        />
+      )}
       {/* Hover effect underline */}
-      <span
-        className="absolute bottom-0 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300"
-        style={{ backgroundColor: isDarkMode ? '#F59E0B' : '#4A6B4E' }}
-      ></span>
+      {!isSelected && (
+        <span
+          className="absolute bottom-0 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300"
+          style={{ 
+            backgroundColor: isDarkMode ? '#F59E0B' : '#5A7A5E',
+            borderRadius: '0 0 50% 50%'
+          }}
+        />
+      )}
     </AnchorLink>
   );
 };
