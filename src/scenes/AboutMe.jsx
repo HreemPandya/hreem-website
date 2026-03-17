@@ -47,24 +47,24 @@ const ExpertiseBricks = ({ isDarkMode }) => {
   );
 };
 
+// 8 artwork images (shared)
+const artworks = [
+  { src: `${process.env.PUBLIC_URL}/assets/drawing1.png`, alt: "Digital Art 1", id: 1 },
+  { src: `${process.env.PUBLIC_URL}/assets/drawing2.png`, alt: "Digital Art 2", id: 2 },
+  { src: `${process.env.PUBLIC_URL}/assets/drawing3.png`, alt: "Digital Art 3", id: 3 },
+  { src: `${process.env.PUBLIC_URL}/assets/drawing4.png`, alt: "Digital Art 4", id: 4 },
+  { src: `${process.env.PUBLIC_URL}/assets/drawing5.png`, alt: "Digital Art 5", id: 5 },
+  { src: `${process.env.PUBLIC_URL}/assets/drawing6.png`, alt: "Digital Art 6", id: 6 },
+  { src: `${process.env.PUBLIC_URL}/assets/drawing7.png`, alt: "Digital Art 7", id: 7 },
+  { src: `${process.env.PUBLIC_URL}/assets/drawing8.png`, alt: "Digital Art 8", id: 8 }
+];
+
 // Creative Carousel Component
 const CreativeCarousel = ({ isDarkMode }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [autoRotate, setAutoRotate] = useState(true);
   const [direction, setDirection] = useState(1);
   const intervalRef = useRef(null);
-
-  // 8 artwork images
-  const artworks = [
-    { src: `${process.env.PUBLIC_URL}/assets/drawing1.png`, alt: "Digital Art 1", id: 1 },
-    { src: `${process.env.PUBLIC_URL}/assets/drawing2.png`, alt: "Digital Art 2", id: 2 },
-    { src: `${process.env.PUBLIC_URL}/assets/drawing3.png`, alt: "Digital Art 3", id: 3 },
-    { src: `${process.env.PUBLIC_URL}/assets/drawing4.png`, alt: "Digital Art 4", id: 4 },
-    { src: `${process.env.PUBLIC_URL}/assets/drawing5.png`, alt: "Digital Art 5", id: 5 },
-    { src: `${process.env.PUBLIC_URL}/assets/drawing6.png`, alt: "Digital Art 6", id: 6 },
-    { src: `${process.env.PUBLIC_URL}/assets/drawing7.png`, alt: "Digital Art 7", id: 7 },
-    { src: `${process.env.PUBLIC_URL}/assets/drawing8.png`, alt: "Digital Art 8", id: 8 }
-  ];
 
   const offsetRadius = 2; // Show 2 slides above and below center
   const visibleSlides = 5; // Total visible slides
@@ -189,74 +189,56 @@ const CreativeCarousel = ({ isDarkMode }) => {
         })}
       </div>
 
-      {/* Navigation Arrows - Hidden on mobile, touch gestures instead */}
-      <div className="hidden md:flex absolute right-4 top-1/2 transform -translate-y-1/2 flex-col gap-4 z-50">
+      {/* Vertical Scroll Rail — left side, positioned higher + backdrop so it stays visible on light image backgrounds */}
+      <div className={`absolute left-3 md:left-4 top-[25%] -translate-y-1/2 flex flex-col items-center gap-1 z-50 py-2 px-1.5 rounded-lg backdrop-blur-md ${isDarkMode ? 'text-white bg-black/30' : 'text-[var(--lm-text-primary)] bg-white/70'}`}>
         <motion.button
           onClick={() => moveSlide(-1)}
-          className={`p-3 rounded-full backdrop-blur-md transition-all duration-200 ${
-            isDarkMode 
-              ? 'bg-white/10 hover:bg-white/20 text-white' 
-              : 'bg-[var(--lm-accent)]/10 hover:bg-[var(--lm-accent)]/20 text-[var(--lm-text-primary)]'
-          } border ${isDarkMode ? 'border-white/20' : 'border-[var(--lm-border)]'} shadow-lg`}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
+          className={`p-1.5 rounded-md transition-all duration-200 opacity-60 hover:opacity-100 ${
+            isDarkMode ? 'hover:bg-white/10' : 'hover:bg-[var(--lm-accent)]/10'
+          }`}
+          whileHover={{ scale: 1.15 }}
+          whileTap={{ scale: 0.9 }}
+          aria-label="Previous artwork"
         >
-          ↑
+          <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+          </svg>
         </motion.button>
+        <div className={`flex flex-col gap-1.5 py-2 ${isDarkMode ? 'bg-white/5' : 'bg-[var(--lm-accent)]/5'} rounded-full px-1.5`}>
+          {artworks.map((_, index) => (
+            <motion.button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`relative rounded-full transition-all duration-300 ${
+                index === currentIndex
+                  ? isDarkMode
+                    ? 'bg-amber-500 w-2 h-2 md:w-2.5 md:h-2.5'
+                    : 'bg-[var(--lm-accent)] w-2 h-2 md:w-2.5 md:h-2.5'
+                  : isDarkMode
+                    ? 'bg-white/30 hover:bg-white/50 w-1.5 h-1.5 md:w-2 md:h-2'
+                    : 'bg-[var(--lm-accent)]/40 hover:bg-[var(--lm-accent)]/60 w-1.5 h-1.5 md:w-2 md:h-2'
+              }`}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
+              aria-label={`Go to artwork ${index + 1}`}
+            />
+          ))}
+        </div>
         <motion.button
           onClick={() => moveSlide(1)}
-          className={`p-3 rounded-full backdrop-blur-md transition-all duration-200 ${
-            isDarkMode 
-              ? 'bg-white/10 hover:bg-white/20 text-white' 
-              : 'bg-[var(--lm-accent)]/10 hover:bg-[var(--lm-accent)]/20 text-[var(--lm-text-primary)]'
-          } border ${isDarkMode ? 'border-white/20' : 'border-[var(--lm-border)]'} shadow-lg`}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
+          className={`p-1.5 rounded-md transition-all duration-200 opacity-60 hover:opacity-100 ${
+            isDarkMode ? 'hover:bg-white/10' : 'hover:bg-[var(--lm-accent)]/10'
+          }`}
+          whileHover={{ scale: 1.15 }}
+          whileTap={{ scale: 0.9 }}
+          aria-label="Next artwork"
         >
-          ↓
+          <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
         </motion.button>
       </div>
 
-      {/* Mobile Touch Controls */}
-      <div className="md:hidden absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-3 z-50">
-        <motion.button
-          onClick={() => moveSlide(-1)}
-          className={`p-2 rounded-full backdrop-blur-md transition-all duration-200 ${
-            isDarkMode 
-              ? 'bg-white/10 hover:bg-white/20 text-white' 
-              : 'bg-[var(--lm-accent)]/10 hover:bg-[var(--lm-accent)]/20 text-[var(--lm-text-primary)]'
-          } border ${isDarkMode ? 'border-white/20' : 'border-[var(--lm-border)]'} shadow-lg`}
-          whileTap={{ scale: 0.95 }}
-        >
-          ↑
-        </motion.button>
-        <motion.button
-          onClick={() => moveSlide(1)}
-          className={`p-2 rounded-full backdrop-blur-md transition-all duration-200 ${
-            isDarkMode 
-              ? 'bg-white/10 hover:bg-white/20 text-white' 
-              : 'bg-[var(--lm-accent)]/10 hover:bg-[var(--lm-accent)]/20 text-[var(--lm-text-primary)]'
-          } border ${isDarkMode ? 'border-white/20' : 'border-[var(--lm-border)]'} shadow-lg`}
-          whileTap={{ scale: 0.95 }}
-        >
-          ↓
-        </motion.button>
-      </div>
-
-      {/* Progress Indicator */}
-      <div className="absolute bottom-2 md:bottom-6 left-1/2 transform -translate-x-1/2 flex gap-1.5 md:gap-2 z-40">
-        {artworks.map((_, index) => (
-          <button
-            key={index}
-            className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full transition-all duration-300 ${
-              index === currentIndex 
-                ? (isDarkMode ? 'bg-amber-500 scale-125' : 'bg-[var(--lm-accent)] scale-125')
-                : isDarkMode ? 'bg-white/20 hover:bg-white/40' : 'bg-[var(--lm-accent)]/30 hover:bg-[var(--lm-accent)]/50'
-            }`}
-            onClick={() => setCurrentIndex(index)}
-          />
-        ))}
-      </div>
     </div>
   );
 };
@@ -349,7 +331,7 @@ const AboutMe = ({ isDarkMode }) => {
             </motion.div>
           </motion.div>
 
-          {/* Right Column — Art carousel */}
+          {/* Right Column — Art carousel (lg:order-first = appears left on desktop) */}
           <motion.div 
             className="lg:order-first space-y-6 md:space-y-8"
             initial={{ opacity: 0, x: 20 }}
