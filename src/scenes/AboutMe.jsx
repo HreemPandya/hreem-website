@@ -263,7 +263,7 @@ const CreativeCarousel = ({ isDarkMode }) => {
 
 const AboutMe = ({ isDarkMode }) => {
   return (
-    <section id="about me" className={`pt-20 md:pt-32 pb-16 md:pb-32 relative transition-colors duration-300 ${isDarkMode ? 'bg-transparent' : 'bg-transparent'} overflow-hidden`}>
+    <section id="about me" className={`pt-12 md:pt-20 pb-16 md:pb-32 relative transition-colors duration-300 ${isDarkMode ? 'bg-transparent' : 'bg-transparent'} overflow-hidden`}>
       {isDarkMode && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute -top-20 -left-20 w-[400px] h-[400px] rounded-full bg-amber-500/[0.04] blur-[120px]" />

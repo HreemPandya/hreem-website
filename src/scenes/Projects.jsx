@@ -217,7 +217,7 @@ const Projects = ({ isDarkMode }) => {
   return (
     <section
       id="projects"
-      className={`pt-12 md:pt-20 pb-32 md:pb-48 transition-colors duration-300 ${isDarkMode ? "bg-transparent" : "bg-transparent"} relative overflow-hidden`}
+      className={`pt-12 md:pt-20 pb-16 md:pb-24 transition-colors duration-300 ${isDarkMode ? "bg-transparent" : "bg-transparent"} relative overflow-hidden`}
     >
       {/* Static background orbs */}
       {isDarkMode && (
