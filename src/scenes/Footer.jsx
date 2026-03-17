@@ -1,10 +1,9 @@
-import SocialMediaIcons from "../components/SocialMediaIcons";
 import { motion } from "framer-motion";
 
 const Footer = ({ isDarkMode }) => {
   return (
-    <footer className={`relative w-full py-4 md:py-6 mt-16 md:mt-20 border-t ${isDarkMode ? 'border-white/[0.06] bg-[#07090D]' : 'border-gray-200/30'}`}>
-      <div className={`absolute inset-0 ${isDarkMode ? 'bg-gradient-to-r from-violet-600/[0.04] via-transparent to-transparent' : 'bg-gradient-to-r from-purple-100/30 via-transparent to-teal-100/30'}`} />
+    <footer className={`relative w-full py-4 md:py-6 mt-16 md:mt-20 border-t ${isDarkMode ? 'border-white/[0.06] bg-[#07090D]' : 'border-[var(--lm-border)]'}`}>
+      <div className={`absolute inset-0 ${isDarkMode ? 'bg-gradient-to-r from-amber-500/[0.03] via-transparent to-transparent' : 'bg-gradient-to-r from-[var(--lm-accent)]/5 via-transparent to-transparent'}`} />
       
       <div className="relative z-10 max-w-full px-4 md:px-8">
         <motion.div
@@ -21,10 +20,10 @@ const Footer = ({ isDarkMode }) => {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1, duration: 0.5 }}
           >
-            <h2 className="font-playfair font-bold text-xl md:text-2xl bg-gradient-to-r from-violet-500 to-cyan-400 bg-clip-text text-transparent text-center">
+            <h2 className={`font-playfair font-bold text-xl md:text-2xl text-center ${isDarkMode ? 'bg-gradient-to-r from-violet-500 to-cyan-400 bg-clip-text text-transparent' : 'text-[var(--lm-accent)]'}`}>
               HREEM PANDYA
             </h2>
-            <p className={`text-xs md:text-sm text-center ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-600'}`}>
+            <p className={`text-xs md:text-sm text-center ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
               Full Stack Developer & Computer Eng Student
             </p>
           </motion.div>
@@ -48,7 +47,7 @@ const Footer = ({ isDarkMode }) => {
                   href={social.href}
                   target="_blank"
                   rel="noreferrer"
-                  className={`transition-colors duration-300 ${isDarkMode ? 'text-[#8B9DB0] hover:text-violet-400' : 'text-gray-700 hover:text-gray-900'}`}
+                  className={`transition-colors duration-300 ${isDarkMode ? 'text-[#8B9DB0] hover:text-amber-400' : 'text-[var(--lm-text-muted)] hover:text-[var(--lm-accent)]'}`}
                   whileHover={{ scale: 1.1, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -84,7 +83,7 @@ const Footer = ({ isDarkMode }) => {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
-            <p className={`text-xs md:text-sm ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-600'}`}>
+            <p className={`text-xs md:text-sm ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
               © 2025 Hreem Pandya
             </p>
             <div className="flex items-center gap-2">
@@ -112,7 +111,7 @@ const Footer = ({ isDarkMode }) => {
           whileInView={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.5 }}
         >
-          <p className={`text-xs italic ${isDarkMode ? 'text-gray-500' : 'text-gray-600'}`}>
+          <p className={`text-xs italic ${isDarkMode ? 'text-gray-500' : 'text-[var(--lm-text-muted)]'}`}>
             "Building the future, for you and for us"
           </p>
         </motion.div>

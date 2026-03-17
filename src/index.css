@@ -1,33 +1,18 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Open+Sans:wght@400;600&family=Playfair+Display:wght@400;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
-  .mask-image {
-    -webkit-mask-image: url('./assets/paint-stroke.png');
-    -webkit-mask-size: 150%;
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-    mask-image: url('./assets/paint-stroke.png');
-    mask-size: 150%;
-    mask-repeat: no-repeat;
-    mask-position: center;
-  }
-}
-
-/* Digital Noir CSS Variables */
+/* Refined accent strategy: amber on deep black */
 :root {
-  --accent-primary: #7C3AED;
-  --accent-secondary: #22D3EE;
-  --accent-amber: #F59E0B;
+  --accent-primary: #F59E0B;
+  --accent-muted: rgba(245, 158, 11, 0.4);
   --bg-base: #07090D;
   --bg-surface: #111827;
   --border-subtle: rgba(255, 255, 255, 0.06);
   --text-primary: #F0F4F8;
   --text-muted: #8B9DB0;
-  --glow-violet: rgba(124, 58, 237, 0.35);
 }
 
 html,
@@ -36,41 +21,59 @@ body,
 .app {
   height: 100%;
   @apply transition-colors duration-300;
-  font-family: 'Inter', sans-serif;
+  font-family: 'DM Sans', system-ui, sans-serif;
 }
 
-/* Digital Noir Dark Mode */
+/* Dark mode: single directional light, reduced gradient */
 .dark-mode {
   @apply text-white;
   background-color: #07090D;
   color: #F0F4F8;
   background-image:
-    radial-gradient(ellipse 80% 50% at 15% 5%, rgba(124, 58, 237, 0.07) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 40% at 85% 90%, rgba(34, 211, 238, 0.05) 0%, transparent 55%);
+    radial-gradient(ellipse 70% 40% at 10% 0%, rgba(245, 158, 11, 0.06) 0%, transparent 50%);
   background-attachment: fixed;
 }
 
-/* Enhanced Light Mode with Dynamic Background */
+/* Noise overlay for depth */
+.app.noise-overlay::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Light Mode — Sage & Cream (Option B) */
 .light-mode {
-  @apply text-gray-800;
-  background: #F5E6D3;
-  background-image: 
-    radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(231, 111, 81, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(107, 167, 165, 0.1) 0%, transparent 50%);
+  --lm-bg-base: #F8F6F2;
+  --lm-bg-surface: #FDFCF9;
+  --lm-text-primary: #2A2A2A;
+  --lm-text-muted: #5A5A5A;
+  --lm-accent: #4A6B4E;
+  --lm-accent-muted: rgba(74, 107, 78, 0.3);
+  --lm-border: rgba(74, 107, 78, 0.2);
+  color: var(--lm-text-primary);
+  background: var(--lm-bg-base);
+  background-image: radial-gradient(ellipse 60% 40% at 10% 0%, rgba(74, 107, 78, 0.06) 0%, transparent 50%);
   background-attachment: fixed;
 }
 
-/* Scroll Progress Indicator */
+/* Scroll Progress Indicator (single accent) */
 .scroll-indicator {
   position: fixed;
   top: 0;
   left: 0;
   width: 0%;
   height: 2px;
-  background: linear-gradient(to right, #7C3AED, #22D3EE);
+  background: var(--accent-primary);
   z-index: 1001;
   transition: width 0.1s ease;
+}
+
+.light-mode .scroll-indicator {
+  background: var(--lm-accent);
 }
 
 /* Digital Noir Glassmorphism */
@@ -85,13 +88,13 @@ body,
 
 .glass-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(124, 58, 237, 0.2);
-  box-shadow: 0 8px 32px rgba(124, 58, 237, 0.12);
+  border-color: var(--accent-muted);
+  box-shadow: 0 8px 32px rgba(245, 158, 11, 0.08);
 }
 
-/* Digital Noir Button */
+/* Accent button */
 .btn-enhanced {
-  background: linear-gradient(135deg, #7C3AED 0%, #22D3EE 100%);
+  background: var(--accent-primary);
   border-radius: 9999px;
   font-weight: 600;
   text-decoration: none;
@@ -104,8 +107,12 @@ body,
 }
 
 .btn-enhanced:hover {
-  opacity: 0.88;
+  opacity: 0.9;
   transform: scale(1.02);
+}
+
+.btn-enhanced:active {
+  transform: scale(0.98);
 }
 
 /* Enhanced Navbar Styles */
@@ -340,12 +347,24 @@ body,
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #7C3AED, #22D3EE);
+  background: var(--accent-primary);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #6d28d9, #22D3EE);
+  background: #EAB308;
+}
+
+.light-mode ::-webkit-scrollbar-track {
+  background: rgba(74, 107, 78, 0.1);
+}
+
+.light-mode ::-webkit-scrollbar-thumb {
+  background: var(--lm-accent);
+}
+
+.light-mode ::-webkit-scrollbar-thumb:hover {
+  background: #3D5A40;
 }
 
 /* Responsive Enhancements */

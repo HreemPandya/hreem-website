@@ -1,5 +1,4 @@
 import { useState } from "react";
-import LineGradient from "../components/LineGradient";
 import { motion } from "framer-motion";
 
 const Contact = ({ isDarkMode }) => {
@@ -31,8 +30,7 @@ const Contact = ({ isDarkMode }) => {
     >
       {isDarkMode && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-violet-600/[0.06] blur-[120px]" />
-          <div className="absolute bottom-0 -left-32 w-[400px] h-[400px] rounded-full bg-cyan-400/[0.04] blur-[100px]" />
+          <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-amber-500/[0.04] blur-[120px]" />
         </div>
       )}
 
@@ -49,7 +47,7 @@ const Contact = ({ isDarkMode }) => {
             visible: { opacity: 1, y: 0 },
           }}
         >
-          <div className={`backdrop-blur-xl rounded-3xl p-6 md:p-10 border max-w-4xl mx-auto relative overflow-hidden ${isDarkMode ? 'bg-[#111827] border-white/[0.06]' : 'bg-white/30 border-gray-200/30 shadow-lg'}`}>
+          <div className={`backdrop-blur-xl rounded-3xl p-6 md:p-10 border max-w-4xl mx-auto relative overflow-hidden ${isDarkMode ? 'bg-[#111827] border-white/[0.06]' : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] shadow-lg'}`}>
             
             <div className="relative z-10">
               <motion.div
@@ -59,7 +57,7 @@ const Contact = ({ isDarkMode }) => {
                 className={`inline-flex items-center gap-2 md:gap-3 backdrop-blur-lg rounded-full px-4 py-2 md:px-6 md:py-3 border mb-4 md:mb-6 ${isDarkMode ? 'bg-white/10 border-white/20' : 'bg-white/40 border-gray-200/40'}`}
               >
                 <div className="w-2 h-2 md:w-3 md:h-3 bg-green-500 rounded-full animate-pulse" />
-                <span className={`text-xs md:text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Available for new opportunities</span>
+                <span className={`text-xs md:text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-[var(--lm-text-muted)]'}`}>Available for new opportunities</span>
               </motion.div>
 
               <motion.h1 
@@ -68,24 +66,24 @@ const Contact = ({ isDarkMode }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
               >
-                <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
+                <span className={isDarkMode ? 'text-amber-500' : 'text-[#4A6B4E]'}>
                   Let's Create
                 </span>
                 <br />
-                <span className={isDarkMode ? "text-white" : "text-gray-900"}>
+                <span className={isDarkMode ? "text-white" : "text-[var(--lm-text-primary)]"}>
                   Something Amazing
                 </span>
               </motion.h1>
 
               <motion.div 
-                className="w-24 h-[2px] md:w-32 bg-gradient-to-r from-violet-600 to-cyan-400 rounded-full mx-auto mb-6 md:mb-8"
+                className={`w-24 h-[2px] md:w-32 rounded-full mx-auto mb-6 md:mb-8 ${isDarkMode ? 'bg-amber-500/60' : 'bg-[#4A6B4E]/60'}`}
                 initial={{ width: 0 }}
                 whileInView={{ width: window.innerWidth < 768 ? 96 : 128 }}
                 transition={{ delay: 0.5, duration: 0.8 }}
               />
 
               <motion.p 
-                className={`text-lg md:text-xl leading-relaxed max-w-2xl mx-auto ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}
+                className={`text-lg md:text-xl leading-relaxed max-w-2xl mx-auto ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.6 }}
@@ -110,17 +108,17 @@ const Contact = ({ isDarkMode }) => {
               visible: { opacity: 1, x: 0 },
             }}
           >
-            <div className={`backdrop-blur-xl rounded-3xl border p-6 md:p-8 transition-all duration-500 relative overflow-hidden ${isDarkMode ? 'bg-[#111827] border-white/[0.06]' : 'bg-white/30 border-gray-200/30 hover:bg-white/50 shadow-lg'}`}>
-              {isDarkMode && <div className="absolute inset-0 bg-gradient-to-br from-violet-500/[0.04] via-transparent to-cyan-400/[0.03]" />}
+            <div className={`backdrop-blur-xl rounded-3xl border p-6 md:p-8 transition-all duration-500 relative overflow-hidden ${isDarkMode ? 'bg-[#111827] border-white/[0.06]' : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] hover:border-[var(--lm-accent)]/30 shadow-lg'}`}>
+              {isDarkMode && <div className="absolute inset-0 bg-gradient-to-br from-amber-500/[0.03] via-transparent to-transparent" />}
               
               <div className="relative z-10">
                 <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
-                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-violet-500/20' : 'bg-gradient-to-r from-purple-500 to-teal-500'}`}>
-                    <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-amber-500/20' : 'bg-[#4A6B4E]/20'}`}>
+                    <svg className={`w-5 h-5 md:w-6 md:h-6 ${isDarkMode ? 'text-amber-400' : 'text-[#4A6B4E]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
                   </div>
-                  <h2 className="text-xl md:text-2xl font-playfair font-bold bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
+                  <h2 className={`text-xl md:text-2xl font-playfair font-bold ${isDarkMode ? 'text-amber-500' : 'text-[#4A6B4E]'}`}>
                     Send me a message
                   </h2>
                 </div>
@@ -143,11 +141,11 @@ const Contact = ({ isDarkMode }) => {
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3, duration: 0.6 }}
                     >
-                      <label className="block text-sm font-semibold mb-2 md:mb-3 bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
+                      <label className={`block text-sm font-semibold mb-2 md:mb-3 ${isDarkMode ? 'text-amber-500' : 'text-[#4A6B4E]'}`}>
                         Your Name *
                       </label>
                       <input
-                        className={`w-full p-3 md:p-4 backdrop-blur-lg border rounded-xl font-medium focus:outline-none transition-all duration-300 ${isDarkMode ? 'bg-[#111827] border-white/[0.08] text-[#F0F4F8] placeholder-[#8B9DB0] focus:border-violet-500/40 focus:ring-1 focus:ring-violet-500/20' : 'bg-white/40 border-gray-200/40 text-gray-900 placeholder-gray-600 focus:bg-white/60 focus:border-purple-300 group-hover:border-gray-300'}`}
+                        className={`w-full p-3 md:p-4 backdrop-blur-lg border rounded-xl font-medium focus:outline-none transition-all duration-300 ${isDarkMode ? 'bg-[#111827] border-white/[0.08] text-[#F0F4F8] placeholder-[#8B9DB0] focus:border-amber-500/40 focus:ring-1 focus:ring-amber-500/20' : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] text-[var(--lm-text-primary)] placeholder-[var(--lm-text-muted)] focus:border-[var(--lm-accent)]/50 focus:ring-1 focus:ring-[var(--lm-accent)]/20'}`}
                         type="text"
                         name="name"
                         value={formData.name}
@@ -163,11 +161,11 @@ const Contact = ({ isDarkMode }) => {
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4, duration: 0.6 }}
                     >
-                      <label className="block text-sm font-semibold mb-2 md:mb-3 bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
+                      <label className={`block text-sm font-semibold mb-2 md:mb-3 ${isDarkMode ? 'text-amber-500' : 'text-[#4A6B4E]'}`}>
                         Email Address *
                       </label>
                       <input
-                        className={`w-full p-3 md:p-4 backdrop-blur-lg border rounded-xl font-medium focus:outline-none transition-all duration-300 ${isDarkMode ? 'bg-[#111827] border-white/[0.08] text-[#F0F4F8] placeholder-[#8B9DB0] focus:border-violet-500/40 focus:ring-1 focus:ring-violet-500/20' : 'bg-white/40 border-gray-200/40 text-gray-900 placeholder-gray-600 focus:bg-white/60 focus:border-teal-300 group-hover:border-gray-300'}`}
+                        className={`w-full p-3 md:p-4 backdrop-blur-lg border rounded-xl font-medium focus:outline-none transition-all duration-300 ${isDarkMode ? 'bg-[#111827] border-white/[0.08] text-[#F0F4F8] placeholder-[#8B9DB0] focus:border-amber-500/40 focus:ring-1 focus:ring-amber-500/20' : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] text-[var(--lm-text-primary)] placeholder-[var(--lm-text-muted)] focus:border-[var(--lm-accent)]/50 focus:ring-1 focus:ring-[var(--lm-accent)]/20'}`}
                         type="email"
                         name="email"
                         value={formData.email}
@@ -185,11 +183,11 @@ const Contact = ({ isDarkMode }) => {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5, duration: 0.6 }}
                   >
-                    <label className="block text-sm font-semibold mb-2 md:mb-3 bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
+                    <label className={`block text-sm font-semibold mb-2 md:mb-3 ${isDarkMode ? 'text-amber-500' : 'text-[#4A6B4E]'}`}>
                       Your Message *
                     </label>
                     <textarea
-                      className={`w-full p-3 md:p-4 backdrop-blur-lg border rounded-xl font-medium focus:outline-none transition-all duration-300 resize-none ${isDarkMode ? 'bg-[#111827] border-white/[0.08] text-[#F0F4F8] placeholder-[#8B9DB0] focus:border-violet-500/40 focus:ring-1 focus:ring-violet-500/20' : 'bg-white/40 border-gray-200/40 text-gray-900 placeholder-gray-600 focus:bg-white/60 focus:border-green-300 group-hover:border-gray-300'}`}
+                      className={`w-full p-3 md:p-4 backdrop-blur-lg border rounded-xl font-medium focus:outline-none transition-all duration-300 resize-none ${isDarkMode ? 'bg-[#111827] border-white/[0.08] text-[#F0F4F8] placeholder-[#8B9DB0] focus:border-amber-500/40 focus:ring-1 focus:ring-amber-500/20' : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] text-[var(--lm-text-primary)] placeholder-[var(--lm-text-muted)] focus:border-[var(--lm-accent)]/50 focus:ring-1 focus:ring-[var(--lm-accent)]/20'}`}
                       name="message"
                       value={formData.message}
                       onChange={handleInputChange}
@@ -202,7 +200,8 @@ const Contact = ({ isDarkMode }) => {
                   {/* Enhanced Submit Button */}
                   <motion.button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-violet-600 to-cyan-500 text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-xl hover:opacity-90 hover:scale-[1.01] transition-all duration-200"
+                    className={`w-full font-bold py-3 md:py-4 px-6 md:px-8 rounded-xl hover:opacity-90 hover:scale-[1.01] transition-all duration-200 ${isDarkMode ? 'bg-amber-500 text-[#07090D]' : 'text-white'}`}
+                    style={!isDarkMode ? { backgroundColor: '#4A6B4E' } : undefined}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6, duration: 0.6 }}
@@ -251,11 +250,11 @@ const Contact = ({ isDarkMode }) => {
             }}
           >
             {/* Contact Info Header */}
-            <div className={`backdrop-blur-xl rounded-2xl p-4 md:p-6 border transition-all duration-300 ${isDarkMode ? 'bg-[#111827] border-white/[0.06]' : 'bg-white/30 border-gray-200/30 hover:bg-white/50 shadow-lg'}`}>
-              <h3 className="text-lg md:text-xl font-playfair font-bold mb-3 md:mb-4 bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
+            <div className={`backdrop-blur-xl rounded-2xl p-4 md:p-6 border transition-all duration-300 ${isDarkMode ? 'bg-[#111827] border-white/[0.06]' : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] hover:border-[var(--lm-accent)]/30 shadow-lg'}`}>
+              <h3 className={`text-lg md:text-xl font-playfair font-bold mb-3 md:mb-4 ${isDarkMode ? 'text-amber-500' : 'text-[#4A6B4E]'}`}>
                 Get in Touch
               </h3>
-              <p className={`leading-relaxed text-sm md:text-base ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
+              <p className={`leading-relaxed text-sm md:text-base ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
                 I'm always open to discussing new opportunities, creative projects, or just having a friendly chat about tech!
               </p>
             </div>
@@ -265,48 +264,48 @@ const Contact = ({ isDarkMode }) => {
               {/* Email Card */}
               <motion.a
                 href="mailto:hreempandya@gmail.com"
-                className={`backdrop-blur-xl rounded-xl p-4 md:p-5 border transition-all duration-300 group cursor-pointer block ${isDarkMode ? 'bg-[#111827] border-white/[0.06] hover:border-violet-500/20' : 'bg-white/30 border-gray-200/30 hover:bg-white/50 hover:scale-[1.02] shadow-lg'}`}
+                className={`backdrop-blur-xl rounded-xl p-4 md:p-5 border transition-all duration-300 group cursor-pointer block ${isDarkMode ? 'bg-[#111827] border-white/[0.06] hover:border-amber-500/20' : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] hover:border-[#4A6B4E]/30 hover:scale-[1.02] shadow-lg'}`}
                 whileHover={{ y: -2 }}
               >
                 <div className="flex items-center gap-3 md:gap-4">
-                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300 ${isDarkMode ? 'bg-violet-500/20 text-violet-400' : 'bg-gradient-to-r from-purple-500 to-pink-500'}`}>
-                    <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300 ${isDarkMode ? 'bg-amber-500/20 text-amber-400' : 'bg-[#4A6B4E]/20'}`}>
+                    <svg className={`w-5 h-5 md:w-6 md:h-6 ${isDarkMode ? 'text-amber-400' : 'text-[#4A6B4E]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </div>
                   <div>
-                    <h4 className={`font-semibold text-sm md:text-base ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Email</h4>
-                    <p className={`text-xs md:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>hreempandya@gmail.com</p>
+                    <h4 className={`font-semibold text-sm md:text-base ${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'}`}>Email</h4>
+                    <p className={`text-xs md:text-sm ${isDarkMode ? 'text-gray-400' : 'text-[var(--lm-text-muted)]'}`}>hreempandya@gmail.com</p>
                   </div>
                 </div>
               </motion.a>
 
               {/* Location Card */}
               <motion.div
-                className={`backdrop-blur-xl rounded-xl p-4 md:p-5 border transition-all duration-300 group cursor-pointer ${isDarkMode ? 'bg-[#111827] border-white/[0.06] hover:border-violet-500/20' : 'bg-white/30 border-gray-200/30 hover:bg-white/50 hover:scale-[1.02] shadow-lg'}`}
+                className={`backdrop-blur-xl rounded-xl p-4 md:p-5 border transition-all duration-300 group cursor-pointer ${isDarkMode ? 'bg-[#111827] border-white/[0.06] hover:border-amber-500/20' : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] hover:border-[#4A6B4E]/30 hover:scale-[1.02] shadow-lg'}`}
                 whileHover={{ y: -2 }}
               >
                 <div className="flex items-center gap-3 md:gap-4">
-                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300 ${isDarkMode ? 'bg-violet-500/20 text-violet-400' : 'bg-gradient-to-r from-teal-500 to-blue-500'}`}>
-                    <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300 ${isDarkMode ? 'bg-amber-500/20 text-amber-400' : 'bg-[#4A6B4E]/20'}`}>
+                    <svg className={`w-5 h-5 md:w-6 md:h-6 ${isDarkMode ? 'text-amber-400' : 'text-[#4A6B4E]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   </div>
                   <div>
-                    <h4 className={`font-semibold text-sm md:text-base ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Location</h4>
-                    <p className={`text-xs md:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Waterloo, Ontario, Canada</p>
+                    <h4 className={`font-semibold text-sm md:text-base ${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'}`}>Location</h4>
+                    <p className={`text-xs md:text-sm ${isDarkMode ? 'text-gray-400' : 'text-[var(--lm-text-muted)]'}`}>Waterloo, Ontario, Canada</p>
                   </div>
                 </div>
               </motion.div>
 
               {/* Response Time Card */}
               <motion.div
-                className={`backdrop-blur-xl rounded-xl p-4 md:p-5 border transition-all duration-300 group cursor-pointer ${isDarkMode ? 'bg-[#111827] border-white/[0.06] hover:border-violet-500/20' : 'bg-white/30 border-gray-200/30 hover:bg-white/50 hover:scale-[1.02] shadow-lg'}`}
+                className={`backdrop-blur-xl rounded-xl p-4 md:p-5 border transition-all duration-300 group cursor-pointer ${isDarkMode ? 'bg-[#111827] border-white/[0.06] hover:border-amber-500/20' : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] hover:border-[#4A6B4E]/30 hover:scale-[1.02] shadow-lg'}`}
                 whileHover={{ y: -2 }}
               >
                 <div className="flex items-center gap-3 md:gap-4">
-                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300 ${isDarkMode ? 'bg-violet-500/20 text-violet-400' : 'bg-gradient-to-r from-green-500 to-teal-500'}`}>
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300 ${isDarkMode ? 'bg-amber-500/20 text-amber-400' : 'bg-[var(--lm-accent)]/20 text-[var(--lm-accent)]'}`}>
                     <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -320,8 +319,8 @@ const Contact = ({ isDarkMode }) => {
             </div>
 
             {/* Social Links */}
-            <div className={`backdrop-blur-xl rounded-2xl p-4 md:p-6 border transition-all duration-300 ${isDarkMode ? 'bg-[#111827] border-white/[0.06]' : 'bg-white/30 border-gray-200/30 hover:bg-white/50 shadow-lg'}`}>
-              <h4 className={`font-semibold mb-3 md:mb-4 text-sm md:text-base ${isDarkMode ? 'text-[#F0F4F8]' : 'text-gray-900'}`}>Connect with me</h4>
+            <div className={`backdrop-blur-xl rounded-2xl p-4 md:p-6 border transition-all duration-300 ${isDarkMode ? 'bg-[#111827] border-white/[0.06]' : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] hover:border-[var(--lm-accent)]/30 shadow-lg'}`}>
+              <h4 className={`font-semibold mb-3 md:mb-4 text-sm md:text-base ${isDarkMode ? 'text-[#F0F4F8]' : 'text-[var(--lm-text-primary)]'}`}>Connect with me</h4>
               <div className="grid grid-cols-2 gap-2 md:gap-3">
                 {[
                   { href: "https://www.linkedin.com/in/hreem-pandya-7b74a0275/", icon: "linkedin", color: "from-cyan-400 to-blue-500", label: "LinkedIn" },
@@ -336,8 +335,8 @@ const Contact = ({ isDarkMode }) => {
                     rel="noreferrer"
                     className={`flex items-center gap-2 md:gap-3 p-2 md:p-3 rounded-lg transition-all duration-300 text-xs md:text-sm font-medium ${
                       isDarkMode
-                        ? 'bg-white/[0.04] border border-white/[0.06] text-[#8B9DB0] hover:bg-white/[0.08] hover:text-[#F0F4F8] hover:border-violet-500/20'
-                        : `bg-gradient-to-r ${social.color} text-white hover:scale-105 hover:shadow-lg`
+                        ? 'bg-white/[0.04] border border-white/[0.06] text-[#8B9DB0] hover:bg-white/[0.08] hover:text-[#F0F4F8] hover:border-amber-500/20'
+                        : 'bg-[var(--lm-accent-muted)] border border-[var(--lm-border)] text-[var(--lm-accent)] hover:bg-[var(--lm-accent)]/20 hover:scale-105'
                     }`}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}

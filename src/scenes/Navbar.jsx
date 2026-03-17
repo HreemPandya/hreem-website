@@ -9,15 +9,18 @@ const Link = ({ page, selectedPage, setSelectedPage, isDarkMode }) => {
     <AnchorLink
       className={`${
         selectedPage === lowerCasePage
-          ? `${isDarkMode ? 'text-[#F0F4F8] border-b border-violet-500/60' : 'text-gray-900'} font-bold scale-110`
-          : `${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`
-      } transition-all duration-300 ${isDarkMode ? 'hover:text-[#F0F4F8]' : 'hover:text-gray-900'} hover:scale-105 relative group px-3 py-2 rounded-lg`}
+          ? `${isDarkMode ? 'text-[#F0F4F8] border-b border-amber-500/60' : 'text-[var(--lm-text-primary)] border-b border-[var(--lm-accent)]'} font-bold scale-110`
+          : `${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`
+      } transition-all duration-300 ${isDarkMode ? 'hover:text-[#F0F4F8]' : 'hover:text-[var(--lm-text-primary)]'} hover:scale-105 relative group px-3 py-2 rounded-lg`}
       href={`#${lowerCasePage}`}
       onClick={() => setSelectedPage(lowerCasePage)}
     >
       {page}
       {/* Hover effect underline */}
-      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-violet-500 to-cyan-400 group-hover:w-full transition-all duration-300"></span>
+      <span
+        className="absolute bottom-0 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300"
+        style={{ backgroundColor: isDarkMode ? '#F59E0B' : '#4A6B4E' }}
+      ></span>
     </AnchorLink>
   );
 };
@@ -28,25 +31,17 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
 
   return (
     <>
-      {/* Scroll Progress Indicator */}
-      <div 
-        className="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-violet-600 to-cyan-400 z-50 transition-all duration-100"
-        style={{ 
-          width: `${Math.min(100, (window.pageYOffset / (document.documentElement.scrollHeight - document.documentElement.clientHeight)) * 100)}%` 
-        }}
-      />
-
       <nav className={`z-40 w-full fixed top-0 py-6 transition-all duration-300 ${
         isTopOfPage 
           ? 'bg-transparent backdrop-blur-none' 
           : isDarkMode 
             ? 'bg-[#07090D]/80 backdrop-blur-xl border-b border-white/[0.06]'
-            : 'bg-white/80 backdrop-blur-xl border-b border-gray-200/50 shadow-lg'
+            : 'bg-[var(--lm-bg-surface)]/95 backdrop-blur-xl border-b border-[var(--lm-border)] shadow-lg'
       }`}>
         <div className="flex items-center justify-between mx-auto w-5/6">
           {/* Enhanced Logo */}
           <div className="relative group">
-            <h4 className="font-playfair text-4xl font-extrabold bg-gradient-to-r from-violet-500 to-cyan-400 bg-clip-text text-transparent hover:scale-110 transition-transform duration-300 cursor-pointer">
+            <h4 className={`font-playfair text-4xl font-extrabold transition-colors duration-300 cursor-pointer ${isDarkMode ? 'text-amber-500 hover:text-amber-400' : 'text-[var(--lm-accent)] hover:opacity-80'}`}>
               HP
             </h4>
           </div>
@@ -58,10 +53,9 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
               <div className={`flex items-center gap-6 backdrop-blur-xl rounded-full px-6 py-3 border transition-all duration-300 ${
                 isDarkMode 
                   ? 'bg-white/[0.04] border-white/[0.06]' 
-                  : 'bg-white/70 border-gray-200/50 shadow-md'
+                  : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] shadow-md'
               }`}>
                 <Link page="Home" selectedPage={selectedPage} setSelectedPage={setSelectedPage} isDarkMode={isDarkMode} />
-                <Link page="Skills" selectedPage={selectedPage} setSelectedPage={setSelectedPage} isDarkMode={isDarkMode} />
                 <Link page="Projects" selectedPage={selectedPage} setSelectedPage={setSelectedPage} isDarkMode={isDarkMode} />
                 <Link page="About Me" selectedPage={selectedPage} setSelectedPage={setSelectedPage} isDarkMode={isDarkMode} />
                 <Link page="Contact" selectedPage={selectedPage} setSelectedPage={setSelectedPage} isDarkMode={isDarkMode} />
@@ -76,19 +70,18 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
                     onChange={toggleTheme}
                     className="sr-only"
                   />
-                  <div className={`relative w-14 h-7 rounded-full transition-all duration-300 shadow-lg ${
-                    isDarkMode 
-                      ? "bg-gradient-to-r from-violet-600 to-cyan-500" 
-                      : "bg-gradient-to-r from-teal-400 to-blue-500"
-                  }`}>
+                  <div
+                    className={`relative w-14 h-7 rounded-full transition-all duration-300 shadow-lg ${isDarkMode ? "bg-amber-500" : ""}`}
+                    style={!isDarkMode ? { backgroundColor: '#4A6B4E' } : undefined}
+                  >
                     <div
                       className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white transition-all duration-300 shadow-md flex items-center justify-center
                         ${isDarkMode ? "translate-x-7" : ""}`}
                     >
                       {isDarkMode ? (
-                        <FiMoon className="text-violet-500 w-3 h-3" />
+                        <FiMoon className="text-[#07090D] w-3 h-3" />
                       ) : (
-                        <FiSun className="text-yellow-500 w-3 h-3" />
+                        <FiSun className="text-[#4A6B4E] w-3 h-3" />
                       )}
                     </div>
                   </div>
@@ -101,19 +94,19 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
               className={`rounded-full p-3 transition-all duration-300 backdrop-blur-lg border hover:scale-110 ${
                 isDarkMode 
                   ? 'bg-white/10 border-white/20 hover:bg-white/20' 
-                  : 'bg-white/70 border-gray-200/50 hover:bg-white/90 shadow-md'
+                  : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] hover:bg-[var(--lm-bg-surface)]/90 shadow-md'
               }`}
               onClick={() => setIsMenuToggled(!isMenuToggled)}
             >
               <div className="w-6 h-6 flex flex-col justify-center items-center">
                 <span className={`block w-5 h-0.5 transition-all duration-300 ${
-                  isDarkMode ? 'bg-white' : 'bg-gray-700'
+                  isDarkMode ? 'bg-white' : 'bg-[var(--lm-text-primary)]'
                 } ${isMenuToggled ? 'rotate-45 translate-y-1' : ''}`} />
                 <span className={`block w-5 h-0.5 transition-all duration-300 mt-1 ${
-                  isDarkMode ? 'bg-white' : 'bg-gray-700'
+                  isDarkMode ? 'bg-white' : 'bg-[var(--lm-text-primary)]'
                 } ${isMenuToggled ? 'opacity-0' : ''}`} />
                 <span className={`block w-5 h-0.5 transition-all duration-300 mt-1 ${
-                  isDarkMode ? 'bg-white' : 'bg-gray-700'
+                  isDarkMode ? 'bg-white' : 'bg-[var(--lm-text-primary)]'
                 } ${isMenuToggled ? '-rotate-45 -translate-y-1' : ''}`} />
               </div>
             </button>
@@ -141,21 +134,21 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
                 {/* Menu header */}
                 <div className="px-6 py-4 border-b" 
                      style={{ 
-                       backgroundColor: isDarkMode ? '#111827' : '#f8fafc',
-                       borderBottomColor: isDarkMode ? 'rgba(255,255,255,0.06)' : '#e2e8f0'
+                       backgroundColor: isDarkMode ? '#111827' : 'var(--lm-bg-surface)',
+                       borderBottomColor: isDarkMode ? 'rgba(255,255,255,0.06)' : 'var(--lm-border)'
                      }}>
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-semibold" 
-                          style={{ color: isDarkMode ? '#F0F4F8' : '#475569' }}>
+                          style={{ color: isDarkMode ? '#F0F4F8' : 'var(--lm-text-primary)' }}>
                       Navigation
                     </span>
-                    <div className="w-8 h-[2px] rounded-full bg-gradient-to-r from-violet-500 to-cyan-400"></div>
+                    <div className="w-8 h-[2px] rounded-full" style={{ backgroundColor: isDarkMode ? '#F59E0B' : 'var(--lm-accent)' }}></div>
                   </div>
                 </div>
 
                 {/* Menu items with enhanced styling */}
                 <div className="py-2">
-                  {['Home', 'Skills', 'Projects', 'About Me', 'Contact'].map((page) => {
+                  {['Home', 'Projects', 'About Me', 'Contact'].map((page) => {
                     const isActive = selectedPage === page.toLowerCase();
 
                     return (
@@ -164,15 +157,15 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
                         className="flex items-center px-6 py-4 text-base font-medium transition-all duration-300 relative group"
                         style={{
                           color: isActive 
-                            ? '#F0F4F8'
-                            : isDarkMode ? '#8B9DB0' : '#374151',
+                            ? (isDarkMode ? '#F0F4F8' : 'var(--lm-text-primary)')
+                            : isDarkMode ? '#8B9DB0' : 'var(--lm-text-muted)',
                           backgroundColor: isActive 
-                            ? 'rgba(124, 58, 237, 0.15)'
+                            ? (isDarkMode ? 'rgba(245, 158, 11, 0.15)' : 'rgba(74, 107, 78, 0.2)')
                             : 'transparent'
                         }}
                         onMouseEnter={(e) => {
                           if (!isActive) {
-                            e.target.style.backgroundColor = isDarkMode ? 'rgba(255,255,255,0.04)' : '#f1f5f9';
+                            e.target.style.backgroundColor = isDarkMode ? 'rgba(255,255,255,0.04)' : 'rgba(90, 126, 94, 0.12)';
                             e.target.style.transform = 'translateX(4px)';
                           }
                         }}
@@ -189,14 +182,14 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
                         }}
                       >
                         {/* Dot indicator */}
-                        <div className={`mr-3 w-1.5 h-1.5 rounded-full flex-shrink-0 ${isActive ? 'bg-violet-500' : isDarkMode ? 'bg-white/20' : 'bg-gray-400/50'}`} />
+                        <div className="mr-3 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: isActive ? (isDarkMode ? '#F59E0B' : '#4A6B4E') : isDarkMode ? 'rgba(255,255,255,0.2)' : 'rgba(74, 107, 78, 0.5)' }} />
                         
                         {/* Page name */}
                         <span className="flex-1">{page}</span>
                         
                         {/* Active indicator */}
                         {isActive && (
-                          <div className="w-1.5 h-1.5 rounded-full bg-violet-500 ml-2"></div>
+                          <div className="w-1.5 h-1.5 rounded-full ml-2" style={{ backgroundColor: isDarkMode ? '#F59E0B' : 'var(--lm-accent)' }}></div>
                         )}
                       </AnchorLink>
                     );
@@ -206,8 +199,8 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
                 {/* Theme toggle section with enhanced design */}
                 <div className="px-6 py-4 border-t" 
                      style={{ 
-                       backgroundColor: isDarkMode ? '#111827' : '#f8fafc',
-                       borderTopColor: isDarkMode ? 'rgba(255,255,255,0.06)' : '#e2e8f0'
+                       backgroundColor: isDarkMode ? '#111827' : 'var(--lm-bg-surface)',
+                       borderTopColor: isDarkMode ? 'rgba(255,255,255,0.06)' : 'var(--lm-border)'
                      }}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
@@ -216,11 +209,11 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
                       </span>
                       <div>
                         <span className="text-sm font-medium" 
-                              style={{ color: isDarkMode ? '#e2e8f0' : '#374151' }}>
+                              style={{ color: isDarkMode ? '#e2e8f0' : 'var(--lm-text-primary)' }}>
                           {isDarkMode ? 'Dark Mode' : 'Light Mode'}
                         </span>
                         <p className="text-xs" 
-                           style={{ color: isDarkMode ? '#94a3b8' : '#64748b' }}>
+                           style={{ color: isDarkMode ? '#94a3b8' : 'var(--lm-text-muted)' }}>
                           {isDarkMode ? 'Currently active' : 'Currently active'}
                         </p>
                       </div>
@@ -233,19 +226,18 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
                         onChange={toggleTheme}
                         className="sr-only peer"
                       />
-                      <div className={`relative w-12 h-6 rounded-full transition-all duration-300 ${
-                        isDarkMode 
-                          ? "bg-gradient-to-r from-violet-600 to-cyan-500" 
-                          : "bg-gradient-to-r from-teal-400 to-blue-500"
-                      }`}>
+                      <div
+                        className={`relative w-12 h-6 rounded-full transition-all duration-300 ${isDarkMode ? "bg-gradient-to-r from-violet-600 to-cyan-500" : ""}`}
+                        style={!isDarkMode ? { backgroundColor: '#4A6B4E' } : undefined}
+                      >
                         <div
                           className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-all duration-300 shadow-md flex items-center justify-center
                             ${isDarkMode ? "translate-x-6" : ""}`}
                         >
                           {isDarkMode ? (
-                            <FiMoon className="text-violet-500 w-2.5 h-2.5" />
+                            <FiMoon className="text-[#07090D] w-2.5 h-2.5" />
                           ) : (
-                            <FiSun className="text-yellow-500 w-2.5 h-2.5" />
+                            <FiSun className="text-[#4A6B4E] w-2.5 h-2.5" />
                           )}
                         </div>
                       </div>

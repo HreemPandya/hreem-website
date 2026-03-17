@@ -1,7 +1,6 @@
 import Navbar from "./scenes/Navbar";
 import Landing from "./scenes/Landing";
 import DotGroup from "./scenes/DotGroup";
-import MySkills from "./scenes/MySkills";
 import LineGradient from "./components/LineGradient";
 import Projects from "./scenes/Projects";
 import Contact from "./scenes/Contact";
@@ -52,7 +51,7 @@ function App() {
   }, []);
 
   return (
-    <div className={`app transition-colors duration-500`}>
+    <div className={`app transition-colors duration-500 ${isDarkMode ? 'noise-overlay' : ''}`}>
       <div className="scroll-indicator"></div>
       <Navbar
         isTopOfPage={isTopOfPage}
@@ -77,15 +76,7 @@ function App() {
         </motion.div>
       </div>
 
-      <LineGradient />
-
-      <div id="skills" className="max-w-7xl mx-auto px-6">
-        <motion.div onViewportEnter={() => setSelectedPage("skills")}>
-          <MySkills isDarkMode={isDarkMode} />
-        </motion.div>
-      </div>
-
-      <LineGradient />
+      <LineGradient isDarkMode={isDarkMode} />
 
       <div id="projects" className="max-w-7xl mx-auto px-6">
         <motion.div onViewportEnter={() => setSelectedPage("projects")}>
@@ -93,7 +84,7 @@ function App() {
         </motion.div>
       </div>
 
-      <LineGradient />
+      <LineGradient isDarkMode={isDarkMode} />
 
       <div id="about me" className="max-w-7xl mx-auto px-6">
         <motion.div onViewportEnter={() => setSelectedPage("about me")}>
@@ -101,7 +92,7 @@ function App() {
         </motion.div>
       </div>
 
-      <LineGradient />
+      <LineGradient isDarkMode={isDarkMode} />
 
       <div id="contact" className="max-w-7xl mx-auto px-6">
         <motion.div onViewportEnter={() => setSelectedPage("contact")}>

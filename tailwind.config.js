@@ -18,6 +18,11 @@ module.exports = {
         "green-700": "#2F855A",
         'terracotta': '#E76F51',
         'light-beige': '#F5E6D3',
+        'lm-bg-base': '#F8F6F2',
+        'lm-bg-surface': '#FDFCF9',
+        'lm-text-primary': '#2A2A2A',
+        'lm-text-muted': '#5A5A5A',
+        'lm-accent': '#4A6B4E',
         blue: "#2CBCE9",
         red: "#DC4492",
         yellow: "#FDCC49",
@@ -39,13 +44,11 @@ module.exports = {
       fontFamily: {
         playfair: ["Playfair Display", "serif"],
         opensans: ["Open Sans", "sans-serif"],
+        sans: ["DM Sans", "system-ui", "sans-serif"],
       },
       content: {
         brush: "url('./assets/green-brush.png')",
         react: "url('./assets/react.png')",
-      },
-      maskImage: {
-        'paint-stroke': "url('./assets/paint-stroke.png')", // Paint stroke mask
       },
     },
     screens: {

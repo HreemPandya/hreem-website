@@ -3,7 +3,7 @@ import { Linkedin, Github, Youtube, Instagram } from 'lucide-react';
 
 const SocialMediaIcons = ({ isDarkMode, forceWhite = false }) => {
   // Use white if forceWhite is true, otherwise use theme-based color
-  const iconColor = forceWhite ? '#FFFFFF' : isDarkMode ? '#000000' : '#000000';
+  const iconColor = forceWhite ? '#FFFFFF' : isDarkMode ? '#000000' : '#2A2A2A';
   const iconSize = 24;
 
   return (

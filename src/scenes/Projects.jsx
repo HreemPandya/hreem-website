@@ -1,7 +1,6 @@
-import LineGradient from "../components/LineGradient";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaGithub, FaInstagram, FaYoutube, FaTimes, FaExternalLinkAlt} from "react-icons/fa";
-import { useState } from "react";
+import { FaGithub, FaYoutube, FaTimes, FaExternalLinkAlt} from "react-icons/fa";
+import { useState, useRef } from "react";
 const container = {
   hidden: {},
   visible: {
@@ -11,23 +10,11 @@ const container = {
   },
 };
 
-// Function to get project-specific circle colors that match tag colors
-const getProjectCircleColor = (projectId) => {
-  const circleColors = {
-    1: 'bg-orange-500', // FridgeMind - orange
-    2: 'bg-cyan-500', // BeMyEyes - cyan
-    3: 'bg-green-500', // GestureGroove - green
-    4: 'bg-orange-500', // CrisisCompass - orange
-    5: 'bg-teal-500', // SecureEdu - teal
-    6: 'bg-purple-500', // TaxWiz - purple
-  };
-  return circleColors[projectId] || 'bg-gray-500';
-};
-
 const projects = [
   {
     id: 1,
     title: "FridgeMind: Winner of Hack the 6ix, Deliotte AI For Green",
+    badge: "Hack the 6ix Winner",
     description: "An intelligent recipe recommendation system built on a custom OS using QNX that analyzes available ingredients in your fridge and suggests personalized meals based on dietary preferences and nutritional goals.",
     hoverText: "Built by training a custom YOLOv5 model on a dataset of 300+ labeled food images, working together with a real time footage stream to identify ingredients in your fridge. Along with that, I created an Expo Go app that the device pairs with and uses Gemini's LLM API to generate customized recipes, and AssemblyAI for both speech-to-text and text-to-speech, making the system hands-free and accessible for everyone. Other features include expiry date tracking (recommends recipes with ingredients about to expire first), meal planning, shopping list generation, and nutritional tracking.",
     image: `${process.env.PUBLIC_URL}/assets/project-5.png`,
@@ -42,6 +29,21 @@ const projects = [
   },
   {
     id: 2,
+    title: "Cliara: AI-Powered Shell with Natural Language & Macros",
+    description: "An AI-powered shell that wraps your existing terminal (bash, zsh, PowerShell) and adds natural language commands, reusable macros, and smart workflows. Use ? <query> to describe what you want and get shell commands, or ? fix to correct failed commands. Includes Cliara Cloud (GitHub login, 150 free queries/month), semantic history search, smart push (auto-commit messages), and smart deploy (auto-detects Vercel, Netlify, Docker, PyPI). Published on PyPI.",
+    hoverText: "Built with Python, OpenAI, and Anthropic APIs for natural language command generation. Uses prompt-toolkit for a rich REPL experience and Rich for formatted terminal output. The FastAPI backend powers Cliara Cloud with GitHub OAuth and usage tracking. Features include semantic history search across your shell history, smart push that generates commit messages from diffs, and smart deploy that auto-detects Vercel, Netlify, Docker, and PyPI deployment targets. Wraps bash, zsh, and PowerShell so you keep your existing setup while adding AI superpowers.",
+    image: `${process.env.PUBLIC_URL}/assets/project-7.png`,
+    gradient: "from-emerald-500 to-teal-500",
+    titleColor: "text-emerald-600",
+    tags: ['Python', 'OpenAI', 'Anthropic', 'prompt-toolkit', 'Rich', 'FastAPI', 'PyPI'],
+    badge: "Published on PyPI",
+    links: [
+      { href: "https://github.com/HreemPandya/cliara-app", icon: <FaGithub size={20} />, label: "Code" },
+      { href: "https://pypi.org/project/cliara/", icon: <FaExternalLinkAlt size={20} />, label: "PyPI" },
+    ],
+  },
+  {
+    id: 3,
     title: "BeMyEyes: Accessibility Tool",
     description: "A wearable assistive device for visually impaired users that integrates ultrasonic distance sensors for obstacle detection auricularly, real-time object recognition via OpenCV using an embedded camera, and Google TTS output for contextual feedback.",
     hoverText: "Built on an Arduino microcontroller with ultrasonic distance sensors for auricular obstacle detection and an embedded camera for real-time image capture. Uses a Python-based companion system with OpenCV for object recognition and Google TTS for contextual audio feedback. Communication between hardware and processing modules is handled via serial over USB, ensuring low-latency data transfer. The system implements non-blocking sensor polling for continuous environment scanning, progressive alert tones mapped to obstacle proximity, and modular firmware for easy expansion to additional sensors or features.",
@@ -55,7 +57,7 @@ const projects = [
     ],
   },
   {
-    id: 3,
+    id: 4,
     title: "GestureGroove: AI Music Controller",
     description: "A real-time gesture recognition app built on React that translates hand movements into music control using OpenCV for hand tracking and MediaPipe for gesture classification",
     hoverText: "Developed using OpenCV for video capture and MediaPipe Hands for real-time, 21-point hand landmark detection at low latency. GestureGroove interprets spatial coordinates and motion vectors to classify predefined gestures, which are mapped to playback controls and musical parameters such as pitch, volume, and audio effects. The system features debounced gesture recognition to prevent false triggers, asynchronous event handling for responsive UI feedback, and seamless integration with the Spotify Web API for track control and choice.",
@@ -69,7 +71,7 @@ const projects = [
     ],
   },
   {
-    id: 4,
+    id: 5,
     title: "CrisisCompass: First Responder's Emergency Management Tool",
     description: "Developed at NewHacks 2024, this React web application helps first responders and volunteers prioritize and manage local emergencies by aggregating and scraping real-time data from news outlets using OpenAI API to analyze and rank incidents based on urgency and using geolocation to rank incidents by proximity.",
     hoverText: "Designed to help first responders and volunteers act faster during emergencies, CrisisCompass ranks incidents so the most urgent situations receive immediate attention. Built with a Flask-based backend API that aggregates, processes, and web scrapes emergency reports from trusted news and social media sources, it analyzes type, location, and critical keywords using OpenAI API to guide resource allocation during crises. A responsive React dashboard presents real-time updates with urgency badges and severity icons, ensuring clear situational awareness when every second counts.",
@@ -83,7 +85,7 @@ const projects = [
     ],
   },
   {
-    id: 5,
+    id: 6,
     title: "SecureEdu: Educational Material Encryption System",
     description: "A secure learning platform built from STM32 microcontrollers that encrypts and transmits educational materials, using AES-based encryption and EEPROM-stored keys. Implements a progressive hint-based learning system where content is unlocked incrementally via access keys, ensuring controlled information disclosure",
     hoverText: "SecureEdu runs on STM32 microcontrollers that use AES encryption to keep textbook sections, quiz solutions, and hints safe from unauthorized access. For secure communication between devices, it integrates Diffie-Hellman Key Exchange so encryption keys are never exposed during transfer. On the hardware side, we configured UART, I2C, and GPIO peripherals to connect an LCD display, which gives students real-time feedback as they interact with the system, and a 4x4 keypad, which they use to securely enter access keys. The whole setup powers a progressive hint-based learning system, where you can unlock just the right amount of help without giving away the entire answer, all while keeping the data transmission secure.",
@@ -97,7 +99,7 @@ const projects = [
     ],
   },
   {
-    id: 6,
+    id: 7,
     title: "TaxWiz: LLM-Driven Tax Advisor",
     description: "An AI-powered tax assistant built with TypeScript, OpenAI API and the Vercel AI SDK that guides users through complex tax questions via an intuitive, conversational interface. Features intelligent document parsing to extract and interpret key information from uploaded tax forms, enabling accurate, context-aware responses and simplifying the tax filing process.",
     hoverText: "Built a chat-based LLM tax assistant in TypeScript using the OpenAI API, with structured evaluations to fine-tune prompts and improve how the assistant interacts with users. Used Tailwind CSS to quickly spin up dynamic, consistent UI components, and added robust document parsing so it can handle different file formats and pull out key details. Next.js powers the server-side logic for processing queries",
@@ -111,6 +113,95 @@ const projects = [
     ],
   },
 ];
+
+// Project card with optional cursor-based tilt and featured layout
+const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) => {
+  const cardRef = useRef(null);
+  const [transform, setTransform] = useState({ rotateX: 0, rotateY: 0 });
+
+  const handleMouseMove = (e) => {
+    if (!cardRef.current || window.innerWidth < 768) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setTransform({ rotateX: -y * 8, rotateY: x * 8 });
+  };
+
+  const handleMouseLeave = () => setTransform({ rotateX: 0, rotateY: 0 });
+
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const tagCount = isMobile ? 2 : 3;
+
+  return (
+    <motion.div
+      className={`relative group cursor-pointer ${featured ? 'w-full' : ''}`}
+      variants={featured ? {} : { hidden: { opacity: 0, y: 50 }, visible: { opacity: 1, y: 0 } }}
+      transition={featured ? {} : { delay: index * 0.1 }}
+      whileHover={!featured && !isMobile ? { scale: 1.02 } : {}}
+      whileTap={{ scale: 0.98 }}
+    >
+      <div
+        ref={cardRef}
+        className="h-full"
+        onClick={() => openModal(project)}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          transform: `perspective(800px) rotateX(${transform.rotateX}deg) rotateY(${transform.rotateY}deg)`,
+          transformStyle: 'preserve-3d',
+        }}
+      >
+      <div className={`backdrop-blur-xl rounded-2xl border overflow-hidden transition-all duration-300 h-full ${featured ? 'md:flex md:flex-row' : ''} ${isDarkMode ? 'bg-[#111827] border-amber-500/20 group-hover:border-amber-500/40 group-hover:shadow-[0_12px_40px_rgba(245,158,11,0.08)]' : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] hover:border-[var(--lm-accent)]/30 shadow-lg group-hover:shadow-xl'}`}>
+        <div className={`relative overflow-hidden ${featured ? 'md:w-1/2 h-48 md:h-72' : 'h-36 md:h-48'}`}>
+          <img
+            src={project.image}
+            alt={project.title}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          />
+          <div className={`absolute inset-0 bg-gradient-to-t ${project.gradient} opacity-20 group-hover:opacity-40 transition-opacity duration-500`} />
+          {featured && project.badge && (
+            <span className={`absolute top-4 left-4 px-3 py-1 text-xs font-bold rounded-full ${isDarkMode ? 'bg-amber-500 text-[#07090D]' : 'bg-[#4A6B4E] text-white'}`}>
+              {project.badge}
+            </span>
+          )}
+        </div>
+        <div className={`p-4 md:p-6 ${featured ? 'md:flex md:flex-col md:justify-center md:w-1/2' : ''}`}>
+          <h3 className={`font-playfair text-lg md:text-xl font-bold mb-2 md:mb-3 group-hover:underline underline-offset-4 decoration-2 ${featured ? 'md:text-2xl' : ''} ${isDarkMode ? 'text-white' : project.titleColor} line-clamp-2`}>
+            {project.title}
+          </h3>
+          <p className={`text-sm leading-relaxed mb-3 md:mb-4 ${featured ? 'line-clamp-4 md:line-clamp-none' : 'line-clamp-3'} ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
+            {project.description}
+          </p>
+          <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-4">
+            {project.tags.slice(0, tagCount).map(tag => (
+              <span key={tag} className={`px-2.5 py-0.5 text-xs rounded-full border font-medium ${isDarkMode ? 'bg-amber-500/[0.12] text-amber-300 border-amber-500/[0.2]' : 'bg-[var(--lm-accent-muted)] text-[var(--lm-accent)] border-[var(--lm-border)]'}`}>
+                {tag}
+              </span>
+            ))}
+            {project.tags.length > tagCount && (
+              <span className={`px-2.5 py-0.5 text-xs rounded-full border font-medium ${isDarkMode ? 'bg-amber-500/[0.12] text-amber-300 border-amber-500/[0.2]' : 'bg-[var(--lm-accent-muted)] text-[var(--lm-accent)] border-[var(--lm-border)]'}`}>
+                +{project.tags.length - tagCount} more
+              </span>
+            )}
+          </div>
+          <div className="flex gap-2">
+            {project.links.slice(0, 2).map((link, idx) => (
+              <div
+                key={idx}
+                className={`flex items-center gap-1 px-2 py-1.5 md:px-3 md:py-2 text-xs rounded-full border font-medium transition-all duration-300 cursor-pointer ${isDarkMode ? 'bg-white/[0.04] border-white/[0.06] text-[#8B9DB0] hover:bg-white/[0.08] hover:text-[#F0F4F8] hover:border-amber-500/30' : 'bg-[var(--lm-accent-muted)] text-[var(--lm-accent)] border-[var(--lm-border)] hover:bg-[var(--lm-accent)]/20'}`}
+                onClick={(e) => { e.stopPropagation(); window.open(link.href, '_blank'); }}
+              >
+                {link.icon}
+                <span className="hidden sm:inline">{link.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      </div>
+    </motion.div>
+  );
+};
 
 const Projects = ({ isDarkMode }) => {
   const [selectedProject, setSelectedProject] = useState(null);
@@ -126,161 +217,82 @@ const Projects = ({ isDarkMode }) => {
   return (
     <section
       id="projects"
-      className={`pt-32 md:pt-48 pb-32 md:pb-48 transition-colors duration-300 ${isDarkMode ? "bg-transparent" : "bg-transparent"} relative overflow-hidden`}
+      className={`pt-12 md:pt-20 pb-32 md:pb-48 transition-colors duration-300 ${isDarkMode ? "bg-transparent" : "bg-transparent"} relative overflow-hidden`}
     >
       {/* Static background orbs */}
       {isDarkMode && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-32 left-1/4 w-[500px] h-[500px] rounded-full bg-violet-600/[0.05] blur-[120px]" />
-          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-cyan-400/[0.04] blur-[100px]" />
+          <div className="absolute -top-32 left-1/4 w-[500px] h-[500px] rounded-full bg-amber-500/[0.04] blur-[120px]" />
         </div>
       )}
 
       <div className="relative z-10">
-        {/* HEADINGS */}
+        {/* Section header — minimal banner */}
         <motion.div
-          className="md:w-2/5 mx-auto text-center px-4"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.8 }}
-          variants={{
-            hidden: { opacity: 0, y: -50 },
-            visible: { opacity: 1, y: 0 },
-          }}
+          className="max-w-7xl mx-auto px-4 mb-8 md:mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
         >
-          <div className={`backdrop-blur-xl rounded-2xl p-6 md:p-8 border ${isDarkMode ? 'bg-[#111827] border-white/[0.06]' : 'bg-white/30 border-gray-200/30 shadow-lg'}`}>
-            <p className="font-playfair font-semibold text-3xl md:text-4xl mb-4">
-              <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
-                FEATURED PROJECTS
-              </span>
+          <div className="flex flex-col items-center">
+            <p className={`font-mono text-xs uppercase tracking-[0.2em] mb-2 ${isDarkMode ? 'text-amber-500/80' : 'text-[var(--lm-accent)]/80'}`}>
+              Projects
             </p>
-            <div className="flex justify-center mt-5">
-              <div className="w-2/3 h-[2px] bg-gradient-to-r from-violet-600 to-cyan-400 rounded-full" />
-            </div>
-            <p className={`mt-6 text-sm md:text-md leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
-              Below are some of my favourite projects I worked on. Some are embedded, others are full stack. But all are made with 💙. Click on any project to see more details.
-            </p>
+            <h2 className={`font-playfair text-2xl md:text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'}`}>
+              Featured Work
+            </h2>
+            <div className={`mt-3 w-12 h-[1px] ${isDarkMode ? 'bg-amber-500/60' : 'bg-[var(--lm-accent)]/60'}`} />
           </div>
         </motion.div>
 
-        {/* PROJECTS GRID - Single column on mobile, responsive grid on larger screens */}
+        {/* FEATURED PROJECTS - FridgeMind & Cliara (full-width) */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-12 md:mt-16 max-w-7xl mx-auto px-4"
+          className="max-w-7xl mx-auto px-4 space-y-6 md:space-y-8"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <ProjectCard featured project={projects[0]} isDarkMode={isDarkMode} openModal={openModal} />
+          <ProjectCard featured project={projects[1]} isDarkMode={isDarkMode} openModal={openModal} />
+        </motion.div>
+
+        {/* PROJECTS GRID - Remaining projects */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-8 md:mt-12 max-w-7xl mx-auto px-4"
           variants={container}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
         >
-          {projects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              className="relative group cursor-pointer"
-              variants={{
-                hidden: { opacity: 0, y: 50 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              transition={{ delay: index * 0.1 }}
-              onClick={() => openModal(project)}
-              whileHover={{ scale: window.innerWidth < 768 ? 1 : 1.03 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              {/* Project Card */}
-              <div className={`backdrop-blur-xl rounded-2xl border overflow-hidden transition-all duration-300 h-full ${isDarkMode ? 'bg-[#111827] border-white/[0.06] group-hover:translate-y-[-6px] group-hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)] group-hover:border-violet-500/20' : 'bg-white/30 border-gray-200/30 hover:bg-white/50 shadow-lg group-hover:shadow-xl'}`}>
-                
-                {/* Image Section */}
-                <div className="relative overflow-hidden h-36 md:h-48">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className={`absolute inset-0 bg-gradient-to-t ${project.gradient} opacity-20 group-hover:opacity-40 transition-opacity duration-500`} />
-                </div>
-
-                {/* Content Section */}
-                <div className="p-4 md:p-6">
-                  <h3 className={`font-playfair text-lg md:text-xl font-bold mb-2 md:mb-3 group-hover:underline underline-offset-4 decoration-2 transition-all duration-300 cursor-pointer ${isDarkMode ? 'text-white' : project.titleColor} line-clamp-2`}>
-                    {project.title}
-                  </h3>
-                  
-                  <p className={`text-sm leading-relaxed mb-3 md:mb-4 line-clamp-3 ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
-                    {project.description}
-                  </p>
-
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-4">
-                    {project.tags.slice(0, window.innerWidth < 768 ? 2 : 3).map(tag => (
-                      <span key={tag} className={`px-2.5 py-0.5 text-xs rounded-full border font-medium ${
-                        isDarkMode
-                          ? 'bg-amber-500/[0.12] text-amber-300 border-amber-500/[0.2]'
-                          : 'bg-orange-100 text-orange-800 border-orange-300'
-                      }`}>
-                        {tag}
-                      </span>
-                    ))}
-                    {project.tags.length > (window.innerWidth < 768 ? 2 : 3) && (
-                      <span className={`px-2.5 py-0.5 text-xs rounded-full border font-medium ${isDarkMode ? 'bg-amber-500/[0.12] text-amber-300 border-amber-500/[0.2]' : 'bg-gray-100 text-gray-800 border-gray-300'}`}>
-                        +{project.tags.length - (window.innerWidth < 768 ? 2 : 3)} more
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Links Preview */}
-                  <div className="flex gap-2">
-                    {project.links.slice(0, 2).map((link, idx) => (
-                      <div
-                        key={idx}
-                        className={`flex items-center gap-1 px-2 py-1.5 md:px-3 md:py-2 text-xs rounded-full border font-medium transition-all duration-300 cursor-pointer ${
-                          isDarkMode
-                            ? 'bg-white/[0.04] border-white/[0.06] text-[#8B9DB0] hover:bg-white/[0.08] hover:text-[#F0F4F8] hover:border-violet-500/20'
-                            : 'bg-orange-100 text-orange-800 border-orange-300 hover:bg-orange-200'
-                        }`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          window.open(link.href, '_blank');
-                        }}
-                      >
-                        {link.icon}
-                        <span className="hidden sm:inline">{link.label}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Glowing border effect - Reduced on mobile */}
-              <div className={`absolute inset-0 bg-gradient-to-r ${project.gradient} opacity-0 group-hover:opacity-10 blur-xl transition-opacity duration-500 rounded-2xl -z-10`} />
-            </motion.div>
+          {projects.slice(2).map((project, index) => (
+            <ProjectCard key={project.id} project={project} isDarkMode={isDarkMode} openModal={openModal} index={index} />
           ))}
         </motion.div>
 
-        {/* Call to Action */}
+        {/* Call to Action — minimal banner */}
         <motion.div
-          className="text-center mt-16 md:mt-20 px-4"
-          initial={{ opacity: 0, y: 30 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-12 md:mt-16 px-4"
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
         >
-          <div className={`backdrop-blur-xl rounded-2xl p-6 md:p-8 border max-w-2xl mx-auto ${isDarkMode ? 'bg-[#111827] border-white/[0.06]' : 'bg-white/30 border-gray-200/30 shadow-lg'}`}>
-            <h3 className="text-xl md:text-2xl font-playfair mb-4 bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
-              Interested in collaborating?
-            </h3>
-            <p className={`mb-6 text-sm md:text-base ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
-              I'm always excited to work on new projects and learn from different perspectives.
-            </p>
-            <motion.a
-              href="#contact"
-              className="inline-flex items-center gap-2 px-6 py-3 md:px-8 md:py-4 bg-gradient-to-r from-violet-600 to-cyan-500 text-white rounded-full font-semibold hover:opacity-90 hover:scale-[1.02] transition-all duration-200 text-sm md:text-base"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Let's Connect
-              <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </motion.a>
-          </div>
+          <p className={`text-sm md:text-base ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
+            Interested in collaborating?
+          </p>
+          <motion.a
+            href="#contact"
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium text-sm border transition-colors ${isDarkMode ? 'border-amber-500/40 text-amber-400 hover:bg-amber-500/10' : 'border-[var(--lm-accent)]/40 text-[var(--lm-accent)] hover:bg-[var(--lm-accent)]/10'}`}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            Let's Connect
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </motion.a>
         </motion.div>
       </div>
 
@@ -295,7 +307,7 @@ const Projects = ({ isDarkMode }) => {
             onClick={closeModal}
           >
             <motion.div
-              className={`backdrop-blur-xl rounded-3xl border max-w-6xl w-full max-h-[90vh] overflow-y-auto ${isDarkMode ? 'bg-[#0B0F18] border-white/[0.06]' : 'bg-white/95 border-gray-200/30 shadow-2xl'}`}
+              className={`backdrop-blur-xl rounded-3xl border max-w-6xl w-full max-h-[90vh] overflow-y-auto ${isDarkMode ? 'bg-[#0B0F18] border-white/[0.06]' : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] shadow-2xl'}`}
               initial={{ scale: 0.5, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.5, opacity: 0 }}
@@ -305,9 +317,9 @@ const Projects = ({ isDarkMode }) => {
               {/* Close Button */}
               <button
                 onClick={closeModal}
-                className={`absolute top-4 right-4 md:top-6 md:right-6 z-10 p-2 rounded-full transition-colors ${isDarkMode ? 'bg-black/50 hover:bg-black/70' : 'bg-white/80 hover:bg-white/90 shadow-lg'}`}
+                className={`absolute top-4 right-4 md:top-6 md:right-6 z-10 p-2 rounded-full transition-colors ${isDarkMode ? 'bg-black/50 hover:bg-black/70' : 'bg-[var(--lm-bg-surface)] hover:opacity-90 shadow-lg'}`}
               >
-                <FaTimes className={`${isDarkMode ? 'text-white' : 'text-gray-700'}`} size={window.innerWidth < 768 ? 16 : 20} />
+                <FaTimes className={`${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'}`} size={window.innerWidth < 768 ? 16 : 20} />
               </button>
 
               {/* Mobile: Stack layout, Desktop: Side by side */}
@@ -324,7 +336,7 @@ const Projects = ({ isDarkMode }) => {
 
                 {/* Content Section */}
                 <div className="p-6 md:p-8 flex flex-col justify-center">
-                  <h2 className={`font-playfair text-2xl md:text-4xl font-bold mb-4 md:mb-6 ${isDarkMode ? 'text-[#F0F4F8]' : selectedProject.titleColor}`}>
+                  <h2 className={`font-playfair text-2xl md:text-4xl font-bold mb-4 md:mb-6 ${isDarkMode ? 'text-[#F0F4F8]' : 'text-[var(--lm-text-primary)]'}`}>
                     {selectedProject.title}
                   </h2>
                   
@@ -333,8 +345,8 @@ const Projects = ({ isDarkMode }) => {
                   </p>
 
                   <div className="mb-4 md:mb-6">
-                    <h4 className={`text-lg md:text-xl font-semibold mb-2 md:mb-3 ${isDarkMode ? 'text-[#F0F4F8]' : 'text-gray-900'}`}>Technical Details</h4>
-                    <p className={`leading-relaxed text-sm md:text-base ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
+                    <h4 className={`text-lg md:text-xl font-semibold mb-2 md:mb-3 ${isDarkMode ? 'text-[#F0F4F8]' : 'text-[var(--lm-text-primary)]'}`}>Technical Details</h4>
+                    <p className={`leading-relaxed text-sm md:text-base ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
                       {selectedProject.hoverText}
                     </p>
                   </div>
@@ -345,7 +357,7 @@ const Projects = ({ isDarkMode }) => {
                       <span key={tag} className={`px-2.5 py-1 md:px-3 md:py-2 rounded-full text-xs md:text-sm border ${
                         isDarkMode
                           ? 'bg-amber-500/[0.12] text-amber-300 border-amber-500/[0.2]'
-                          : 'bg-orange-100 text-orange-700 border-orange-300'
+                          : 'bg-[var(--lm-accent-muted)] text-[var(--lm-accent)] border-[var(--lm-border)]'
                       }`}>
                         {tag}
                       </span>
@@ -360,7 +372,8 @@ const Projects = ({ isDarkMode }) => {
                         href={link.href}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-2 md:gap-3 px-4 py-2 md:px-6 md:py-3 bg-gradient-to-r from-violet-600 to-cyan-500 text-white rounded-full font-semibold hover:opacity-90 hover:scale-[1.02] transition-all duration-200 text-sm md:text-base"
+                        className={`flex items-center gap-2 md:gap-3 px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold hover:opacity-90 hover:scale-[1.02] active:scale-[0.95] transition-all duration-200 text-sm md:text-base ${isDarkMode ? 'bg-amber-500 text-[#07090D]' : 'text-white'}`}
+                        style={!isDarkMode ? { backgroundColor: '#4A6B4E' } : undefined}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.95 }}
                       >

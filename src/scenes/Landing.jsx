@@ -1,59 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import SocialMediaIcons from "../components/SocialMediaIcons";
 import { motion } from "framer-motion";
 import AnchorLink from "react-anchor-link-smooth-scroll";
 
-// Typewriter Effect Component
-const TypewriterEffect = ({ isDarkMode }) => {
-  const [currentText, setCurrentText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-
-  const titles = [
-    "Computer Engineer",
-    "Full Stack Developer",
-    "Tech Enthusiast",
-    "Digital Artist",
-    "AI and ML Explorer",
-  ];
-
-  useEffect(() => {
-    const currentTitle = titles[currentIndex];
-    let timeout;
-
-    if (isPaused) {
-      timeout = setTimeout(() => {
-        setIsPaused(false);
-        setIsDeleting(true);
-      }, 3000);
-    } else if (isDeleting) {
-      if (currentText === '') {
-        setIsDeleting(false);
-        setCurrentIndex((prev) => (prev + 1) % titles.length);
-      } else {
-        timeout = setTimeout(() => {
-          setCurrentText(currentTitle.substring(0, currentText.length - 1));
-        }, 30);
-      }
-    } else {
-      if (currentText === currentTitle) {
-        setIsPaused(true);
-      } else {
-        timeout = setTimeout(() => {
-          setCurrentText(currentTitle.substring(0, currentText.length + 1));
-        }, 60);
-      }
-    }
-
-    return () => clearTimeout(timeout);
-  }, [currentText, currentIndex, isDeleting, isPaused, titles]);
-
+// One-time staggered reveal tagline (no looping typewriter)
+const StaggeredTagline = ({ isDarkMode }) => {
+  const words = ["Computer Engineer", "·", "Full Stack Developer", "·", "AI & ML Explorer"];
   return (
-    <div className="w-full max-w-md mx-auto md:mx-0">
-      <h2 className={`text-lg md:text-xl lg:text-2xl xl:text-3xl font-medium font-playfair ${isDarkMode ? 'text-cyan-400' : 'text-blue-600'} tracking-wide text-center md:text-left leading-relaxed`}>
-        {currentText}
-        <span className={isDarkMode ? 'text-violet-400' : 'text-purple-500'}>|</span>
+    <div className="w-full max-w-md mx-auto md:mx-0 flex flex-wrap gap-x-2 gap-y-1 justify-center md:justify-start">
+      <h2 className={`text-lg md:text-xl lg:text-2xl xl:text-3xl font-medium font-playfair tracking-wide leading-relaxed flex flex-wrap gap-x-2 gap-y-1 justify-center md:justify-start`}>
+        {words.map((word, i) => (
+          <motion.span
+            key={i}
+            className={word === "·" ? (isDarkMode ? "text-amber-500/80" : "text-[var(--lm-accent)]/80") : isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.6 + i * 0.08 }}
+          >
+            {word}
+          </motion.span>
+        ))}
       </h2>
     </div>
   );
@@ -65,34 +31,29 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
       {/* Background Decorations */}
       {isDarkMode && (
         <div className="fixed inset-0 z-[-2] overflow-hidden pointer-events-none">
-          <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-violet-600/[0.06] blur-[120px]" />
-          <div className="absolute bottom-0 -left-32 w-[400px] h-[400px] rounded-full bg-cyan-400/[0.04] blur-[100px]" />
+          <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-amber-500/[0.05] blur-[120px]" />
         </div>
       )}
       {!isDarkMode && (
         <div className="fixed inset-0 z-[-2] overflow-hidden pointer-events-none">
-          <div className={`absolute inset-0 bg-gradient-to-br from-purple-100/30 via-transparent to-teal-100/30`} />
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--lm-accent)]/5 via-transparent to-transparent" />
         </div>
       )}
 
       <section
         className={`${isDarkMode ? 'bg-transparent' : 'bg-transparent'} flex flex-col md:flex-row md:justify-between md:items-center gap-8 md:gap-16 min-h-screen py-8 md:py-10 transition-colors duration-300 pt-20 md:pt-32 relative z-10 px-4`}
       >
-        {/* Glass morphism overlay */}
-        <div className={`absolute inset-0 backdrop-blur-sm rounded-3xl border ${isDarkMode ? 'bg-transparent border-white/[0.06]' : 'bg-white/20 border-gray-200/30'}`} 
-             style={{ margin: '1rem md:2rem', zIndex: -1 }} />
-
-        {/* IMAGE SECTION - On top for mobile */}
-        <div className="basis-3/5 z-10 flex justify-center md:order-2 order-1">
+        {/* IMAGE SECTION - Overlap for asymmetry */}
+        <div className="basis-3/5 z-10 flex justify-center md:order-2 order-1 md:-ml-8 lg:-ml-12">
           <motion.div 
             className="relative z-0 w-full max-w-[280px] md:max-w-[400px] lg:max-w-[600px]"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.3 }}
+            initial={{ opacity: 0, scale: 0.9, x: 20 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            transition={{ duration: 0.7, delay: 0.5 }}
           >
             <img
               alt="profile"
-              className={`relative w-full h-full object-cover rounded-3xl hover:scale-105 transition-transform duration-500 ${isDarkMode ? 'shadow-[0_0_60px_rgba(124,58,237,0.18)] border border-violet-500/20' : 'shadow-2xl'}`}
+              className={`relative w-full h-full object-cover rounded-3xl hover:scale-[1.02] transition-transform duration-500 ${isDarkMode ? 'shadow-[0_0_40px_rgba(245,158,11,0.12)] border border-amber-500/15' : 'shadow-2xl border border-[var(--lm-border)]'}`}
               src={`${process.env.PUBLIC_URL}/assets/light-mode-pic.png`}
             />
           </motion.div>
@@ -112,51 +73,47 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
             }}
           >
             <motion.p 
-              className={`text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-playfair ${isDarkMode ? 'text-white' : 'text-gray-900'} text-center md:text-start mb-4 md:mb-6 animate-fade-in font-bold leading-tight`}
+              className={`text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-playfair ${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'} text-center md:text-start mb-4 md:mb-6 font-bold leading-tight`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
             >
               Hi, I'm
             </motion.p>
 
             <motion.p 
-              className={`text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-playfair z-10 text-center md:text-start ${isDarkMode ? 'text-white' : 'text-gray-900'} mb-6 md:mb-8 leading-tight`}
+              className={`text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-playfair z-10 text-center md:text-start ${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'} mb-6 md:mb-8 leading-tight`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
             >
               Hreem {""}
-              <span className="relative font-semibold z-10 bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className={`relative font-semibold z-10 ${isDarkMode ? 'bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent' : 'text-[var(--lm-accent)]'}`}>
                 Pandya
               </span>
             </motion.p>
 
-            {/* Auto-typing job titles */}
+            {/* Staggered tagline (one-time reveal) */}
             <motion.div
               className="mt-6 md:mt-8 mb-6 md:mb-8 text-center md:text-start flex justify-center md:justify-start"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
             >
-              <TypewriterEffect isDarkMode={isDarkMode} />
+              <StaggeredTagline isDarkMode={isDarkMode} />
             </motion.div>
           </motion.div>
 
           {/* CALL TO ACTIONS */}
           <motion.div
             className="flex mt-5 justify-center md:justify-start gap-3 md:gap-4 flex-wrap"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 },
-            }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.0 }}
           >
             <AnchorLink
-              className="btn-enhanced bg-gradient-to-r from-violet-600 to-cyan-500 text-white rounded-full py-2.5 px-5 md:py-3 md:px-7 font-semibold transition-all duration-200 text-sm md:text-base hover:opacity-90 hover:scale-[1.02]"
+              className={`rounded-full py-2.5 px-5 md:py-3 md:px-7 font-semibold transition-all duration-200 text-sm md:text-base hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] ${isDarkMode ? 'btn-enhanced bg-amber-500 hover:bg-amber-400 text-[#07090D]' : 'hover:opacity-90 text-white'}`}
+              style={!isDarkMode ? { backgroundColor: '#4A6B4E' } : undefined}
               onClick={() => setSelectedPage("contact")}
               href="#contact"
             >
@@ -164,7 +121,7 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
             </AnchorLink>
 
             <AnchorLink
-              className={`rounded-full py-2.5 px-5 md:py-3 md:px-7 font-semibold transition-all duration-200 backdrop-blur-sm text-sm md:text-base ${isDarkMode ? 'border border-white/[0.12] text-[#F0F4F8] hover:bg-white/[0.05]' : 'border-2 border-teal-500 text-teal-500 hover:bg-teal-500 hover:text-white bg-white/30'}`}
+              className={`rounded-full py-2.5 px-5 md:py-3 md:px-7 font-semibold transition-all duration-200 backdrop-blur-sm text-sm md:text-base ${isDarkMode ? 'border border-white/[0.12] text-[#F0F4F8] hover:bg-white/[0.05]' : 'border-2 border-[#4A6B4E] text-[#4A6B4E] hover:bg-[#4A6B4E] hover:text-white bg-[var(--lm-bg-surface)]'}`}
               onClick={() => setSelectedPage("projects")}
               href="#projects"
             >
@@ -174,14 +131,9 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
 
           <motion.div
             className="flex mt-5 justify-center md:justify-start"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ delay: 0.8, duration: 0.5 }}
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 },
-            }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.2 }}
           >
             <div className="transform hover:scale-110 transition-transform duration-300">
               <SocialMediaIcons isDarkMode={isDarkMode} forceWhite={isDarkMode} />

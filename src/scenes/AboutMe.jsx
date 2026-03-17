@@ -1,6 +1,51 @@
-import LineGradient from "../components/LineGradient";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
+
+// Expertise Bricks — falling from top, stacking
+const ExpertiseBricks = ({ isDarkMode }) => {
+  const pillars = [
+    { title: "Full-Stack & AI/ML", tech: "Python · React · TensorFlow · Expo" },
+    { title: "Embedded & Hardware", tech: "C · Arduino · STM32 · OpenCV" },
+    { title: "Accessibility & Impact", tech: "Voice · CV · Inclusive design" },
+    { title: "Web & Backend", tech: "React · Flask · PostgreSQL · Docker" },
+  ];
+
+  return (
+    <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-8 md:mb-16">
+      {pillars.map((pillar, index) => (
+        <motion.div
+          key={pillar.title}
+          initial={{ opacity: 0, y: -80, rotate: -2 }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+            rotate: index % 2 === 0 ? -1 : 1,
+            transition: {
+              type: "spring",
+              stiffness: 80,
+              damping: 15,
+              delay: 0.1,
+            },
+          }}
+          viewport={{ once: true, amount: 0.2 }}
+          whileHover={{ y: -2, rotate: 0, transition: { duration: 0.2 } }}
+          className={`flex-shrink-0 rounded-xl px-4 py-3 md:px-5 md:py-4 border backdrop-blur-xl transition-all duration-300 ${
+            isDarkMode
+              ? "bg-[#111827] border-white/[0.06] hover:border-amber-500/30"
+              : "bg-[var(--lm-bg-surface)] border-[var(--lm-border)] hover:border-[var(--lm-accent)]/40 shadow-lg"
+          }`}
+        >
+          <h3 className={`font-playfair font-bold text-sm md:text-base mb-1 ${isDarkMode ? "text-amber-400" : "text-[var(--lm-accent)]"}`}>
+            {pillar.title}
+          </h3>
+          <p className={`text-xs md:text-sm ${isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"}`}>
+            {pillar.tech}
+          </p>
+        </motion.div>
+      ))}
+    </div>
+  );
+};
 
 // Creative Carousel Component
 const CreativeCarousel = ({ isDarkMode }) => {
@@ -151,8 +196,8 @@ const CreativeCarousel = ({ isDarkMode }) => {
           className={`p-3 rounded-full backdrop-blur-md transition-all duration-200 ${
             isDarkMode 
               ? 'bg-white/10 hover:bg-white/20 text-white' 
-              : 'bg-black/10 hover:bg-black/20 text-gray-800'
-          } border border-white/20 shadow-lg`}
+              : 'bg-[var(--lm-accent)]/10 hover:bg-[var(--lm-accent)]/20 text-[var(--lm-text-primary)]'
+          } border ${isDarkMode ? 'border-white/20' : 'border-[var(--lm-border)]'} shadow-lg`}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -163,8 +208,8 @@ const CreativeCarousel = ({ isDarkMode }) => {
           className={`p-3 rounded-full backdrop-blur-md transition-all duration-200 ${
             isDarkMode 
               ? 'bg-white/10 hover:bg-white/20 text-white' 
-              : 'bg-black/10 hover:bg-black/20 text-gray-800'
-          } border border-white/20 shadow-lg`}
+              : 'bg-[var(--lm-accent)]/10 hover:bg-[var(--lm-accent)]/20 text-[var(--lm-text-primary)]'
+          } border ${isDarkMode ? 'border-white/20' : 'border-[var(--lm-border)]'} shadow-lg`}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -179,8 +224,8 @@ const CreativeCarousel = ({ isDarkMode }) => {
           className={`p-2 rounded-full backdrop-blur-md transition-all duration-200 ${
             isDarkMode 
               ? 'bg-white/10 hover:bg-white/20 text-white' 
-              : 'bg-black/10 hover:bg-black/20 text-gray-800'
-          } border border-white/20 shadow-lg`}
+              : 'bg-[var(--lm-accent)]/10 hover:bg-[var(--lm-accent)]/20 text-[var(--lm-text-primary)]'
+          } border ${isDarkMode ? 'border-white/20' : 'border-[var(--lm-border)]'} shadow-lg`}
           whileTap={{ scale: 0.95 }}
         >
           ↑
@@ -190,8 +235,8 @@ const CreativeCarousel = ({ isDarkMode }) => {
           className={`p-2 rounded-full backdrop-blur-md transition-all duration-200 ${
             isDarkMode 
               ? 'bg-white/10 hover:bg-white/20 text-white' 
-              : 'bg-black/10 hover:bg-black/20 text-gray-800'
-          } border border-white/20 shadow-lg`}
+              : 'bg-[var(--lm-accent)]/10 hover:bg-[var(--lm-accent)]/20 text-[var(--lm-text-primary)]'
+          } border ${isDarkMode ? 'border-white/20' : 'border-[var(--lm-border)]'} shadow-lg`}
           whileTap={{ scale: 0.95 }}
         >
           ↓
@@ -205,8 +250,8 @@ const CreativeCarousel = ({ isDarkMode }) => {
             key={index}
             className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full transition-all duration-300 ${
               index === currentIndex 
-                ? 'bg-violet-500 scale-125' 
-                : isDarkMode ? 'bg-white/20 hover:bg-white/40' : 'bg-gray-600/50 hover:bg-gray-600/70'
+                ? (isDarkMode ? 'bg-amber-500 scale-125' : 'bg-[var(--lm-accent)] scale-125')
+                : isDarkMode ? 'bg-white/20 hover:bg-white/40' : 'bg-[var(--lm-accent)]/30 hover:bg-[var(--lm-accent)]/50'
             }`}
             onClick={() => setCurrentIndex(index)}
           />
@@ -221,179 +266,114 @@ const AboutMe = ({ isDarkMode }) => {
     <section id="about me" className={`pt-20 md:pt-32 pb-16 md:pb-32 relative transition-colors duration-300 ${isDarkMode ? 'bg-transparent' : 'bg-transparent'} overflow-hidden`}>
       {isDarkMode && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-20 -left-20 w-[400px] h-[400px] rounded-full bg-violet-600/[0.06] blur-[120px]" />
-          <div className="absolute -bottom-20 -right-20 w-[400px] h-[400px] rounded-full bg-cyan-400/[0.04] blur-[100px]" />
+          <div className="absolute -top-20 -left-20 w-[400px] h-[400px] rounded-full bg-amber-500/[0.04] blur-[120px]" />
         </div>
       )}
 
       <div className="relative z-10 max-w-7xl mx-auto px-4">
-        {/* Simple Header */}
+        {/* Header — minimal, no underline flourish */}
         <motion.div
-          className="text-center mb-8 md:mb-16"
-          initial={{ opacity: 0, y: -50 }}
+          className="mb-12 md:mb-16"
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <motion.h1 
-            className="font-playfair text-3xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-          >
-            About Me
-          </motion.h1>
-          
-          <motion.div 
-            className="w-24 h-[2px] md:w-32 bg-gradient-to-r from-violet-600 to-cyan-400 rounded-full mx-auto mb-6"
-            initial={{ width: 0 }}
-            whileInView={{ width: window.innerWidth < 768 ? 96 : 128 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-          />
+          <p className={`font-mono text-xs md:text-sm uppercase tracking-[0.2em] mb-2 ${isDarkMode ? 'text-amber-500/70' : 'text-[var(--lm-accent)]/70'}`}>
+            About
+          </p>
+          <h1 className={`font-playfair text-3xl md:text-4xl font-bold ${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'}`}>
+            Hreem Pandya
+          </h1>
         </motion.div>
 
-        {/* Status Cards */}
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
-        >
-          <div className={`backdrop-blur-xl rounded-2xl p-4 md:p-6 border transition-all duration-300 group ${isDarkMode ? 'bg-[#111827] border-white/[0.06] hover:border-violet-500/20' : 'bg-white/30 border-gray-200/30 hover:bg-white/50 shadow-lg'}`}>
-            <div className="flex items-center gap-3 md:gap-4">
-              <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-xl md:text-2xl ${isDarkMode ? 'bg-violet-500/20' : 'bg-gradient-to-r from-red-500 to-orange-500'}`}>
-                💻
-              </div>
-              <div>
-                <h3 className={`text-xs md:text-sm font-semibold uppercase tracking-wide ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>Currently Working on:</h3>
-                <p className={`text-sm md:text-lg font-bold ${isDarkMode ? 'text-violet-400' : 'text-red-600'}`}>
-                  WattGuard: A Smart Home Energy Monitor
-                </p>
-              </div>
-            </div>
-          </div>
+        {/* Expertise Bricks */}
+        <ExpertiseBricks isDarkMode={isDarkMode} />
 
-          <div className={`backdrop-blur-xl rounded-2xl p-4 md:p-6 border transition-all duration-300 group ${isDarkMode ? 'bg-[#111827] border-white/[0.06] hover:border-violet-500/20' : 'bg-white/30 border-gray-200/30 hover:bg-white/50 shadow-lg'}`}>
-            <div className="flex items-center gap-3 md:gap-4">
-              <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-xl md:text-2xl ${isDarkMode ? 'bg-cyan-500/20' : 'bg-gradient-to-r from-blue-500 to-teal-500'}`}>
-                📚
-              </div>
-              <div>
-                <h3 className={`text-xs md:text-sm font-semibold uppercase tracking-wide ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>Currently Learning:</h3>
-                <p className={`text-sm md:text-lg font-bold ${isDarkMode ? 'text-cyan-400' : 'text-teal-600'}`}>
-                  Rust Language and Advanced AI/ML Concepts
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`backdrop-blur-xl rounded-2xl p-4 md:p-6 border transition-all duration-300 group ${isDarkMode ? 'bg-[#111827] border-white/[0.06] hover:border-violet-500/20' : 'bg-white/30 border-gray-200/30 hover:bg-white/50 shadow-lg'}`}>
-            <div className="flex items-center gap-3 md:gap-4">
-              <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-xl md:text-2xl ${isDarkMode ? 'bg-amber-500/20' : 'bg-gradient-to-r from-purple-500 to-pink-500'}`}>
-                🎵
-              </div>
-              <div>
-                <h3 className={`text-xs md:text-sm font-semibold uppercase tracking-wide ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>Current Obsession:</h3>
-                <p className={`text-sm md:text-lg font-bold ${isDarkMode ? 'text-amber-400' : 'text-pink-600'}`}>
-                  Learning and Playing the Ukulele
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Main Content Grid - Stack on mobile */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-          {/* Left Column - About Me */}
+        {/* Main Content — editorial layout, no emoji cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
+          {/* Left Column — narrative */}
           <motion.div 
-            className="lg:col-span-2 space-y-6 md:space-y-8"
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
+            className="space-y-10 md:space-y-14"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true, amount: 0.2 }}
           >
-            {/* Who Am I */}
-            <div className={`backdrop-blur-xl rounded-3xl p-6 md:p-8 border transition-all duration-500 ${isDarkMode ? 'bg-[#111827] border-white/[0.06] hover:border-violet-500/20 hover:shadow-[0_8px_32px_rgba(124,58,237,0.08)]' : 'bg-white/30 border-gray-200/30 hover:bg-white/50 shadow-lg'}`}>
-              <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
-                <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-violet-500/20' : 'bg-gradient-to-r from-purple-500 to-teal-500'}`}>
-                  <span className="text-xl md:text-2xl">👨‍💻</span>
-                </div>
-                <h2 className="text-xl md:text-2xl font-playfair font-bold bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
-                  Who Am I?
-                </h2>
-              </div>
-              <p className={`text-base md:text-lg leading-relaxed mb-4 md:mb-6 ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
-                I'm a 19-year-old <span className="font-semibold text-violet-400">Computer Engineering student</span> passionate about full-stack development, AI/ML, and embedded systems. I love creating projects that make a real difference, whether that's for entire communities or niche groups often overlooked by mainstream solutions.
+            {/* Intro */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className={`space-y-4 pl-0 md:pl-6 md:border-l-2 md:border-transparent transition-colors duration-300 ${isDarkMode ? 'md:hover:border-amber-500/40' : 'md:hover:border-[var(--lm-accent)]/40'}`}
+            >
+              <p className={`text-lg md:text-xl leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
+                19, Computer Engineering at Waterloo. I build things — full-stack apps, AI stuff, sometimes hardware that talks to the real world.
               </p>
-              <p className={`text-base md:text-lg leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
-                My work blends <span className="font-semibold text-cyan-400">NLP, computer vision, and LLMs</span> with secure, scalable architectures and hardware integration. I'm constantly learning, exploring new technologies, and finding creative ways to turn ideas into impactful, human-centered solutions.
+              <p className={`text-base md:text-lg leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
+                Started with Python at 13 when my local YMCA ran a class. Got a hand-me-down laptop around the same time and couldn't stop messing with it. Udemy courses, new languages, projects for the fun of it. Now in second year, still chasing that same curiosity.
               </p>
-            </div>
+            </motion.div>
 
-            {/* My Journey */}
-            <div className={`backdrop-blur-xl rounded-3xl p-6 md:p-8 border transition-all duration-500 ${isDarkMode ? 'bg-[#111827] border-white/[0.06] hover:border-violet-500/20 hover:shadow-[0_8px_32px_rgba(124,58,237,0.08)]' : 'bg-white/30 border-gray-200/30 hover:bg-white/50 shadow-lg'}`}>
-              <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
-                <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-cyan-500/20' : 'bg-gradient-to-r from-green-500 to-teal-500'}`}>
-                  <span className="text-xl md:text-2xl">🚀</span>
-                </div>
-                <h2 className={`text-xl md:text-2xl font-playfair font-bold ${isDarkMode ? 'text-cyan-400' : 'text-green-500'}`}>
-                  My Journey
-                </h2>
-              </div>
-              <p className={`text-base md:text-lg leading-relaxed mb-4 ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
-                My journey into tech started when I was 13, taking my first Python classes at my local YMCA. Around the same time, I got my first
-                hand-me-down laptop, and I couldn't stop exploring what I could do with it. I went from messing around with small scripts to 
-                buying Udemy courses, learning new languages, and eventually building my own projects just for the fun (and challenge) of it.
+            {/* Approach */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className={`space-y-3 pl-0 md:pl-6 md:border-l-2 md:border-transparent transition-colors duration-300 ${isDarkMode ? 'md:hover:border-amber-500/40' : 'md:hover:border-[var(--lm-accent)]/40'}`}
+            >
+              <p className={`font-mono text-xs uppercase tracking-wider ${isDarkMode ? 'text-amber-500/80' : 'text-[var(--lm-accent)]/80'}`}>
+                Approach
               </p>
-              <p className={`text-base md:text-lg leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
-                I'm now in my <span className={`font-semibold ${isDarkMode ? 'text-cyan-400' : 'text-green-500'}`}>second year of Computer Engineering</span>, working towards a 
-                <span className={`font-semibold ${isDarkMode ? 'text-violet-400' : 'text-teal-600'}`}> Bachelor of Applied Science at the University of Waterloo</span>, and I'm still 
-                chasing that same curiosity that got me started.
+              <p className={`text-base md:text-lg leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
+                Build tech that saves people time or money. That's the goal. Every project and internship pushes it. FridgeMind, BeMyEyes, SecureEdu — each one taught me something different about shipping real systems.
               </p>
-            </div>
+            </motion.div>
 
-            {/* What I'm Doing Now */}
-            <div className={`backdrop-blur-xl rounded-3xl p-6 md:p-8 border transition-all duration-500 ${isDarkMode ? 'bg-[#111827] border-white/[0.06] hover:border-violet-500/20 hover:shadow-[0_8px_32px_rgba(124,58,237,0.08)]' : 'bg-white/30 border-gray-200/30 hover:bg-white/50 shadow-lg'}`}>
-              <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
-                <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-amber-500/20' : 'bg-gradient-to-r from-orange-500 to-red-500'}`}>
-                  <span className="text-xl md:text-2xl">⚡</span>
-                </div>
-                <h2 className={`text-xl md:text-2xl font-playfair font-bold ${isDarkMode ? 'text-amber-400' : 'text-orange-500'}`}>
-                  What I'm Doing Now
-                </h2>
-              </div>
-              <p className={`text-base md:text-lg leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
-                I'm exploring my passions through different technologies and work experiences, but my mission stays the same,
-                <span className={`font-semibold ${isDarkMode ? 'text-amber-400' : 'text-orange-400'}`}> build tech that people will look back upon and think "that saved me time/money"</span>. 
-                Every project and every internship is a new way to learn and push that goal forward. Along with programming, I also love to draw digitally, work out and go on hikes. Check out my art on <a href="https://www.instagram.com/hreemdoodles" target="_blank" rel="noreferrer" className={`font-semibold transition-colors duration-200 underline ${isDarkMode ? 'text-amber-400 decoration-amber-400/50 hover:decoration-amber-400' : 'text-orange-500 decoration-orange-400 hover:decoration-orange-700'}`}>Instagram</a>!
+            {/* Beyond code */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className={`space-y-3 pl-0 md:pl-6 md:border-l-2 md:border-transparent transition-colors duration-300 ${isDarkMode ? 'md:hover:border-amber-500/40' : 'md:hover:border-[var(--lm-accent)]/40'}`}
+            >
+              <p className={`font-mono text-xs uppercase tracking-wider ${isDarkMode ? 'text-amber-500/80' : 'text-[var(--lm-accent)]/80'}`}>
+                Off the keyboard
               </p>
-            </div>
+              <p className={`text-base md:text-lg leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
+                Digital art, workouts, hikes. Art lives on <a href="https://www.instagram.com/hreemdoodles" target="_blank" rel="noreferrer" className={`font-medium border-b transition-colors ${isDarkMode ? 'border-amber-500/50 text-amber-400 hover:border-amber-400' : 'border-[var(--lm-accent)]/50 text-[var(--lm-accent)] hover:border-[var(--lm-accent)]'}`}>Instagram</a>.
+              </p>
+            </motion.div>
           </motion.div>
 
-          {/* Right Column - Creative Journey */}
+          {/* Right Column — Art carousel */}
           <motion.div 
-            className="space-y-6 md:space-y-8"
-            initial={{ opacity: 0, x: 30 }}
+            className="lg:order-first space-y-6 md:space-y-8"
+            initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            viewport={{ once: true }}
           >
-            {/* Creative Journey Carousel */}
             <div className="space-y-4 md:space-y-6">
-              <div className="flex items-center justify-between mb-4 md:mb-6">
-                <h3 className="text-lg md:text-xl font-playfair font-bold bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
-                  My Creative Journey
-                </h3>
+              <div className="flex items-center justify-between">
+                <p className={`font-mono text-xs uppercase tracking-wider ${isDarkMode ? 'text-amber-500/80' : 'text-[var(--lm-accent)]/80'}`}>
+                  Art
+                </p>
                 <motion.a
                   href="https://www.instagram.com/hreemdoodles"
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-2 px-3 py-2 md:px-4 md:py-2 bg-gradient-to-r from-violet-600 to-cyan-500 text-white rounded-full font-semibold hover:opacity-90 hover:scale-[1.02] transition-all duration-200 text-xs md:text-sm"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  className={`flex items-center gap-2 px-3 py-2 text-xs font-medium border transition-colors ${isDarkMode ? 'border-amber-500/40 text-amber-400 hover:border-amber-400' : 'border-[var(--lm-accent)]/40 text-[var(--lm-accent)] hover:border-[var(--lm-accent)]'}`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <svg className="w-3 h-3 md:w-4 md:h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.40s-.644-1.40-1.439-1.40z"/>
                   </svg>
-                  View Art
+                  @hreemdoodles
                 </motion.a>
               </div>
               
