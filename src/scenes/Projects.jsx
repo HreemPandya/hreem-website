@@ -44,6 +44,19 @@ const projects = [
   },
   {
     id: 3,
+    title: "InvestEd: AI-Powered Financial Education",
+    description: "Banking app that turns finances into something engaging. Portfolius AI explains spending habits, highlights overspending, and generates personalized explainer videos so you know exactly where your money goes and how to invest smarter.",
+    hoverText: "Next.js + Tailwind frontend with a banking-inspired UI. FastAPI backend orchestrates the workflow: Cohere LLM generates plain-language scripts, Manim renders short explainer videos (720p/30fps), ElevenLabs voices Portfolius, and Supabase stores videos for smooth playback.",
+    image: `${process.env.PUBLIC_URL}/assets/project-8.png`,
+    gradient: "from-emerald-500 to-cyan-500",
+    titleColor: "text-emerald-600",
+    tags: ['Next.js', 'Tailwind', 'FastAPI', 'Cohere', 'Manim', 'ElevenLabs', 'Supabase'],
+    links: [
+      { href: "https://github.com/HreemPandya/invested", icon: <FaGithub size={20} />, label: "Code" },
+    ],
+  },
+  {
+    id: 4,
     title: "BeMyEyes: Accessibility Tool",
     description: "A wearable assistive device for visually impaired users that integrates ultrasonic distance sensors for obstacle detection auricularly, real-time object recognition via OpenCV using an embedded camera, and Google TTS output for contextual feedback.",
     hoverText: "Built on an Arduino microcontroller with ultrasonic distance sensors for auricular obstacle detection and an embedded camera for real-time image capture. Uses a Python-based companion system with OpenCV for object recognition and Google TTS for contextual audio feedback. Communication between hardware and processing modules is handled via serial over USB, ensuring low-latency data transfer. The system implements non-blocking sensor polling for continuous environment scanning, progressive alert tones mapped to obstacle proximity, and modular firmware for easy expansion to additional sensors or features.",
@@ -57,7 +70,7 @@ const projects = [
     ],
   },
   {
-    id: 4,
+    id: 5,
     title: "GestureGroove: AI Music Controller",
     description: "A real-time gesture recognition app built on React that translates hand movements into music control using OpenCV for hand tracking and MediaPipe for gesture classification",
     hoverText: "Developed using OpenCV for video capture and MediaPipe Hands for real-time, 21-point hand landmark detection at low latency. GestureGroove interprets spatial coordinates and motion vectors to classify predefined gestures, which are mapped to playback controls and musical parameters such as pitch, volume, and audio effects. The system features debounced gesture recognition to prevent false triggers, asynchronous event handling for responsive UI feedback, and seamless integration with the Spotify Web API for track control and choice.",
@@ -71,7 +84,7 @@ const projects = [
     ],
   },
   {
-    id: 5,
+    id: 6,
     title: "CrisisCompass: First Responder's Emergency Management Tool",
     description: "Developed at NewHacks 2024, this React web application helps first responders and volunteers prioritize and manage local emergencies by aggregating and scraping real-time data from news outlets using OpenAI API to analyze and rank incidents based on urgency and using geolocation to rank incidents by proximity.",
     hoverText: "Designed to help first responders and volunteers act faster during emergencies, CrisisCompass ranks incidents so the most urgent situations receive immediate attention. Built with a Flask-based backend API that aggregates, processes, and web scrapes emergency reports from trusted news and social media sources, it analyzes type, location, and critical keywords using OpenAI API to guide resource allocation during crises. A responsive React dashboard presents real-time updates with urgency badges and severity icons, ensuring clear situational awareness when every second counts.",
@@ -85,7 +98,7 @@ const projects = [
     ],
   },
   {
-    id: 6,
+    id: 7,
     title: "SecureEdu: Educational Material Encryption System",
     description: "A secure learning platform built from STM32 microcontrollers that encrypts and transmits educational materials, using AES-based encryption and EEPROM-stored keys. Implements a progressive hint-based learning system where content is unlocked incrementally via access keys, ensuring controlled information disclosure",
     hoverText: "SecureEdu runs on STM32 microcontrollers that use AES encryption to keep textbook sections, quiz solutions, and hints safe from unauthorized access. For secure communication between devices, it integrates Diffie-Hellman Key Exchange so encryption keys are never exposed during transfer. On the hardware side, we configured UART, I2C, and GPIO peripherals to connect an LCD display, which gives students real-time feedback as they interact with the system, and a 4x4 keypad, which they use to securely enter access keys. The whole setup powers a progressive hint-based learning system, where you can unlock just the right amount of help without giving away the entire answer, all while keeping the data transmission secure.",
@@ -99,7 +112,7 @@ const projects = [
     ],
   },
   {
-    id: 7,
+    id: 8,
     title: "TaxWiz: LLM-Driven Tax Advisor",
     description: "An AI-powered tax assistant built with TypeScript, OpenAI API and the Vercel AI SDK that guides users through complex tax questions via an intuitive, conversational interface. Features intelligent document parsing to extract and interpret key information from uploaded tax forms, enabling accurate, context-aware responses and simplifying the tax filing process.",
     hoverText: "Built a chat-based LLM tax assistant in TypeScript using the OpenAI API, with structured evaluations to fine-tune prompts and improve how the assistant interacts with users. Used Tailwind CSS to quickly spin up dynamic, consistent UI components, and added robust document parsing so it can handle different file formats and pull out key details. Next.js powers the server-side logic for processing queries",
