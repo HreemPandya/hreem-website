@@ -72,7 +72,7 @@ const Footer = ({ isDarkMode }) => {
             </nav>
           </motion.div>
 
-          {/* Right: Sleeping cat (from Coding Artist tutorial) */}
+          {/* Right: Sleeping cat (Coding Artist tutorial) */}
           <motion.div
             className="flex flex-col items-end"
             initial={{ opacity: 0, y: 20 }}

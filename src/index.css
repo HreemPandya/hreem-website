@@ -434,13 +434,14 @@ html {
   }
 }
 
+/* Footer cat - Coding Artist sleeping cat tutorial */
 .footer-cat-container {
   height: 140px;
   width: 245px;
   position: relative;
   transform: scale(0.85);
   transform-origin: bottom right;
-  --footer-cat-offset: 45px; /* Move cat down: increase this value */
+  --footer-cat-offset: 45px;
 }
 
 .footer-cat-container[data-theme="dark"] {

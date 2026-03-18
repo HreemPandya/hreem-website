@@ -189,54 +189,25 @@ const CreativeCarousel = ({ isDarkMode }) => {
         })}
       </div>
 
-      {/* Vertical Scroll Rail — left side, positioned higher + backdrop so it stays visible on light image backgrounds */}
-      <div className={`absolute left-3 md:left-4 top-[25%] -translate-y-1/2 flex flex-col items-center gap-1 z-50 py-2 px-1.5 rounded-lg backdrop-blur-md ${isDarkMode ? 'text-white bg-black/30' : 'text-[var(--lm-text-primary)] bg-white/70'}`}>
-        <motion.button
-          onClick={() => moveSlide(-1)}
-          className={`p-1.5 rounded-md transition-all duration-200 opacity-60 hover:opacity-100 ${
-            isDarkMode ? 'hover:bg-white/10' : 'hover:bg-[var(--lm-accent)]/10'
-          }`}
-          whileHover={{ scale: 1.15 }}
-          whileTap={{ scale: 0.9 }}
-          aria-label="Previous artwork"
-        >
-          <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-          </svg>
-        </motion.button>
-        <div className={`flex flex-col gap-1.5 py-2 ${isDarkMode ? 'bg-white/5' : 'bg-[var(--lm-accent)]/5'} rounded-full px-1.5`}>
-          {artworks.map((_, index) => (
-            <motion.button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`relative rounded-full transition-all duration-300 ${
-                index === currentIndex
-                  ? isDarkMode
-                    ? 'bg-amber-500 w-2 h-2 md:w-2.5 md:h-2.5'
-                    : 'bg-[var(--lm-accent)] w-2 h-2 md:w-2.5 md:h-2.5'
-                  : isDarkMode
-                    ? 'bg-white/30 hover:bg-white/50 w-1.5 h-1.5 md:w-2 md:h-2'
-                    : 'bg-[var(--lm-accent)]/40 hover:bg-[var(--lm-accent)]/60 w-1.5 h-1.5 md:w-2 md:h-2'
-              }`}
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
-              aria-label={`Go to artwork ${index + 1}`}
-            />
-          ))}
-        </div>
-        <motion.button
-          onClick={() => moveSlide(1)}
-          className={`p-1.5 rounded-md transition-all duration-200 opacity-60 hover:opacity-100 ${
-            isDarkMode ? 'hover:bg-white/10' : 'hover:bg-[var(--lm-accent)]/10'
-          }`}
-          whileHover={{ scale: 1.15 }}
-          whileTap={{ scale: 0.9 }}
-          aria-label="Next artwork"
-        >
-          <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
-        </motion.button>
+      {/* Minimal dot rail — dots only, no chevrons or backdrop */}
+      <div className="absolute left-3 md:left-4 top-[15%] -translate-y-1/2 flex flex-col items-center gap-4 z-50">
+        {artworks.map((_, index) => (
+          <motion.button
+            key={index}
+            onClick={() => setCurrentIndex(index)}
+            className={`rounded-full transition-colors duration-200 ${
+              index === currentIndex
+                ? isDarkMode
+                  ? 'bg-amber-500 w-1.5 h-1.5 md:w-2 md:h-2'
+                  : 'bg-[var(--lm-accent)] w-1.5 h-1.5 md:w-2 md:h-2'
+                : isDarkMode
+                  ? 'bg-white/25 hover:bg-white/50 w-1 h-1 md:w-1.5 md:h-1.5'
+                  : 'bg-[var(--lm-accent)]/30 hover:bg-[var(--lm-accent)]/50 w-1 h-1 md:w-1.5 md:h-1.5'
+            }`}
+            whileTap={{ scale: 0.9 }}
+            aria-label={`Go to artwork ${index + 1}`}
+          />
+        ))}
       </div>
 
     </div>
