@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
+import DoodleBoard from "../components/DoodleBoard";
 
 // Expertise Bricks — falling from top, stacking
 const ExpertiseBricks = ({ isDarkMode }) => {
@@ -199,10 +200,10 @@ const CreativeCarousel = ({ isDarkMode }) => {
               index === currentIndex
                 ? isDarkMode
                   ? 'bg-amber-500 w-1.5 h-1.5 md:w-2 md:h-2'
-                  : 'bg-[var(--lm-accent)] w-1.5 h-1.5 md:w-2 md:h-2'
+                  : 'bg-[#4A6B4E] w-2 h-2 md:w-2.5 md:h-2.5'
                 : isDarkMode
                   ? 'bg-white/25 hover:bg-white/50 w-1 h-1 md:w-1.5 md:h-1.5'
-                  : 'bg-[var(--lm-accent)]/30 hover:bg-[var(--lm-accent)]/50 w-1 h-1 md:w-1.5 md:h-1.5'
+                  : 'bg-[#9BBE9E] hover:bg-[#7A9D7D] w-1.5 h-1.5 md:w-2 md:h-2'
             }`}
             whileTap={{ scale: 0.9 }}
             aria-label={`Go to artwork ${index + 1}`}
@@ -299,6 +300,7 @@ const AboutMe = ({ isDarkMode }) => {
               <p className={`text-base md:text-lg leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
                 Digital art, workouts, hikes. Art lives on <a href="https://www.instagram.com/hreemdoodles" target="_blank" rel="noreferrer" className={`font-medium border-b transition-colors ${isDarkMode ? 'border-amber-500/50 text-amber-400 hover:border-amber-400' : 'border-[var(--lm-accent)]/50 text-[var(--lm-accent)] hover:border-[var(--lm-accent)]'}`}>Instagram</a>.
               </p>
+              <DoodleBoard isDarkMode={isDarkMode} topSpacing="3rem" />
             </motion.div>
           </motion.div>
 
