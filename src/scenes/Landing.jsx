@@ -43,19 +43,48 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
       <section
         className={`${isDarkMode ? 'bg-transparent' : 'bg-transparent'} flex flex-col md:flex-row md:justify-between md:items-center gap-8 md:gap-16 min-h-screen py-8 md:py-10 transition-colors duration-300 pt-20 md:pt-32 relative z-10 px-4`}
       >
-        {/* IMAGE SECTION - Overlap for asymmetry */}
+        {/* IMAGE SECTION - Overlap for asymmetry, flip between dark/light pics */}
         <div className="basis-3/5 z-10 flex justify-center md:order-2 order-1 md:-ml-8 lg:-ml-12">
           <motion.div 
-            className="relative z-0 w-full max-w-[280px] md:max-w-[400px] lg:max-w-[600px]"
+            className="relative z-0 w-full max-w-[280px] md:max-w-[400px] lg:max-w-[600px] overflow-hidden rounded-3xl"
             initial={{ opacity: 0, scale: 0.9, x: 20 }}
             animate={{ opacity: 1, scale: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.5 }}
+            style={{ perspective: 1200 }}
           >
-            <img
-              alt="profile"
-              className={`relative w-full h-full object-cover rounded-3xl hover:scale-[1.02] transition-transform duration-500 ${isDarkMode ? 'shadow-[0_0_40px_rgba(245,158,11,0.12)] border border-amber-500/15' : 'shadow-2xl border border-[var(--lm-border)]'}`}
-              src={`${process.env.PUBLIC_URL}/assets/light-mode-pic.png`}
-            />
+            <motion.div
+              className="relative w-full aspect-[3/4]"
+              style={{ transformStyle: "preserve-3d" }}
+              animate={{ rotateY: isDarkMode ? 0 : 180 }}
+              transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
+            >
+              {/* Front face: dark mode (orange-pfp) */}
+              <div
+                className="absolute inset-0 rounded-3xl overflow-hidden"
+                style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
+              >
+                <img
+                  alt="profile"
+                  className={`absolute inset-0 w-full h-full object-cover object-center scale-[2.2] -translate-x-14 hover:scale-[2.25] hover:-translate-x-8 transition-transform duration-500 shadow-[0_0_40px_rgba(245,158,11,0.12)] border border-amber-500/15`}
+                  src={`${process.env.PUBLIC_URL}/assets/orange-pfp.png`}
+                />
+              </div>
+              {/* Back face: light mode (light-mode-pic) */}
+              <div
+                className="absolute inset-0 rounded-3xl overflow-hidden"
+                style={{
+                  backfaceVisibility: "hidden",
+                  WebkitBackfaceVisibility: "hidden",
+                  transform: "rotateY(180deg)",
+                }}
+              >
+                <img
+                  alt="profile"
+                  className={`absolute inset-0 w-full h-full object-cover object-center scale-[1.05] hover:scale-[1.1] transition-transform duration-500 shadow-2xl border border-[var(--lm-border)]`}
+                  src={`${process.env.PUBLIC_URL}/assets/light-mode-pic.png`}
+                />
+              </div>
+            </motion.div>
           </motion.div>
         </div>
 
