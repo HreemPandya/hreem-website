@@ -80,8 +80,8 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
               >
                 <img
                   alt="profile"
-                  className={`absolute inset-0 w-full h-full object-cover object-center scale-[2.25] -translate-x-14 hover:scale-[2.4] hover:-translate-x-8 transition-transform duration-500 shadow-2xl border border-[var(--lm-border)]`}
-                  src={`${process.env.PUBLIC_URL}/assets/light-mode-up.png`}
+                  className={`absolute inset-0 w-full h-full object-cover scale-[1.5] -translate-x-14 hover:scale-[2.4] hover:-translate-x-8 transition-transform duration-500 shadow-2xl border border-[var(--lm-border)]`}
+                  src={`${process.env.PUBLIC_URL}/assets/light-mode-up3.png`}
                 />
               </div>
             </motion.div>
