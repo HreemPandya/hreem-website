@@ -620,3 +620,9 @@ html {
     transform: scaleX(0.7);
   }
 }
+
+/* Footer cat: meow on hover */
+.footer-cat-wrapper {
+  position: relative;
+  cursor: pointer;
+}

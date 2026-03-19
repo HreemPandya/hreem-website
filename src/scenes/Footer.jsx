@@ -1,7 +1,34 @@
+import { useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import AnchorLink from "react-anchor-link-smooth-scroll";
 
+const CAT_MEOW_AUDIO = "/assets/cat-meow.mp3";
+
 const Footer = ({ isDarkMode }) => {
+  const lastMeowRef = useRef(0);
+  const audioRef = useRef(null);
+  const MEOW_COOLDOWN_MS = 2000;
+
+  const playMeow = useCallback(() => {
+    try {
+      const audio = audioRef.current || new Audio(CAT_MEOW_AUDIO);
+      if (!audioRef.current) audioRef.current = audio;
+      audio.volume = 0.25;
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
+    } catch {
+      // Audio not supported
+    }
+  }, []);
+
+  const handleCatHover = useCallback(() => {
+    const now = Date.now();
+    if (now - lastMeowRef.current >= MEOW_COOLDOWN_MS) {
+      lastMeowRef.current = now;
+      playMeow();
+    }
+  }, [playMeow]);
+
   const navLinks = [
     { href: "#home", label: "Home" },
     { href: "#projects", label: "Projects" },
@@ -81,18 +108,24 @@ const Footer = ({ isDarkMode }) => {
             viewport={{ once: true }}
           >
             <div
-              className="footer-cat-container"
+              className="footer-cat-wrapper"
               data-theme={isDarkMode ? "dark" : "light"}
+              onMouseEnter={handleCatHover}
             >
-              <div className="footer-cat-shadow" />
-              <div className="footer-cat">
-                <div className="footer-cat-ear" />
-                <div className="footer-cat-eye" />
-                <div className="footer-cat-mouth" />
-                <div className="footer-cat-nose" />
-                <div className="footer-cat-tail" />
-                <div className="footer-cat-body" />
-                <div className="footer-cat-bubble" />
+              <div
+                className="footer-cat-container"
+                data-theme={isDarkMode ? "dark" : "light"}
+              >
+                <div className="footer-cat-shadow" />
+                <div className="footer-cat">
+                  <div className="footer-cat-ear" />
+                  <div className="footer-cat-eye" />
+                  <div className="footer-cat-mouth" />
+                  <div className="footer-cat-nose" />
+                  <div className="footer-cat-tail" />
+                  <div className="footer-cat-body" />
+                  <div className="footer-cat-bubble" />
+                </div>
               </div>
             </div>
           </motion.div>

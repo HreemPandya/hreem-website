@@ -16,38 +16,32 @@ function App() {
   const isDesktop = useMediaQuery("(min-width: 1060px)");
   const [isDarkMode, setIsDarkMode] = useState(true);
 
-  // Toggle Theme Function
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
+  const toggleTheme = () => setIsDarkMode((prev) => !prev);
 
   useEffect(() => {
     document.documentElement.classList.remove("light-mode", "dark-mode");
     document.documentElement.classList.add(isDarkMode ? "dark-mode" : "light-mode");
-
-    const handleScroll = () => {
-      if (window.scrollY === 0) {
-        setIsTopOfPage(true);
-        setSelectedPage("home");
-      }
-      if (window.scrollY !== 0) setIsTopOfPage(false);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
   }, [isDarkMode]);
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollTop = document.documentElement.scrollTop;
-      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scrollProgress = (scrollTop / scrollHeight) * 100;
-      const indicator = document.querySelector('.scroll-indicator');
-      if (indicator) indicator.style.width = scrollProgress + '%';
+      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+      const scrollMax = scrollHeight - clientHeight;
+
+      if (scrollTop === 0) {
+        setIsTopOfPage(true);
+        setSelectedPage("home");
+      } else {
+        setIsTopOfPage(false);
+      }
+
+      const indicator = document.querySelector(".scroll-indicator");
+      if (indicator) indicator.style.width = (scrollMax > 0 ? (scrollTop / scrollMax) * 100 : 0) + "%";
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
