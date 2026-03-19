@@ -260,7 +260,7 @@ const AboutMe = ({ isDarkMode }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className={`space-y-4 pl-0 md:pl-6 md:border-l-2 md:border-transparent transition-colors duration-300 ${isDarkMode ? 'md:hover:border-amber-500/40' : 'md:hover:border-[var(--lm-accent)]/40'}`}
+              className={`space-y-4 pl-0 md:pl-6 md:border-l-2 md:border-transparent transition-colors duration-300 ${isDarkMode ? 'md:hover:border-amber-500/40' : 'md:hover:border-[#4A6B4E]'}`}
             >
               <p className={`text-lg md:text-xl leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
                 19, Computer Engineering at Waterloo. I build things — full-stack apps, AI stuff, sometimes hardware that talks to the real world.
@@ -276,7 +276,7 @@ const AboutMe = ({ isDarkMode }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className={`space-y-3 pl-0 md:pl-6 md:border-l-2 md:border-transparent transition-colors duration-300 ${isDarkMode ? 'md:hover:border-amber-500/40' : 'md:hover:border-[var(--lm-accent)]/40'}`}
+              className={`space-y-3 pl-0 md:pl-6 md:border-l-2 md:border-transparent transition-colors duration-300 ${isDarkMode ? 'md:hover:border-amber-500/40' : 'md:hover:border-[#4A6B4E]'}`}
             >
               <p className={`font-mono text-xs uppercase tracking-wider ${isDarkMode ? 'text-amber-500/80' : 'text-[var(--lm-accent)]/80'}`}>
                 Approach
@@ -292,7 +292,7 @@ const AboutMe = ({ isDarkMode }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.15 }}
-              className={`space-y-3 pl-0 md:pl-6 md:border-l-2 md:border-transparent transition-colors duration-300 ${isDarkMode ? 'md:hover:border-amber-500/40' : 'md:hover:border-[var(--lm-accent)]/40'}`}
+              className={`space-y-3 pl-0 md:pl-6 md:border-l-2 md:border-transparent transition-colors duration-300 ${isDarkMode ? 'md:hover:border-amber-500/40' : 'md:hover:border-[#4A6B4E]'}`}
             >
               <p className={`font-mono text-xs uppercase tracking-wider ${isDarkMode ? 'text-amber-500/80' : 'text-[var(--lm-accent)]/80'}`}>
                 Off the keyboard
