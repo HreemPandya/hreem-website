@@ -187,12 +187,25 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
           </p>
           <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-4">
             {project.tags.slice(0, tagCount).map(tag => (
-              <span key={tag} className={`px-2.5 py-0.5 text-xs rounded-full border font-medium ${isDarkMode ? 'bg-amber-500/[0.12] text-amber-300 border-amber-500/[0.2]' : 'bg-[var(--lm-accent-muted)] text-[var(--lm-accent)] border-[var(--lm-border)]'}`}>
+              <span
+                key={tag}
+                className={`px-2.5 py-0.5 text-xs rounded-full border font-medium ${
+                  isDarkMode
+                    ? "bg-amber-500/[0.12] text-amber-300 border-amber-500/[0.2]"
+                    : "bg-[#4A6B4E]/32 text-[#3D5A40] border-[#4A6B4E]/50"
+                }`}
+              >
                 {tag}
               </span>
             ))}
             {project.tags.length > tagCount && (
-              <span className={`px-2.5 py-0.5 text-xs rounded-full border font-medium ${isDarkMode ? 'bg-amber-500/[0.12] text-amber-300 border-amber-500/[0.2]' : 'bg-[var(--lm-accent-muted)] text-[var(--lm-accent)] border-[var(--lm-border)]'}`}>
+              <span
+                className={`px-2.5 py-0.5 text-xs rounded-full border font-medium ${
+                  isDarkMode
+                    ? "bg-amber-500/[0.12] text-amber-300 border-amber-500/[0.2]"
+                    : "bg-[#4A6B4E]/32 text-[#3D5A40] border-[#4A6B4E]/50"
+                }`}
+              >
                 +{project.tags.length - tagCount} more
               </span>
             )}
@@ -367,11 +380,14 @@ const Projects = ({ isDarkMode }) => {
                   {/* All Tags */}
                   <div className="flex flex-wrap gap-2 mb-6 md:mb-8">
                     {selectedProject.tags.map(tag => (
-                      <span key={tag} className={`px-2.5 py-1 md:px-3 md:py-2 rounded-full text-xs md:text-sm border ${
-                        isDarkMode
-                          ? 'bg-amber-500/[0.12] text-amber-300 border-amber-500/[0.2]'
-                          : 'bg-[var(--lm-accent-muted)] text-[var(--lm-accent)] border-[var(--lm-border)]'
-                      }`}>
+                      <span
+                        key={tag}
+                        className={`px-2.5 py-1 md:px-3 md:py-2 rounded-full text-xs md:text-sm border ${
+                          isDarkMode
+                            ? "bg-amber-500/[0.12] text-amber-300 border-amber-500/[0.2]"
+                            : "bg-[#4A6B4E]/32 text-[#3D5A40] border-[#4A6B4E]/50"
+                        }`}
+                      >
                         {tag}
                       </span>
                     ))}

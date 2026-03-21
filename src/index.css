@@ -621,8 +621,6 @@ html {
   }
 }
 
-/* Footer cat: meow on hover */
 .footer-cat-wrapper {
   position: relative;
-  cursor: pointer;
 }

@@ -3,27 +3,20 @@ import SocialMediaIcons from "../components/SocialMediaIcons";
 import { motion } from "framer-motion";
 import AnchorLink from "react-anchor-link-smooth-scroll";
 
-// One-time staggered reveal tagline (no looping typewriter)
-const StaggeredTagline = ({ isDarkMode }) => {
-  const words = ["Computer Engineer", "·", "Full Stack Developer", "·", "AI & ML Explorer"];
-  return (
-    <div className="w-full max-w-md mx-auto md:mx-0 flex flex-wrap gap-x-2 gap-y-1 justify-center md:justify-start">
-      <h2 className={`text-lg md:text-xl lg:text-2xl xl:text-3xl font-medium font-playfair tracking-wide leading-relaxed flex flex-wrap gap-x-2 gap-y-1 justify-center md:justify-start`}>
-        {words.map((word, i) => (
-          <motion.span
-            key={i}
-            className={word === "·" ? (isDarkMode ? "text-amber-500/80" : "text-[var(--lm-accent)]/80") : isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.6 + i * 0.08 }}
-          >
-            {word}
-          </motion.span>
-        ))}
-      </h2>
-    </div>
-  );
-};
+const LandingTagline = ({ isDarkMode }) => (
+  <div className="w-full max-w-md mx-auto md:mx-0 flex justify-center md:justify-start">
+    <motion.h2
+      className={`text-lg md:text-xl lg:text-2xl xl:text-3xl font-medium font-playfair tracking-wide leading-relaxed text-center md:text-start ${
+        isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"
+      }`}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, delay: 0.65 }}
+    >
+      Computer Engineer @ uWaterloo
+    </motion.h2>
+  </div>
+);
 
 const Landing = ({ setSelectedPage, isDarkMode }) => {
   return (
@@ -122,15 +115,9 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
               </span>
             </motion.p>
 
-            {/* Staggered tagline (one-time reveal) */}
-            <motion.div
-              className="mt-6 md:mt-8 mb-6 md:mb-8 text-center md:text-start flex justify-center md:justify-start"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-            >
-              <StaggeredTagline isDarkMode={isDarkMode} />
-            </motion.div>
+            <div className="mt-6 md:mt-8 mb-6 md:mb-8">
+              <LandingTagline isDarkMode={isDarkMode} />
+            </div>
           </motion.div>
 
           {/* CALL TO ACTIONS */}
