@@ -24,7 +24,7 @@ const Contact = ({ isDarkMode }) => {
     });
   };
 
-  const inputBase = `w-full py-3 border-b bg-transparent focus:outline-none transition-colors placeholder:opacity-50 ${
+  const inputBase = `w-full py-3 text-base border-b bg-transparent focus:outline-none transition-colors placeholder:opacity-50 ${
     isDarkMode
       ? "border-white/[0.1] text-white placeholder-[#8B9DB0] focus:border-amber-500/60"
       : "border-[var(--lm-border)] text-[var(--lm-text-primary)] placeholder-[var(--lm-text-muted)] focus:border-[var(--lm-accent)]/60"
@@ -136,7 +136,7 @@ const Contact = ({ isDarkMode }) => {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-2">
               <motion.button
                 type="submit"
-                className={`px-5 py-2.5 rounded-full font-medium text-sm border transition-colors ${
+                className={`inline-flex min-h-[44px] items-center justify-center px-6 py-2.5 rounded-full font-medium text-sm border transition-colors ${
                   isDarkMode
                     ? "border-amber-500/40 text-amber-400 hover:bg-amber-500/10"
                     : "border-[var(--lm-accent)]/40 text-[var(--lm-accent)] hover:bg-[var(--lm-accent)]/10"

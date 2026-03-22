@@ -24,6 +24,11 @@ body,
   font-family: 'DM Sans', system-ui, sans-serif;
 }
 
+/* Prevent horizontal scroll from wide decorations or flex overflow on small viewports */
+html {
+  overflow-x: clip;
+}
+
 /* Dark mode: single directional light, reduced gradient */
 .dark-mode {
   @apply text-white;
@@ -407,11 +412,6 @@ html.light-mode .app::after {
     margin: 1rem;
     backdrop-filter: blur(15px);
   }
-  
-  .btn-enhanced {
-    width: 100%;
-    justify-content: center;
-  }
 
   .floating-element {
     display: none;
@@ -657,4 +657,10 @@ html {
 
 .footer-cat-wrapper {
   position: relative;
+}
+
+/* Mobile: compact cat beside name in footer (see Footer.jsx) */
+.footer-cat-beside .footer-cat-container {
+  transform: scale(0.46);
+  transform-origin: bottom right;
 }

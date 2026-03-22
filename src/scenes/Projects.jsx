@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGithub, FaYoutube, FaTimes, FaExternalLinkAlt} from "react-icons/fa";
 import { useState, useRef } from "react";
+import useMediaQuery from "../hooks/useMediaQuery";
 import { createPortal } from "react-dom";
 const container = {
   hidden: {},
@@ -123,7 +124,7 @@ const projects = [
     title: "SecureEdu: Educational Material Encryption System",
     description: "A secure learning platform built from STM32 microcontrollers that encrypts and transmits educational materials, using AES-based encryption and EEPROM-stored keys. Implements a progressive hint-based learning system where content is unlocked incrementally via access keys, ensuring controlled information disclosure",
     hoverText: "SecureEdu runs on STM32 microcontrollers that use AES encryption to keep textbook sections, quiz solutions, and hints safe from unauthorized access. For secure communication between devices, it integrates Diffie-Hellman Key Exchange so encryption keys are never exposed during transfer. On the hardware side, we configured UART, I2C, and GPIO peripherals to connect an LCD display, which gives students real-time feedback as they interact with the system, and a 4x4 keypad, which they use to securely enter access keys. The whole setup powers a progressive hint-based learning system, where you can unlock just the right amount of help without giving away the entire answer, all while keeping the data transmission secure.",
-    image: `${process.env.PUBLIC_URL}/assets/project-2.png`,
+    image: `${process.env.PUBLIC_URL}/assets/base-securedu-copy.png`,
     gradient: "from-blue-500 to-teal-500",
     titleColor: "text-teal-600", // Teal to match SecureEdu tags (changed from blue)
     tags: ['STM32', 'C Programming', 'Embedded Systems','AES Encryption'],
@@ -138,9 +139,10 @@ const projects = [
 const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) => {
   const cardRef = useRef(null);
   const [transform, setTransform] = useState({ rotateX: 0, rotateY: 0 });
+  const isMobile = useMediaQuery("(max-width: 767px)");
 
   const handleMouseMove = (e) => {
-    if (!cardRef.current || window.innerWidth < 768) return;
+    if (!cardRef.current || isMobile) return;
     const rect = cardRef.current.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
@@ -149,7 +151,6 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
 
   const handleMouseLeave = () => setTransform({ rotateX: 0, rotateY: 0 });
 
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   const tagCount = isMobile ? 2 : 3;
 
   return (
@@ -217,11 +218,19 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
               </span>
             )}
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {project.links.slice(0, 2).map((link, idx) => (
               <div
                 key={idx}
-                className={`flex cursor-pointer items-center gap-1 rounded-full border px-2 py-1.5 text-xs font-semibold transition-all duration-300 md:px-3 md:py-2 ${
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    window.open(link.href, "_blank");
+                  }
+                }}
+                className={`flex min-h-[44px] cursor-pointer items-center gap-1 rounded-full border px-3 py-2 text-xs font-semibold transition-all duration-300 md:min-h-0 md:px-3 md:py-2 ${
                   isDarkMode
                     ? "border-white/[0.06] bg-white/[0.04] text-[#8B9DB0] hover:border-amber-500/30 hover:bg-white/[0.08] hover:text-[#F0F4F8]"
                     : "border-2 border-[var(--lm-accent)] bg-[var(--lm-bg-surface)] text-[var(--lm-accent)] shadow-sm hover:bg-[var(--lm-accent-muted)] [&_svg]:shrink-0 [&_svg]:text-[var(--lm-accent)]"
@@ -369,7 +378,9 @@ const Projects = ({ isDarkMode }) => {
                     : "border border-[var(--lm-border)] bg-white/95 text-[var(--lm-text-primary)] shadow-sm hover:bg-white"
                 }`}
               >
-                <FaTimes className={isDarkMode ? "text-white" : "text-[var(--lm-text-primary)]"} size={window.innerWidth < 768 ? 16 : 20} />
+                <FaTimes
+                  className={`h-4 w-4 md:h-5 md:w-5 ${isDarkMode ? "text-white" : "text-[var(--lm-text-primary)]"}`}
+                />
               </button>
 
               {/* Mobile: Stack layout, Desktop: Side by side — content top-aligned so short copy (e.g. InvestEd) does not float with huge vertical gaps */}

@@ -1,6 +1,23 @@
 import { motion } from "framer-motion";
 import AnchorLink from "react-anchor-link-smooth-scroll";
 
+const FooterCatIllustration = ({ theme }) => (
+  <div className="footer-cat-wrapper" data-theme={theme}>
+    <div className="footer-cat-container" data-theme={theme}>
+      <div className="footer-cat-shadow" />
+      <div className="footer-cat">
+        <div className="footer-cat-ear" />
+        <div className="footer-cat-eye" />
+        <div className="footer-cat-mouth" />
+        <div className="footer-cat-nose" />
+        <div className="footer-cat-tail" />
+        <div className="footer-cat-body" />
+        <div className="footer-cat-bubble" />
+      </div>
+    </div>
+  </div>
+);
+
 const Footer = ({ isDarkMode }) => {
   const navLinks = [
     { href: "#home", label: "Home" },
@@ -28,33 +45,42 @@ const Footer = ({ isDarkMode }) => {
       )}
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-10 md:gap-16">
-          {/* Left: Brand + Nav */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 md:gap-16">
+          {/* Brand + nav; on small screens name row shares a line with a compact cat */}
           <motion.div
-            className="flex flex-col gap-6"
+            className="flex min-w-0 flex-1 flex-col gap-6"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <div>
-              <h2
-                className={`font-playfair font-bold text-xl md:text-2xl ${
-                  isDarkMode ? "text-amber-400" : "text-[var(--lm-accent)]"
-                }`}
+            <div className="flex flex-row items-end justify-between gap-3 md:block">
+              <div className="min-w-0">
+                <h2
+                  className={`font-playfair font-bold text-xl md:text-2xl ${
+                    isDarkMode ? "text-amber-400" : "text-[var(--lm-accent)]"
+                  }`}
+                >
+                  Hreem Pandya
+                </h2>
+                <p
+                  className={`mt-1 font-mono text-xs uppercase tracking-wider ${
+                    isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"
+                  }`}
+                >
+                  Software Engineer · Comp Eng @ uWaterloo
+                </p>
+              </div>
+              <div
+                className="footer-cat-beside shrink-0 md:hidden"
+                aria-hidden="true"
               >
-                Hreem Pandya
-              </h2>
-              <p
-                className={`mt-1 font-mono text-xs uppercase tracking-wider ${
-                  isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"
-                }`}
-              >
-                Software Engineer · Comp Eng @ uWaterloo
-              </p>
+                <FooterCatIllustration
+                  theme={isDarkMode ? "dark" : "light"}
+                />
+              </div>
             </div>
 
-            {/* Quick nav — matches portfolio best practices */}
             <nav className="flex flex-wrap gap-x-6 gap-y-1">
               {navLinks.map((link) => (
                 <AnchorLink
@@ -72,34 +98,14 @@ const Footer = ({ isDarkMode }) => {
             </nav>
           </motion.div>
 
-          {/* Right: Sleeping cat (Coding Artist tutorial) */}
           <motion.div
-            className="flex flex-col items-end"
+            className="hidden flex-col items-end md:flex"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
           >
-            <div
-              className="footer-cat-wrapper"
-              data-theme={isDarkMode ? "dark" : "light"}
-            >
-              <div
-                className="footer-cat-container"
-                data-theme={isDarkMode ? "dark" : "light"}
-              >
-                <div className="footer-cat-shadow" />
-                <div className="footer-cat">
-                  <div className="footer-cat-ear" />
-                  <div className="footer-cat-eye" />
-                  <div className="footer-cat-mouth" />
-                  <div className="footer-cat-nose" />
-                  <div className="footer-cat-tail" />
-                  <div className="footer-cat-body" />
-                  <div className="footer-cat-bubble" />
-                </div>
-              </div>
-            </div>
+            <FooterCatIllustration theme={isDarkMode ? "dark" : "light"} />
           </motion.div>
         </div>
 

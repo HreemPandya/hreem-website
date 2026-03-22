@@ -34,7 +34,7 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
       )}
 
       <section
-        className={`${isDarkMode ? 'bg-transparent' : 'bg-transparent'} flex flex-col md:flex-row md:justify-between md:items-center gap-8 md:gap-16 min-h-screen py-8 md:py-10 transition-colors duration-300 pt-20 md:pt-32 relative z-10 px-4`}
+        className={`${isDarkMode ? 'bg-transparent' : 'bg-transparent'} flex min-h-screen min-w-0 flex-col md:flex-row md:justify-between md:items-center gap-8 md:gap-16 py-8 md:py-10 transition-colors duration-300 pt-20 md:pt-32 relative z-10 px-4 sm:px-5`}
       >
         {/* IMAGE SECTION - Overlap for asymmetry, flip between dark/light pics */}
         <div className="basis-3/5 z-10 flex justify-center md:order-2 order-1 md:-ml-8 lg:-ml-12">
@@ -95,7 +95,7 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
             }}
           >
             <motion.p 
-              className={`text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-playfair ${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'} text-center md:text-start mb-4 md:mb-6 font-bold leading-tight`}
+              className={`text-[clamp(1.875rem,6vw,2.25rem)] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-playfair ${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'} text-center md:text-start mb-4 md:mb-6 font-bold leading-tight`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
@@ -104,7 +104,7 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
             </motion.p>
 
             <motion.p 
-              className={`text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-playfair z-10 text-center md:text-start ${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'} mb-6 md:mb-8 leading-tight`}
+              className={`text-[clamp(2rem,7vw,2.5rem)] sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-playfair z-10 text-center md:text-start break-words ${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'} mb-6 md:mb-8 leading-tight`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -122,13 +122,13 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
 
           {/* CALL TO ACTIONS */}
           <motion.div
-            className="flex mt-5 justify-center md:justify-start gap-3 md:gap-4 flex-wrap"
+            className="flex mt-5 justify-center md:justify-start gap-3 md:gap-4 flex-wrap sm:flex-nowrap"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 1.0 }}
           >
             <AnchorLink
-              className={`rounded-full py-2.5 px-5 md:py-3 md:px-7 font-semibold transition-all duration-200 text-sm md:text-base hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] ${isDarkMode ? 'btn-enhanced bg-amber-500 hover:bg-amber-400 text-[#07090D]' : 'hover:opacity-90 text-white'}`}
+              className={`inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full py-2.5 px-5 md:py-3 md:px-7 font-semibold transition-all duration-200 text-sm md:text-base hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] w-full max-w-[280px] sm:w-auto sm:max-w-none ${isDarkMode ? 'btn-enhanced bg-amber-500 hover:bg-amber-400 text-[#07090D]' : 'hover:opacity-90 text-white'}`}
               style={!isDarkMode ? { backgroundColor: '#4A6B4E' } : undefined}
               onClick={() => setSelectedPage("contact")}
               href="#contact"
@@ -137,7 +137,7 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
             </AnchorLink>
 
             <AnchorLink
-              className={`rounded-full py-2.5 px-5 md:py-3 md:px-7 font-semibold transition-all duration-200 backdrop-blur-sm text-sm md:text-base ${isDarkMode ? 'border border-white/[0.12] text-[#F0F4F8] hover:bg-white/[0.05]' : 'border-2 border-[#4A6B4E] text-[#4A6B4E] hover:bg-[#4A6B4E] hover:text-white bg-[var(--lm-bg-surface)]'}`}
+              className={`inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full py-2.5 px-5 md:py-3 md:px-7 font-semibold transition-all duration-200 backdrop-blur-sm text-sm md:text-base w-full max-w-[280px] sm:w-auto sm:max-w-none ${isDarkMode ? 'border border-white/[0.12] text-[#F0F4F8] hover:bg-white/[0.05]' : 'border-2 border-[#4A6B4E] text-[#4A6B4E] hover:bg-[#4A6B4E] hover:text-white bg-[var(--lm-bg-surface)]'}`}
               onClick={() => setSelectedPage("projects")}
               href="#projects"
             >

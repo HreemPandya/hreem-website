@@ -54,7 +54,7 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
             ? 'bg-[#07090D]/80 backdrop-blur-xl border-b border-white/[0.06]'
             : 'bg-[var(--lm-bg-surface)]/95 backdrop-blur-xl border-b border-[var(--lm-border)] shadow-lg'
       }`}>
-        <div className="flex items-center justify-between mx-auto w-5/6">
+        <div className="relative flex w-full max-w-7xl items-center justify-between mx-auto px-4 sm:px-6 md:w-5/6 md:px-0">
           {/* Enhanced Logo */}
           <div className="relative group">
             <h4 className={`font-playfair text-4xl font-extrabold transition-colors duration-300 cursor-pointer ${isDarkMode ? 'text-amber-500 hover:text-amber-400' : 'text-[var(--lm-accent)] hover:opacity-80'}`}>
@@ -107,7 +107,10 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
           ) : (
             /* Mobile Menu Button */
             <button
-              className={`rounded-full p-3 transition-all duration-300 backdrop-blur-lg border hover:scale-110 ${
+              type="button"
+              aria-expanded={isMenuToggled}
+              aria-label={isMenuToggled ? "Close menu" : "Open menu"}
+              className={`rounded-full p-3 transition-all duration-300 backdrop-blur-lg border hover:scale-110 min-h-[44px] min-w-[44px] items-center justify-center flex ${
                 isDarkMode 
                   ? 'bg-white/10 border-white/20 hover:bg-white/20' 
                   : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] hover:bg-[var(--lm-bg-surface)]/90 shadow-md'
@@ -138,7 +141,7 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
               />
               
               {/* Enhanced dropdown menu */}
-              <div className="absolute top-full left-0 right-0 mt-3 mx-4 rounded-2xl overflow-hidden z-40"
+              <div className="absolute top-full left-0 right-0 mt-3 mx-4 max-h-[min(70vh,calc(100dvh-5rem))] overflow-y-auto overscroll-contain rounded-2xl z-40 shadow-2xl"
                    style={{ 
                      backgroundColor: isDarkMode ? '#0B0F18' : '#ffffff',
                      boxShadow: isDarkMode 

@@ -396,7 +396,7 @@ const DoodleBoard = ({ isDarkMode, topSpacing = "2.5rem" }) => {
           </button>
         </div>
         <div
-          className={`flex min-h-[2.25rem] w-full border-t ${
+          className={`flex min-h-[2.75rem] w-full overflow-x-auto overflow-y-hidden border-t [-webkit-overflow-scrolling:touch] sm:min-h-[2.25rem] ${
             isDarkMode ? "border-white/10 bg-[#07090D]/55" : "border-[var(--lm-accent)]/20 bg-[color:rgba(248,246,242,0.92)]"
           }`}
         >
@@ -406,7 +406,7 @@ const DoodleBoard = ({ isDarkMode, topSpacing = "2.5rem" }) => {
               type="button"
               title={m.title}
               onClick={() => setMode(m.id)}
-              className={`flex min-h-[2.25rem] min-w-0 flex-1 items-center justify-center text-[11px] leading-none transition-colors ${
+              className={`flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center text-[11px] leading-none transition-colors sm:min-h-[2.25rem] sm:min-w-0 sm:flex-1 ${
                 i > 0 ? (isDarkMode ? "border-l border-white/10" : "border-l border-[var(--lm-accent)]/15") : ""
               } ${
                 mode === m.id
