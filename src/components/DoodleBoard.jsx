@@ -237,7 +237,7 @@ const DoodleBoard = ({ isDarkMode, topSpacing = "2.5rem" }) => {
                 mode === m.id
                   ? isDarkMode
                     ? "bg-amber-500/90 text-[#07090D]"
-                    : "bg-[var(--lm-accent)] text-white"
+                    : "bg-[color:rgba(74,107,78,0.22)] text-[var(--lm-text-primary)] ring-2 ring-[var(--lm-accent)] ring-inset shadow-sm"
                   : isDarkMode
                     ? "bg-white/15 text-white/70 hover:bg-white/25"
                     : "bg-[var(--lm-accent)]/20 text-[var(--lm-accent)]/80 hover:bg-[var(--lm-accent)]/30"
