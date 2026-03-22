@@ -47,7 +47,7 @@ const projects = [
   },
   {
     id: 3,
-    title: "InvestEd: AI-Powered Financial Education",
+    title: "InvestEd: AI-Powered Financial Education @ Hack the North",
     description: "Banking app that turns finances into something engaging. Portfolius AI explains spending habits, highlights overspending, and generates personalized explainer videos so you know exactly where your money goes and how to invest smarter.",
     hoverText: "Next.js + Tailwind frontend with a banking-inspired UI. FastAPI backend orchestrates the workflow: Cohere LLM generates plain-language scripts, Manim renders short explainer videos (720p/30fps), ElevenLabs voices Portfolius, and Supabase stores videos for smooth playback.",
     image: `${process.env.PUBLIC_URL}/assets/project-8.png`,
@@ -63,7 +63,10 @@ const projects = [
     title: "BeMyEyes: Accessibility Tool",
     description: "A wearable assistive device for visually impaired users that integrates ultrasonic distance sensors for obstacle detection auricularly, real-time object recognition via OpenCV using an embedded camera, and Google TTS output for contextual feedback.",
     hoverText: "Built on an Arduino microcontroller with ultrasonic distance sensors for auricular obstacle detection and an embedded camera for real-time image capture. Uses a Python-based companion system with OpenCV for object recognition and Google TTS for contextual audio feedback. Communication between hardware and processing modules is handled via serial over USB, ensuring low-latency data transfer. The system implements non-blocking sensor polling for continuous environment scanning, progressive alert tones mapped to obstacle proximity, and modular firmware for easy expansion to additional sensors or features.",
-    image: `${process.env.PUBLIC_URL}/assets/project-3.png`,
+    image: `${process.env.PUBLIC_URL}/assets/base-bemyeyes-crop.png`,
+    // Card only: nudge crop up slightly so the top gutter is covered (no zoom)
+    cardImageObjectClass: "-translate-y-[5px]",
+    modalImage: `${process.env.PUBLIC_URL}/assets/project-3-copy.png`,
     gradient: "from-green-500 to-blue-500",
     titleColor: "text-cyan-600", // Cyan to match BeMyEyes tags
     tags: ['Arduino', 'OpenCV', 'IoT', 'Embedded System'],
@@ -75,7 +78,7 @@ const projects = [
   {
     id: 8,
     title: "HackCanada Judging: Scale Without the Spreadsheet Chaos",
-    description: "Judging platform for HackCanada 2026 that absorbed the operational friction of a massive event: 210+ projects, 50+ judges, and 700+ participants. One place to manage projects, judges, rooms, and schedules—deployed on Vercel with TypeScript and Supabase.",
+    description: "Judging platform for HackCanada 2026 that absorbed the operational friction of a massive event: 210+ projects, 50+ judges, and 700+ participants. One place to manage projects, judges, rooms, and schedules; deployed on Vercel with TypeScript and Supabase.",
     hoverText: "Instead of brittle spreadsheets and scattered updates, judges allocate virtual investment across projects for a clearer signal than arbitrary numeric scores, while organizers configure tracks, rooms, and calendar settings from a single admin surface. Built with Next.js (App Router), React, TypeScript, Tailwind, shadcn/ui, and Recharts on the frontend, backed by Supabase and hosted on Vercel so the whole pipeline could keep up under real event load.",
     image: `${process.env.PUBLIC_URL}/assets/project-4.png`,
     gradient: "from-violet-500 to-indigo-500",
@@ -172,7 +175,7 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
           <img
             src={project.image}
             alt={project.title}
-            className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 ${project.imageObjectClass ?? ""}`}
+            className={`w-full h-full object-cover transition-transform duration-700 ${project.cardImageObjectClass ?? project.imageObjectClass ?? ""} group-hover:scale-110`}
           />
           <div className={`absolute inset-0 bg-gradient-to-t ${project.gradient} opacity-20 group-hover:opacity-40 transition-opacity duration-500`} />
           {featured && project.badge && (
@@ -351,10 +354,10 @@ const Projects = ({ isDarkMode }) => {
                 <FaTimes className={`${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'}`} size={window.innerWidth < 768 ? 16 : 20} />
               </button>
 
-              {/* Mobile: Stack layout, Desktop: Side by side */}
-              <div className="grid grid-cols-1 md:grid-cols-2 min-h-[400px] md:min-h-[700px]">
+              {/* Mobile: Stack layout, Desktop: Side by side — content top-aligned so short copy (e.g. InvestEd) does not float with huge vertical gaps */}
+              <div className="grid grid-cols-1 md:grid-cols-2 md:items-stretch min-h-[400px] md:min-h-[min(700px,85vh)]">
                 {/* Image Section */}
-                <div className="relative overflow-hidden h-64 md:h-auto">
+                <div className="relative h-64 overflow-hidden md:h-full md:min-h-0">
                   <img
                     src={selectedProject.modalImage ?? selectedProject.image}
                     alt={selectedProject.title}
@@ -364,16 +367,15 @@ const Projects = ({ isDarkMode }) => {
                 </div>
 
                 {/* Content Section */}
-                <div className="p-6 md:p-8 flex flex-col justify-center">
-                  <h2 className={`font-playfair text-2xl md:text-4xl font-bold mb-4 md:mb-6 ${isDarkMode ? 'text-[#F0F4F8]' : 'text-[var(--lm-text-primary)]'}`}>
+                <div className="flex min-h-0 flex-col justify-start gap-4 p-6 md:gap-5 md:p-8 md:pt-10">
+                  <h2 className={`font-playfair text-2xl font-bold md:text-4xl ${isDarkMode ? 'text-[#F0F4F8]' : 'text-[var(--lm-text-primary)]'}`}>
                     {selectedProject.title}
                   </h2>
-                  
-                  <p className={`text-base md:text-lg leading-relaxed mb-4 md:mb-6 ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
+                  <p className={`text-base leading-relaxed md:text-lg ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
                     {selectedProject.description}
                   </p>
 
-                  <div className="mb-4 md:mb-6">
+                  <div>
                     <h4 className={`text-lg md:text-xl font-semibold mb-2 md:mb-3 ${isDarkMode ? 'text-[#F0F4F8]' : 'text-[var(--lm-text-primary)]'}`}>Technical Details</h4>
                     <p className={`leading-relaxed text-sm md:text-base ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
                       {selectedProject.hoverText}
@@ -381,7 +383,7 @@ const Projects = ({ isDarkMode }) => {
                   </div>
 
                   {/* All Tags */}
-                  <div className="flex flex-wrap gap-2 mb-6 md:mb-8">
+                  <div className="flex flex-wrap gap-2">
                     {selectedProject.tags.map(tag => (
                       <span
                         key={tag}

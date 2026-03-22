@@ -38,17 +38,11 @@ module.exports = {
 
         "gradient-rainblue":
           "linear-gradient(90deg, #24CBFF 14.53%, #FC59FF 69.36%, #FFBD0C 117.73%)",
-        "green-brush": "url('./assets/green-brush.png')",
-        "red-brush": "url('./assets/red-brush.png')",
       }),
       fontFamily: {
         playfair: ["Playfair Display", "serif"],
         opensans: ["Open Sans", "sans-serif"],
         sans: ["DM Sans", "system-ui", "sans-serif"],
-      },
-      content: {
-        brush: "url('./assets/green-brush.png')",
-        react: "url('./assets/react.png')",
       },
     },
     screens: {
