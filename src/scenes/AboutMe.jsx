@@ -155,18 +155,43 @@ const CreativeCarousel = ({ isDarkMode }) => {
   const containerRef = useRef(null);
 
   return (
-    <div 
+    <div
       ref={containerRef}
-      className="relative h-full min-h-[400px] md:min-h-[800px] flex flex-col justify-center items-center overflow-hidden"
+      className="relative flex min-h-[400px] md:min-h-[800px] w-full flex-row items-stretch gap-2 md:gap-3 overflow-hidden"
       onMouseMove={(e) => handleMouseMove(e, containerRef)}
       onMouseLeave={() => {
         setAutoRotate(true);
         setDirection(1);
       }}
-      style={{ perspective: '1000px' }}
     >
-      {/* Slides Container */}
-      <div className="relative w-full h-full flex flex-col justify-center items-center">
+      {/* Dot rail: own column so wide art never stacks over the controls (3D transforms can defeat z-index) */}
+      <div className="relative z-[60] flex w-7 shrink-0 flex-col items-center gap-2 self-start pt-4 md:w-9 md:gap-2.5 md:pt-8">
+        {artworks.map((_, index) => (
+          <motion.button
+            key={index}
+            type="button"
+            onClick={() => setCurrentIndex(index)}
+            className={`rounded-full transition-colors duration-200 ${
+              index === currentIndex
+                ? isDarkMode
+                  ? "bg-amber-500 w-1.5 h-1.5 md:w-2 md:h-2"
+                  : "bg-[#4A6B4E] w-2 h-2 md:w-2.5 md:h-2.5"
+                : isDarkMode
+                  ? "bg-white/25 hover:bg-white/50 w-1 h-1 md:w-1.5 md:h-1.5"
+                  : "bg-[#9BBE9E] hover:bg-[#7A9D7D] w-1.5 h-1.5 md:w-2 md:h-2"
+            }`}
+            whileTap={{ scale: 0.9 }}
+            aria-label={`Go to artwork ${index + 1}`}
+          />
+        ))}
+      </div>
+
+      {/* Slides — min-w-0 keeps flex child from overflowing into the rail */}
+      <div
+        className="relative min-h-[400px] md:min-h-[800px] min-w-0 flex-1 overflow-hidden"
+        style={{ perspective: "1000px" }}
+      >
+      <div className="relative flex h-full min-h-[400px] md:min-h-[800px] w-full flex-col items-center justify-center">
         {getPresentableSlides().map((slide) => {
           const offset = slide.offset;
           const absOffset = Math.abs(offset);
@@ -229,28 +254,7 @@ const CreativeCarousel = ({ isDarkMode }) => {
           );
         })}
       </div>
-
-      {/* Minimal dot rail: dots only, no chevrons or backdrop */}
-      <div className="absolute left-3 md:left-4 top-[15%] -translate-y-1/2 flex flex-col items-center gap-4 z-50">
-        {artworks.map((_, index) => (
-          <motion.button
-            key={index}
-            onClick={() => setCurrentIndex(index)}
-            className={`rounded-full transition-colors duration-200 ${
-              index === currentIndex
-                ? isDarkMode
-                  ? 'bg-amber-500 w-1.5 h-1.5 md:w-2 md:h-2'
-                  : 'bg-[#4A6B4E] w-2 h-2 md:w-2.5 md:h-2.5'
-                : isDarkMode
-                  ? 'bg-white/25 hover:bg-white/50 w-1 h-1 md:w-1.5 md:h-1.5'
-                  : 'bg-[#9BBE9E] hover:bg-[#7A9D7D] w-1.5 h-1.5 md:w-2 md:h-2'
-            }`}
-            whileTap={{ scale: 0.9 }}
-            aria-label={`Go to artwork ${index + 1}`}
-          />
-        ))}
       </div>
-
     </div>
   );
 };

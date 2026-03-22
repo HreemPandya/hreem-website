@@ -33,7 +33,9 @@ const projects = [
     title: "Cliara: AI-Powered Shell with Natural Language & Macros",
     description: "An AI-powered shell that wraps your existing terminal (bash, zsh, PowerShell) and adds natural language commands, reusable macros, and smart workflows. Use ? <query> to describe what you want and get shell commands, or ? fix to correct failed commands. Includes Cliara Cloud (GitHub login, 150 free queries/month), semantic history search, smart push (auto-commit messages), and smart deploy (auto-detects Vercel, Netlify, Docker, PyPI). Published on PyPI.",
     hoverText: "Built with Python, OpenAI, and Anthropic APIs for natural language command generation. Uses prompt-toolkit for a rich REPL experience and Rich for formatted terminal output. The FastAPI backend powers Cliara Cloud with GitHub OAuth and usage tracking. Features include semantic history search across your shell history, smart push that generates commit messages from diffs, and smart deploy that auto-detects Vercel, Netlify, Docker, and PyPI deployment targets. Wraps bash, zsh, and PowerShell so you keep your existing setup while adding AI superpowers.",
-    image: `${process.env.PUBLIC_URL}/assets/project-7.png`,
+    image: `${process.env.PUBLIC_URL}/assets/base-cliara.png`,
+    // object-cover + default center crops the monitor header; bias toward top so the Cliara logo stays in frame
+    imageObjectClass: "object-[50%_18%] md:object-[50%_20%] origin-top",
     gradient: "from-emerald-500 to-teal-500",
     titleColor: "text-emerald-600",
     tags: ['Python', 'OpenAI', 'Anthropic', 'prompt-toolkit', 'Rich', 'FastAPI', 'PyPI'],
@@ -80,7 +82,7 @@ const projects = [
     titleColor: "text-violet-600",
     tags: ['Next.js', 'TypeScript', 'Supabase', 'Vercel', 'Tailwind'],
     links: [
-      { href: "https://hackcanada-judging.vercel.app/", icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.559-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.559.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clipRule="evenodd"></path></svg>, label: "Demo" },
+      { href: "https://hackcanada-judging.vercel.app/", icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.559-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.559.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clipRule="evenodd"></path></svg>, label: "Website" },
       { href: "https://github.com/Hack-Canada/judging-platform", icon: <FaGithub size={20} />, label: "Code" },
     ],
   },
@@ -170,7 +172,7 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
           <img
             src={project.image}
             alt={project.title}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 ${project.imageObjectClass ?? ""}`}
           />
           <div className={`absolute inset-0 bg-gradient-to-t ${project.gradient} opacity-20 group-hover:opacity-40 transition-opacity duration-500`} />
           {featured && project.badge && (
@@ -356,7 +358,7 @@ const Projects = ({ isDarkMode }) => {
                   <img
                     src={selectedProject.modalImage ?? selectedProject.image}
                     alt={selectedProject.title}
-                    className="w-full h-full object-cover"
+                    className={`w-full h-full object-cover ${selectedProject.imageObjectClass ?? ""}`}
                   />
                   <div className={`absolute inset-0 bg-gradient-to-t ${selectedProject.gradient} opacity-30`} />
                 </div>
