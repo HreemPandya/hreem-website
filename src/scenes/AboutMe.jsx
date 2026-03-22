@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useLayoutEffect, useCallback } from "react";
 import DoodleBoard from "../components/DoodleBoard";
 
 // Expertise Bricks: falling from top, stacking
@@ -60,15 +60,50 @@ const artworks = [
   { src: `${process.env.PUBLIC_URL}/assets/drawing8.png`, alt: "Digital Art 8", id: 8 }
 ];
 
-// Creative Carousel Component
+// Creative Carousel Component — each image uses its natural aspect ratio (no fixed crop box)
 const CreativeCarousel = ({ isDarkMode }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [autoRotate, setAutoRotate] = useState(true);
   const [direction, setDirection] = useState(1);
+  const [isNarrow, setIsNarrow] = useState(
+    () => typeof window !== "undefined" && window.innerWidth < 768
+  );
+  const [stackStepY, setStackStepY] = useState(180);
   const intervalRef = useRef(null);
+  const centerSlideRef = useRef(null);
 
   const offsetRadius = 2; // Show 2 slides above and below center
   const visibleSlides = 5; // Total visible slides
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const onChange = () => setIsNarrow(mq.matches);
+    onChange();
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  const measureStackStep = useCallback(() => {
+    const el = centerSlideRef.current;
+    if (!el) return;
+    const h = el.offsetHeight;
+    if (!h) return;
+    // Vertical offset between stacked slides: scales with the active piece so tall/wide art still stacks cleanly
+    const base = isNarrow ? 96 : 140;
+    setStackStepY(Math.max(base, Math.min(320, h * 0.42 + 24)));
+  }, [isNarrow]);
+
+  useLayoutEffect(() => {
+    measureStackStep();
+  }, [currentIndex, measureStackStep]);
+
+  useLayoutEffect(() => {
+    const el = centerSlideRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => measureStackStep());
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [measureStackStep]);
 
   // Auto rotation
   useEffect(() => {
@@ -132,18 +167,19 @@ const CreativeCarousel = ({ isDarkMode }) => {
     >
       {/* Slides Container */}
       <div className="relative w-full h-full flex flex-col justify-center items-center">
-        {getPresentableSlides().map((slide, index) => {
+        {getPresentableSlides().map((slide) => {
           const offset = slide.offset;
           const absOffset = Math.abs(offset);
           const isCenter = offset === 0;
-          
+          const stepY = isNarrow ? stackStepY * 0.55 : stackStepY;
+
           return (
             <motion.div
-              key={slide.id}
+              key={slide.offset}
               className="absolute w-full"
               initial={{ opacity: 0, y: 0, scale: 0.7 }}
               animate={{
-                y: offset * (window.innerWidth < 768 ? 80 : 180), // Reduced spacing on mobile
+                y: offset * stepY,
                 scale: isCenter ? 1 : 0.82 - absOffset * 0.08,
                 opacity: isCenter ? 1 : 0.5 - absOffset * 0.15,
                 rotateX: offset * -12,
@@ -160,27 +196,31 @@ const CreativeCarousel = ({ isDarkMode }) => {
                 transformStyle: 'preserve-3d'
               }}
             >
-              <div 
-                className={`mx-auto rounded-xl overflow-hidden shadow-lg transition-all duration-300 ${
-                  isCenter ? 'w-full' : 'w-[88%]'
+              <div
+                ref={isCenter ? centerSlideRef : null}
+                className={`relative mx-auto rounded-xl overflow-hidden shadow-lg transition-all duration-300 ${
+                  isCenter ? "w-full" : "w-[88%]"
                 }`}
                 style={{
-                  height: isCenter 
-                    ? (window.innerWidth < 768 ? '140px' : '240px') 
-                    : `${(window.innerWidth < 768 ? 120 : 200) - absOffset * 25}px`,
-                  filter: !isCenter ? `blur(${absOffset * 0.8}px)` : 'none'
+                  filter: !isCenter ? `blur(${absOffset * 0.8}px)` : "none",
                 }}
               >
                 <img
                   src={slide.src}
                   alt={slide.alt}
-                  className="w-full h-full object-cover"
+                  className={`block max-w-full w-auto h-auto object-contain mx-auto ${
+                    isCenter
+                      ? "max-h-[min(75vh,720px)]"
+                      : absOffset === 1
+                        ? "max-h-[min(38vh,220px)]"
+                        : "max-h-[min(28vh,160px)]"
+                  }`}
                 />
-                
+
                 {/* Overlay for non-center slides */}
                 {!isCenter && (
-                  <div 
-                    className="absolute inset-0 bg-black"
+                  <div
+                    className="pointer-events-none absolute inset-0 bg-black"
                     style={{ opacity: absOffset * 0.25 }}
                   />
                 )}

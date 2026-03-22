@@ -17,7 +17,8 @@ const projects = [
     badge: "Hack the 6ix Winner",
     description: "An intelligent recipe recommendation system built on a custom OS using QNX that analyzes available ingredients in your fridge and suggests personalized meals based on dietary preferences and nutritional goals.",
     hoverText: "Built by training a custom YOLOv5 model on a dataset of 300+ labeled food images, working together with a real time footage stream to identify ingredients in your fridge. Along with that, I created an Expo Go app that the device pairs with and uses Gemini's LLM API to generate customized recipes, and AssemblyAI for both speech-to-text and text-to-speech, making the system hands-free and accessible for everyone. Other features include expiry date tracking (recommends recipes with ingredients about to expire first), meal planning, shopping list generation, and nutritional tracking.",
-    image: `${process.env.PUBLIC_URL}/assets/project-5.png`,
+    image: `${process.env.PUBLIC_URL}/assets/base-fridgemind-proj.png`,
+    modalImage: `${process.env.PUBLIC_URL}/assets/project-5.png`,
     gradient: "from-indigo-500 to-purple-500",
     titleColor: "text-orange-600", // Orange to match FridgeMind tags
     tags: ['Raspberry Pi/QNX', 'Yolov5', 'Python', 'FastAPI', 'Expo Go' ],
@@ -353,7 +354,7 @@ const Projects = ({ isDarkMode }) => {
                 {/* Image Section */}
                 <div className="relative overflow-hidden h-64 md:h-auto">
                   <img
-                    src={selectedProject.image}
+                    src={selectedProject.modalImage ?? selectedProject.image}
                     alt={selectedProject.title}
                     className="w-full h-full object-cover"
                   />
