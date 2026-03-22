@@ -5,10 +5,10 @@ import DoodleBoard from "../components/DoodleBoard";
 // Expertise Bricks: falling from top, stacking
 const ExpertiseBricks = ({ isDarkMode }) => {
   const pillars = [
-    { title: "Full-Stack & AI/ML", tech: "Python · React · TensorFlow · Expo" },
-    { title: "Embedded & Hardware", tech: "C · Arduino · STM32 · OpenCV" },
-    { title: "Accessibility & Impact", tech: "Voice · CV · Inclusive design" },
-    { title: "Web & Backend", tech: "React · Flask · PostgreSQL · Docker" },
+    { title: "AI & ML", tech: "LangChain · MCP · TensorFlow · PyTorch" },
+    { title: "Languages", tech: "Python · C++ · C · TypeScript" },
+    { title: "Embedded & Hardware", tech: "Arduino · STM32 · OpenCV · Raspberry Pi" },
+    { title: "Systems & Tooling", tech: "Git · Docker · Linux · Bash" },
   ];
 
   return (

@@ -110,22 +110,22 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
               type="button"
               aria-expanded={isMenuToggled}
               aria-label={isMenuToggled ? "Close menu" : "Open menu"}
-              className={`rounded-full p-3 transition-all duration-300 backdrop-blur-lg border hover:scale-110 min-h-[44px] min-w-[44px] items-center justify-center flex ${
+              className={`rounded-full p-3 transition-all duration-300 min-h-[44px] min-w-[44px] items-center justify-center flex hover:scale-110 ${
                 isDarkMode 
-                  ? 'bg-white/10 border-white/20 hover:bg-white/20' 
-                  : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] hover:bg-[var(--lm-bg-surface)]/90 shadow-md'
+                  ? 'border border-white/20 bg-white/10 backdrop-blur-lg hover:bg-white/20' 
+                  : 'border-2 border-[#4A6B4E]/45 bg-white shadow-md ring-1 ring-[#4A6B4E]/15 backdrop-blur-sm hover:border-[#4A6B4E]/65 hover:bg-[#faf9f6]'
               }`}
               onClick={() => setIsMenuToggled(!isMenuToggled)}
             >
               <div className="w-6 h-6 flex flex-col justify-center items-center">
                 <span className={`block w-5 h-0.5 transition-all duration-300 ${
-                  isDarkMode ? 'bg-white' : 'bg-[var(--lm-text-primary)]'
+                  isDarkMode ? 'bg-white' : 'bg-[#2a2a2a]'
                 } ${isMenuToggled ? 'rotate-45 translate-y-1' : ''}`} />
                 <span className={`block w-5 h-0.5 transition-all duration-300 mt-1 ${
-                  isDarkMode ? 'bg-white' : 'bg-[var(--lm-text-primary)]'
+                  isDarkMode ? 'bg-white' : 'bg-[#2a2a2a]'
                 } ${isMenuToggled ? 'opacity-0' : ''}`} />
                 <span className={`block w-5 h-0.5 transition-all duration-300 mt-1 ${
-                  isDarkMode ? 'bg-white' : 'bg-[var(--lm-text-primary)]'
+                  isDarkMode ? 'bg-white' : 'bg-[#2a2a2a]'
                 } ${isMenuToggled ? '-rotate-45 -translate-y-1' : ''}`} />
               </div>
             </button>
@@ -215,30 +215,29 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
                   })}
                 </div>
 
-                {/* Theme toggle section with enhanced design */}
+                {/* Theme toggle — matches desktop: amber (dark) / sage (light) */}
                 <div className="px-6 py-4 border-t" 
                      style={{ 
                        backgroundColor: isDarkMode ? '#111827' : 'var(--lm-bg-surface)',
                        borderTopColor: isDarkMode ? 'rgba(255,255,255,0.06)' : 'var(--lm-border)'
                      }}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <span className="mr-3 text-lg">
-                        {isDarkMode ? '🌙' : '☀️'}
-                      </span>
-                      <div>
-                        <span className="text-sm font-medium" 
-                              style={{ color: isDarkMode ? '#e2e8f0' : 'var(--lm-text-primary)' }}>
-                          {isDarkMode ? 'Dark Mode' : 'Light Mode'}
-                        </span>
-                        <p className="text-xs" 
-                           style={{ color: isDarkMode ? '#94a3b8' : 'var(--lm-text-muted)' }}>
-                          {isDarkMode ? 'Currently active' : 'Currently active'}
-                        </p>
-                      </div>
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="min-w-0">
+                      <p
+                        className="text-[10px] font-medium uppercase tracking-[0.2em]"
+                        style={{ color: isDarkMode ? 'rgba(245, 158, 11, 0.55)' : 'rgba(74, 107, 78, 0.65)' }}
+                      >
+                        Theme
+                      </p>
+                      <p
+                        className="text-sm font-medium mt-0.5"
+                        style={{ color: isDarkMode ? '#F0F4F8' : 'var(--lm-text-primary)' }}
+                      >
+                        {isDarkMode ? 'Dark' : 'Light'}
+                      </p>
                     </div>
                     
-                    <label className="relative inline-flex items-center cursor-pointer">
+                    <label className="relative inline-flex shrink-0 cursor-pointer items-center">
                       <input
                         type="checkbox"
                         checked={isDarkMode}
@@ -246,17 +245,17 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
                         className="sr-only peer"
                       />
                       <div
-                        className={`relative w-12 h-6 rounded-full transition-all duration-300 ${isDarkMode ? "bg-gradient-to-r from-violet-600 to-cyan-500" : ""}`}
+                        className={`relative h-7 w-14 rounded-full transition-all duration-300 shadow-md ${isDarkMode ? "bg-amber-500" : ""}`}
                         style={!isDarkMode ? { backgroundColor: '#4A6B4E' } : undefined}
                       >
                         <div
-                          className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-all duration-300 shadow-md flex items-center justify-center
-                            ${isDarkMode ? "translate-x-6" : ""}`}
+                          className={`absolute top-0.5 left-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-md transition-all duration-300
+                            ${isDarkMode ? "translate-x-7" : ""}`}
                         >
                           {isDarkMode ? (
-                            <FiMoon className="text-[#07090D] w-2.5 h-2.5" />
+                            <FiMoon className="h-3 w-3 text-[#07090D]" />
                           ) : (
-                            <FiSun className="text-[#4A6B4E] w-2.5 h-2.5" />
+                            <FiSun className="h-3 w-3 text-[#4A6B4E]" />
                           )}
                         </div>
                       </div>

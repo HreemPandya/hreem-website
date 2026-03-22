@@ -33,7 +33,7 @@ const Contact = ({ isDarkMode }) => {
   return (
     <section
       id="contact"
-      className={`pt-12 md:pt-20 pb-20 md:pb-32 transition-colors duration-300 relative overflow-hidden`}
+      className={`pt-12 md:pt-20 pb-8 md:pb-32 transition-colors duration-300 relative overflow-hidden`}
     >
       {isDarkMode && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -161,7 +161,7 @@ const Contact = ({ isDarkMode }) => {
 
         {/* Email + social — inline, no boxes */}
         <motion.div
-          className="mt-12 pt-8 border-t flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
+          className="mt-8 pt-6 border-t flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 md:mt-12 md:pt-8"
           style={{
             borderColor: isDarkMode ? "rgba(255,255,255,0.06)" : "var(--lm-border)",
           }}

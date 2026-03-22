@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import SocialMediaIcons from "../components/SocialMediaIcons";
 import { motion } from "framer-motion";
 import AnchorLink from "react-anchor-link-smooth-scroll";
+
+const PUBLIC = process.env.PUBLIC_URL || "";
 
 const LandingTagline = ({ isDarkMode }) => (
   <div className="w-full max-w-md mx-auto md:mx-0 flex justify-center md:justify-start">
@@ -19,6 +21,18 @@ const LandingTagline = ({ isDarkMode }) => (
 );
 
 const Landing = ({ setSelectedPage, isDarkMode }) => {
+  useEffect(() => {
+    const urls = [
+      `${PUBLIC}/assets/orange-pfp-hero.webp`,
+      `${PUBLIC}/assets/light-mode-hero.webp`,
+    ];
+    urls.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+      img.decode?.().catch(() => {});
+    });
+  }, []);
+
   return (
     <>
       {/* Background Decorations */}
@@ -34,7 +48,7 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
       )}
 
       <section
-        className={`${isDarkMode ? 'bg-transparent' : 'bg-transparent'} flex min-h-screen min-w-0 flex-col md:flex-row md:justify-between md:items-center gap-8 md:gap-16 py-8 md:py-10 transition-colors duration-300 pt-20 md:pt-32 relative z-10 px-4 sm:px-5`}
+        className={`${isDarkMode ? 'bg-transparent' : 'bg-transparent'} flex min-h-screen min-w-0 flex-col md:flex-row md:justify-between md:items-center gap-8 md:gap-16 py-8 md:py-10 pt-20 md:pt-32 relative z-10 px-4 sm:px-5`}
       >
         {/* IMAGE SECTION - Overlap for asymmetry, flip between dark/light pics */}
         <div className="basis-3/5 z-10 flex justify-center md:order-2 order-1 md:-ml-8 lg:-ml-12">
@@ -46,23 +60,30 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
             style={{ perspective: 1200 }}
           >
             <motion.div
-              className="relative w-full aspect-[3/4]"
+              className="relative w-full aspect-[3/4] [contain:layout_paint]"
               style={{ transformStyle: "preserve-3d" }}
               animate={{ rotateY: isDarkMode ? 0 : 180 }}
               transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
             >
-              {/* Front face: dark mode (orange-pfp) */}
+              {/* Front face: dark mode */}
               <div
                 className="absolute inset-0 rounded-3xl overflow-hidden"
                 style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
               >
-                <img
-                  alt="profile"
-                  className={`absolute inset-0 w-full h-full object-cover object-center scale-[2.2] -translate-x-14 hover:scale-[2.25] hover:-translate-x-8 transition-transform duration-500 shadow-[0_0_40px_rgba(245,158,11,0.12)] border border-amber-500/15`}
-                  src={`${process.env.PUBLIC_URL}/assets/orange-pfp.png`}
-                />
+                <picture className="absolute inset-0 block h-full w-full">
+                  <source srcSet={`${PUBLIC}/assets/orange-pfp-hero.webp`} type="image/webp" />
+                  <img
+                    alt="Hreem Pandya"
+                    className="absolute inset-0 w-full h-full object-cover object-center scale-[2.2] -translate-x-14 shadow-[0_0_40px_rgba(245,158,11,0.12)] border border-amber-500/15 motion-safe:hover:scale-[2.25] motion-safe:hover:-translate-x-8 motion-reduce:transition-none transition-transform duration-500"
+                    src={`${PUBLIC}/assets/orange-pfp-hero.png`}
+                    width={1200}
+                    height={1600}
+                    decoding="async"
+                    fetchPriority="high"
+                  />
+                </picture>
               </div>
-              {/* Back face: light mode (light-mode-pic) */}
+              {/* Back face: light mode */}
               <div
                 className="absolute inset-0 rounded-3xl overflow-hidden"
                 style={{
@@ -71,11 +92,17 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
                   transform: "rotateY(180deg)",
                 }}
               >
-                <img
-                  alt="profile"
-                  className={`absolute inset-0 w-full h-full object-cover scale-[1.5] -translate-x-14 hover:scale-[2.4] hover:-translate-x-8 transition-transform duration-500 shadow-2xl border border-[var(--lm-border)]`}
-                  src={`${process.env.PUBLIC_URL}/assets/light-mode-up3.png`}
-                />
+                <picture className="absolute inset-0 block h-full w-full">
+                  <source srcSet={`${PUBLIC}/assets/light-mode-hero.webp`} type="image/webp" />
+                  <img
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-cover scale-[1.5] -translate-x-14 shadow-2xl border border-[var(--lm-border)] motion-safe:hover:scale-[2.4] motion-safe:hover:-translate-x-8 motion-reduce:transition-none transition-transform duration-500"
+                    src={`${PUBLIC}/assets/light-mode-hero.png`}
+                    width={1200}
+                    height={1600}
+                    decoding="async"
+                  />
+                </picture>
               </div>
             </motion.div>
           </motion.div>

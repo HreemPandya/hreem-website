@@ -45,7 +45,7 @@ function App() {
   }, []);
 
   return (
-    <div className={`app min-w-0 transition-colors duration-500 ${isDarkMode ? 'noise-overlay' : ''}`}>
+    <div className={`app min-w-0 ${isDarkMode ? 'noise-overlay' : ''}`}>
       <div className="scroll-indicator"></div>
       <Navbar
         isTopOfPage={isTopOfPage}

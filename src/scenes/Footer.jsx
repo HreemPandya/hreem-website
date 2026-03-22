@@ -28,7 +28,7 @@ const Footer = ({ isDarkMode }) => {
 
   return (
     <footer
-      className={`relative w-full py-12 md:py-16 mt-20 md:mt-24 overflow-hidden ${
+      className={`relative w-full py-12 md:py-16 mt-8 md:mt-24 overflow-hidden ${
         isDarkMode ? "bg-[#07090D]" : "bg-[var(--lm-bg-base)]"
       }`}
     >

@@ -20,8 +20,12 @@ body,
 #root,
 .app {
   height: 100%;
-  @apply transition-colors duration-300;
   font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+/* Theme swap: only animate root background — avoids transition thrash on every descendant */
+html {
+  transition: background-color 0.22s ease;
 }
 
 /* Prevent horizontal scroll from wide decorations or flex overflow on small viewports */
