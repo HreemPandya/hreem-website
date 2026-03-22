@@ -383,6 +383,24 @@ html.light-mode .app::after {
   background: #3D5A40;
 }
 
+/* Project modal (light): solid cream (fixes see-through when fixed + overflow/stacking interact) */
+.light-mode .lm-project-modal {
+  background-color: var(--lm-bg-surface);
+}
+
+/* Project modal (light): softer rail so the panel doesn’t read as “neon” against cream */
+.light-mode .lm-project-modal::-webkit-scrollbar-track {
+  background: rgba(74, 107, 78, 0.06);
+}
+
+.light-mode .lm-project-modal::-webkit-scrollbar-thumb {
+  background: rgba(74, 107, 78, 0.28);
+}
+
+.light-mode .lm-project-modal::-webkit-scrollbar-thumb:hover {
+  background: rgba(74, 107, 78, 0.42);
+}
+
 /* Responsive Enhancements */
 @media (max-width: 768px) {
   .glass-card {

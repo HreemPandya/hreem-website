@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGithub, FaYoutube, FaTimes, FaExternalLinkAlt} from "react-icons/fa";
 import { useState, useRef } from "react";
+import { createPortal } from "react-dom";
 const container = {
   hidden: {},
   visible: {
@@ -170,7 +171,7 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
           transformStyle: 'preserve-3d',
         }}
       >
-      <div className={`backdrop-blur-xl rounded-2xl border overflow-hidden transition-all duration-300 h-full ${featured ? 'md:flex md:flex-row' : ''} ${isDarkMode ? 'bg-[#111827] border-amber-500/20 group-hover:border-amber-500/40 group-hover:shadow-[0_12px_40px_rgba(245,158,11,0.08)]' : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] hover:border-[var(--lm-accent)]/30 shadow-lg group-hover:shadow-xl'}`}>
+      <div className={`rounded-2xl border overflow-hidden transition-all duration-300 h-full ${featured ? "md:flex md:flex-row" : ""} ${isDarkMode ? "border-amber-500/20 bg-[#111827] backdrop-blur-xl group-hover:border-amber-500/40 group-hover:shadow-[0_12px_40px_rgba(245,158,11,0.08)]" : "border-[var(--lm-border)] bg-[var(--lm-bg-surface)] shadow-lg group-hover:border-[var(--lm-accent)]/40 group-hover:shadow-xl"}`}>
         <div className={`relative overflow-hidden ${featured ? 'md:w-1/2 h-48 md:h-72' : 'h-36 md:h-48'}`}>
           <img
             src={project.image}
@@ -195,10 +196,10 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
             {project.tags.slice(0, tagCount).map(tag => (
               <span
                 key={tag}
-                className={`px-2.5 py-0.5 text-xs rounded-full border font-medium ${
+                className={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${
                   isDarkMode
-                    ? "bg-amber-500/[0.12] text-amber-300 border-amber-500/[0.2]"
-                    : "bg-[#4A6B4E]/32 text-[#3D5A40] border-[#4A6B4E]/50"
+                    ? "border-amber-500/[0.2] bg-amber-500/[0.12] text-amber-300"
+                    : "border-[var(--lm-accent)]/45 bg-white text-[#1e3324] shadow-sm"
                 }`}
               >
                 {tag}
@@ -206,10 +207,10 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
             ))}
             {project.tags.length > tagCount && (
               <span
-                className={`px-2.5 py-0.5 text-xs rounded-full border font-medium ${
+                className={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${
                   isDarkMode
-                    ? "bg-amber-500/[0.12] text-amber-300 border-amber-500/[0.2]"
-                    : "bg-[#4A6B4E]/32 text-[#3D5A40] border-[#4A6B4E]/50"
+                    ? "border-amber-500/[0.2] bg-amber-500/[0.12] text-amber-300"
+                    : "border-[var(--lm-accent)]/45 bg-white text-[#1e3324] shadow-sm"
                 }`}
               >
                 +{project.tags.length - tagCount} more
@@ -220,7 +221,11 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
             {project.links.slice(0, 2).map((link, idx) => (
               <div
                 key={idx}
-                className={`flex items-center gap-1 px-2 py-1.5 md:px-3 md:py-2 text-xs rounded-full border font-semibold transition-all duration-300 cursor-pointer ${isDarkMode ? 'bg-white/[0.04] border-white/[0.06] text-[#8B9DB0] hover:bg-white/[0.08] hover:text-[#F0F4F8] hover:border-amber-500/30' : 'bg-white text-[#2D4A32] border-2 border-[#4A6B4E]/55 shadow-md hover:bg-[#4A6B4E]/12 hover:border-[#4A6B4E] hover:shadow-lg hover:text-[#1e3324]'}`}
+                className={`flex cursor-pointer items-center gap-1 rounded-full border px-2 py-1.5 text-xs font-semibold transition-all duration-300 md:px-3 md:py-2 ${
+                  isDarkMode
+                    ? "border-white/[0.06] bg-white/[0.04] text-[#8B9DB0] hover:border-amber-500/30 hover:bg-white/[0.08] hover:text-[#F0F4F8]"
+                    : "border-2 border-[var(--lm-accent)] bg-[var(--lm-bg-surface)] text-[var(--lm-accent)] shadow-sm hover:bg-[var(--lm-accent-muted)] [&_svg]:shrink-0 [&_svg]:text-[var(--lm-accent)]"
+                }`}
                 onClick={(e) => { e.stopPropagation(); window.open(link.href, '_blank'); }}
               >
                 {link.icon}
@@ -328,18 +333,25 @@ const Projects = ({ isDarkMode }) => {
         </motion.div>
       </div>
 
-      {/* PROJECT MODAL - Mobile optimized */}
-      <AnimatePresence>
-        {selectedProject && (
+      {/* PROJECT MODAL — portaled to body so fixed + z-index aren’t trapped by section overflow-hidden */}
+      {createPortal(
+        <AnimatePresence>
+          {selectedProject && (
           <motion.div
-            className="fixed inset-0 bg-[#07090D]/95 backdrop-blur-xl z-50 flex items-center justify-center p-4"
+            className={`fixed inset-0 z-[1100] flex items-center justify-center p-4 ${
+              isDarkMode ? "bg-[#07090D]/95 backdrop-blur-xl" : "bg-[#2a2a2a]/50"
+            }`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closeModal}
           >
             <motion.div
-              className={`backdrop-blur-xl rounded-3xl border max-w-6xl w-full max-h-[90vh] overflow-y-auto ${isDarkMode ? 'bg-[#0B0F18] border-white/[0.06]' : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] shadow-2xl'}`}
+              className={`max-h-[90vh] w-full max-w-6xl overflow-y-auto rounded-3xl border shadow-2xl ${
+                isDarkMode
+                  ? "border-white/[0.06] bg-[#0B0F18] backdrop-blur-xl"
+                  : "lm-project-modal border-[var(--lm-border)] bg-lm-bg-surface text-[var(--lm-text-primary)] shadow-[0_24px_64px_-16px_rgba(42,42,42,0.18)]"
+              }`}
               initial={{ scale: 0.5, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.5, opacity: 0 }}
@@ -348,49 +360,85 @@ const Projects = ({ isDarkMode }) => {
             >
               {/* Close Button */}
               <button
+                type="button"
                 onClick={closeModal}
-                className={`absolute top-4 right-4 md:top-6 md:right-6 z-10 p-2 rounded-full transition-colors ${isDarkMode ? 'bg-black/50 hover:bg-black/70' : 'bg-[var(--lm-bg-surface)] hover:opacity-90 shadow-lg'}`}
+                aria-label="Close project details"
+                className={`absolute right-4 top-4 z-10 rounded-full p-2 transition-colors md:right-6 md:top-6 ${
+                  isDarkMode
+                    ? "bg-black/50 hover:bg-black/70"
+                    : "border border-[var(--lm-border)] bg-white/95 text-[var(--lm-text-primary)] shadow-sm hover:bg-white"
+                }`}
               >
-                <FaTimes className={`${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'}`} size={window.innerWidth < 768 ? 16 : 20} />
+                <FaTimes className={isDarkMode ? "text-white" : "text-[var(--lm-text-primary)]"} size={window.innerWidth < 768 ? 16 : 20} />
               </button>
 
               {/* Mobile: Stack layout, Desktop: Side by side — content top-aligned so short copy (e.g. InvestEd) does not float with huge vertical gaps */}
               <div className="grid grid-cols-1 md:grid-cols-2 md:items-stretch min-h-[400px] md:min-h-[min(700px,85vh)]">
                 {/* Image Section */}
-                <div className="relative h-64 overflow-hidden md:h-full md:min-h-0">
+                <div
+                  className={`relative h-64 overflow-hidden md:h-full md:min-h-0 ${
+                    isDarkMode ? "" : "bg-lm-bg-surface"
+                  }`}
+                >
                   <img
                     src={selectedProject.modalImage ?? selectedProject.image}
                     alt={selectedProject.title}
                     className={`w-full h-full object-cover ${selectedProject.imageObjectClass ?? ""}`}
                   />
-                  <div className={`absolute inset-0 bg-gradient-to-t ${selectedProject.gradient} opacity-30`} />
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-t ${selectedProject.gradient} ${
+                      isDarkMode ? "opacity-30" : "opacity-[0.12]"
+                    }`}
+                  />
                 </div>
 
-                {/* Content Section */}
-                <div className="flex min-h-0 flex-col justify-start gap-4 p-6 md:gap-5 md:p-8 md:pt-10">
-                  <h2 className={`font-playfair text-2xl font-bold md:text-4xl ${isDarkMode ? 'text-[#F0F4F8]' : 'text-[var(--lm-text-primary)]'}`}>
+                {/* Content Section — light mode uses lm-* tokens (Sage & Cream) */}
+                <div
+                  className={`flex min-h-0 flex-col justify-start gap-4 p-6 md:gap-5 md:p-8 md:pt-10 ${
+                    isDarkMode ? "" : "bg-lm-bg-surface"
+                  }`}
+                >
+                  <h2
+                    className={`font-playfair text-2xl font-bold md:text-4xl ${
+                      isDarkMode ? "text-[#F0F4F8]" : "text-[var(--lm-text-primary)]"
+                    }`}
+                  >
                     {selectedProject.title}
                   </h2>
-                  <p className={`text-base leading-relaxed md:text-lg ${isDarkMode ? 'text-[#8B9DB0]' : 'text-gray-700'}`}>
+                  <p
+                    className={`text-base leading-relaxed md:text-lg ${
+                      isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"
+                    }`}
+                  >
                     {selectedProject.description}
                   </p>
 
                   <div>
-                    <h4 className={`text-lg md:text-xl font-semibold mb-2 md:mb-3 ${isDarkMode ? 'text-[#F0F4F8]' : 'text-[var(--lm-text-primary)]'}`}>Technical Details</h4>
-                    <p className={`leading-relaxed text-sm md:text-base ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
+                    <h4
+                      className={`mb-2 text-lg font-semibold md:mb-3 md:text-xl ${
+                        isDarkMode ? "text-[#F0F4F8]" : "text-[var(--lm-text-primary)]"
+                      }`}
+                    >
+                      Technical Details
+                    </h4>
+                    <p
+                      className={`text-sm leading-relaxed md:text-base ${
+                        isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"
+                      }`}
+                    >
                       {selectedProject.hoverText}
                     </p>
                   </div>
 
                   {/* All Tags */}
                   <div className="flex flex-wrap gap-2">
-                    {selectedProject.tags.map(tag => (
+                    {selectedProject.tags.map((tag) => (
                       <span
                         key={tag}
-                        className={`px-2.5 py-1 md:px-3 md:py-2 rounded-full text-xs md:text-sm border ${
+                        className={`rounded-full border px-2.5 py-1 text-xs md:px-3 md:py-2 md:text-sm ${
                           isDarkMode
-                            ? "bg-amber-500/[0.12] text-amber-300 border-amber-500/[0.2]"
-                            : "bg-[#4A6B4E]/32 text-[#3D5A40] border-[#4A6B4E]/50"
+                            ? "border-amber-500/[0.2] bg-amber-500/[0.12] text-amber-300"
+                            : "border-[var(--lm-border)] bg-[var(--lm-accent-muted)] text-[var(--lm-accent)]"
                         }`}
                       >
                         {tag}
@@ -406,8 +454,11 @@ const Projects = ({ isDarkMode }) => {
                         href={link.href}
                         target="_blank"
                         rel="noreferrer"
-                        className={`flex items-center gap-2 md:gap-3 px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold hover:opacity-90 hover:scale-[1.02] active:scale-[0.95] transition-all duration-200 text-sm md:text-base ${isDarkMode ? 'bg-amber-500 text-[#07090D]' : 'text-white'}`}
-                        style={!isDarkMode ? { backgroundColor: '#4A6B4E' } : undefined}
+                        className={`flex items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-semibold transition-all duration-200 hover:scale-[1.02] active:scale-[0.95] md:gap-3 md:px-6 md:py-3 md:text-base ${
+                          isDarkMode
+                            ? "border-transparent bg-amber-500 text-[#07090D] hover:opacity-90 [&_svg]:text-[#07090D]"
+                            : "border-[var(--lm-accent)] bg-[var(--lm-bg-surface)] text-[var(--lm-accent)] shadow-sm hover:bg-[var(--lm-accent-muted)] [&_svg]:shrink-0 [&_svg]:text-[var(--lm-accent)]"
+                        }`}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.95 }}
                       >
@@ -420,8 +471,10 @@ const Projects = ({ isDarkMode }) => {
               </div>
             </motion.div>
           </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </section>
   );
 };
