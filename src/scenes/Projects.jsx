@@ -70,6 +70,20 @@ const projects = [
     ],
   },
   {
+    id: 8,
+    title: "HackCanada Judging: Scale Without the Spreadsheet Chaos",
+    description: "Judging platform for HackCanada 2026 that absorbed the operational friction of a massive event: 210+ projects, 50+ judges, and 700+ participants. One place to manage projects, judges, rooms, and schedules—deployed on Vercel with TypeScript and Supabase.",
+    hoverText: "Instead of brittle spreadsheets and scattered updates, judges allocate virtual investment across projects for a clearer signal than arbitrary numeric scores, while organizers configure tracks, rooms, and calendar settings from a single admin surface. Built with Next.js (App Router), React, TypeScript, Tailwind, shadcn/ui, and Recharts on the frontend, backed by Supabase and hosted on Vercel so the whole pipeline could keep up under real event load.",
+    image: `${process.env.PUBLIC_URL}/assets/project-4.png`,
+    gradient: "from-violet-500 to-indigo-500",
+    titleColor: "text-violet-600",
+    tags: ['Next.js', 'TypeScript', 'Supabase', 'Vercel', 'Tailwind'],
+    links: [
+      { href: "https://hackcanada-judging.vercel.app/", icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.559-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.559.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clipRule="evenodd"></path></svg>, label: "Demo" },
+      { href: "https://github.com/Hack-Canada/judging-platform", icon: <FaGithub size={20} />, label: "Code" },
+    ],
+  },
+  {
     id: 5,
     title: "GestureGroove: AI Music Controller",
     description: "A real-time gesture recognition app built on React that translates hand movements into music control using OpenCV for hand tracking and MediaPipe for gesture classification",
@@ -109,20 +123,6 @@ const projects = [
     links: [
       { href: "https://github.com/HreemPandya/SecureEdu", icon: <FaGithub size={20} />, label: "Code" },
       { href: "https://youtube.com/shorts/-U43X7I6Ihs?feature=share", icon: <FaYoutube size={20} />, label: "Demo" },
-    ],
-  },
-  {
-    id: 8,
-    title: "TaxWiz: LLM-Driven Tax Advisor",
-    description: "An AI-powered tax assistant built with TypeScript, OpenAI API and the Vercel AI SDK that guides users through complex tax questions via an intuitive, conversational interface. Features intelligent document parsing to extract and interpret key information from uploaded tax forms, enabling accurate, context-aware responses and simplifying the tax filing process.",
-    hoverText: "Built a chat-based LLM tax assistant in TypeScript using the OpenAI API, with structured evaluations to fine-tune prompts and improve how the assistant interacts with users. Used Tailwind CSS to quickly spin up dynamic, consistent UI components, and added robust document parsing so it can handle different file formats and pull out key details. Next.js powers the server-side logic for processing queries",
-    image: `${process.env.PUBLIC_URL}/assets/project-4.png`,
-    gradient: "from-purple-500 to-pink-500",
-    titleColor: "text-purple-600", // Purple to match TaxWiz tags
-    tags: ['TypeScript', 'Next.js', 'Tailwind CSS', 'OpenAI API'],
-    links: [
-      { href: "https://github.com/HreemPandya/taxwiz-chatbot", icon: <FaGithub size={20} />, label: "Code" },
-      { href: "https://taxwiz-chatbot.vercel.app/", icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.559-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.559.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clipRule="evenodd"></path></svg>, label: "Demo" },
     ],
   },
 ];
@@ -214,7 +214,7 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
             {project.links.slice(0, 2).map((link, idx) => (
               <div
                 key={idx}
-                className={`flex items-center gap-1 px-2 py-1.5 md:px-3 md:py-2 text-xs rounded-full border font-medium transition-all duration-300 cursor-pointer ${isDarkMode ? 'bg-white/[0.04] border-white/[0.06] text-[#8B9DB0] hover:bg-white/[0.08] hover:text-[#F0F4F8] hover:border-amber-500/30' : 'bg-[var(--lm-accent-muted)] text-[var(--lm-accent)] border-[var(--lm-border)] hover:bg-[var(--lm-accent)]/20'}`}
+                className={`flex items-center gap-1 px-2 py-1.5 md:px-3 md:py-2 text-xs rounded-full border font-semibold transition-all duration-300 cursor-pointer ${isDarkMode ? 'bg-white/[0.04] border-white/[0.06] text-[#8B9DB0] hover:bg-white/[0.08] hover:text-[#F0F4F8] hover:border-amber-500/30' : 'bg-white text-[#2D4A32] border-2 border-[#4A6B4E]/55 shadow-md hover:bg-[#4A6B4E]/12 hover:border-[#4A6B4E] hover:shadow-lg hover:text-[#1e3324]'}`}
                 onClick={(e) => { e.stopPropagation(); window.open(link.href, '_blank'); }}
               >
                 {link.icon}
@@ -310,7 +310,7 @@ const Projects = ({ isDarkMode }) => {
           </p>
           <motion.a
             href="#contact"
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium text-sm border transition-colors ${isDarkMode ? 'border-amber-500/40 text-amber-400 hover:bg-amber-500/10' : 'border-[var(--lm-accent)]/40 text-[var(--lm-accent)] hover:bg-[var(--lm-accent)]/10'}`}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm border-2 transition-colors shadow-md ${isDarkMode ? 'border-amber-500/40 text-amber-400 hover:bg-amber-500/10' : 'bg-white border-[#4A6B4E]/55 text-[#2D4A32] hover:bg-[#4A6B4E]/12 hover:border-[#4A6B4E] hover:shadow-lg'}`}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >

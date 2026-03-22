@@ -50,7 +50,7 @@ const Footer = ({ isDarkMode }) => {
                   isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"
                 }`}
               >
-                Full Stack Developer · Computer Eng
+                Software Engineer · Comp Eng @ uWaterloo
               </p>
             </div>
 

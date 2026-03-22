@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import DoodleBoard from "../components/DoodleBoard";
 
-// Expertise Bricks — falling from top, stacking
+// Expertise Bricks: falling from top, stacking
 const ExpertiseBricks = ({ isDarkMode }) => {
   const pillars = [
     { title: "Full-Stack & AI/ML", tech: "Python · React · TensorFlow · Expo" },
@@ -190,7 +190,7 @@ const CreativeCarousel = ({ isDarkMode }) => {
         })}
       </div>
 
-      {/* Minimal dot rail — dots only, no chevrons or backdrop */}
+      {/* Minimal dot rail: dots only, no chevrons or backdrop */}
       <div className="absolute left-3 md:left-4 top-[15%] -translate-y-1/2 flex flex-col items-center gap-4 z-50">
         {artworks.map((_, index) => (
           <motion.button
@@ -225,7 +225,7 @@ const AboutMe = ({ isDarkMode }) => {
       )}
 
       <div className="relative z-10 max-w-7xl mx-auto px-4">
-        {/* Header — minimal, no underline flourish */}
+        {/* Header: minimal, no underline flourish */}
         <motion.div
           className="mb-12 md:mb-16"
           initial={{ opacity: 0, y: 20 }}
@@ -244,9 +244,9 @@ const AboutMe = ({ isDarkMode }) => {
         {/* Expertise Bricks */}
         <ExpertiseBricks isDarkMode={isDarkMode} />
 
-        {/* Main Content — editorial layout, no emoji cards */}
+        {/* Main Content: editorial layout, no emoji cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
-          {/* Left Column — narrative */}
+          {/* Left Column: narrative */}
           <motion.div 
             className="space-y-10 md:space-y-14"
             initial={{ opacity: 0 }}
@@ -263,10 +263,10 @@ const AboutMe = ({ isDarkMode }) => {
               className={`space-y-4 pl-0 md:pl-6 md:border-l-2 md:border-transparent transition-colors duration-300 ${isDarkMode ? 'md:hover:border-amber-500/40' : 'md:hover:border-[#4A6B4E]'}`}
             >
               <p className={`text-lg md:text-xl leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
-                19, Computer Engineering at Waterloo. I build things — full-stack apps, AI stuff, sometimes hardware that talks to the real world.
+                I&apos;m 19, in Computer Engineering at Waterloo. Most of what I do these days spins around AI: how people actually use it, not just demos, plus full-stack work and the occasional hardware project when something needs to exist in the real world.
               </p>
               <p className={`text-base md:text-lg leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
-                Started with Python at 13 when my local YMCA ran a class. Got a hand-me-down laptop around the same time and couldn't stop messing with it. Udemy courses, new languages, projects for the fun of it. Now in second year, still chasing that same curiosity.
+                I love working with the tech community, whether that&apos;s organizing hackathons, showing up at events, or just meeting people who build things. That side of things matters to me about as much as what happens on my own screen.
               </p>
             </motion.div>
 
@@ -281,9 +281,14 @@ const AboutMe = ({ isDarkMode }) => {
               <p className={`font-mono text-xs uppercase tracking-wider ${isDarkMode ? 'text-amber-500/80' : 'text-[var(--lm-accent)]/80'}`}>
                 Approach
               </p>
-              <p className={`text-base md:text-lg leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
-                Build tech that saves people time or money. That's the goal. Every project and internship pushes it. FridgeMind, BeMyEyes, SecureEdu — each one taught me something different about shipping real systems.
-              </p>
+              <div className={`space-y-4 text-base md:text-lg leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
+                <p>
+                  I care about building things that actually save someone time or money. If it doesn&apos;t do that in a clear way, I lose interest pretty fast. That&apos;s the bar I hold my own work to, whether it&apos;s AI, full-stack, or something physical.
+                </p>
+                <p>
+                  AI is a big part of how I think about that now: not as magic, but as a tool that has to fit into someone&apos;s day without making their life harder. Same mindset I bring to the rest of my work: stay curious, stay close to the problem, and keep iterating with people in the loop.
+                </p>
+              </div>
             </motion.div>
 
             {/* Beyond code */}
@@ -304,7 +309,7 @@ const AboutMe = ({ isDarkMode }) => {
             </motion.div>
           </motion.div>
 
-          {/* Right Column — Art carousel (lg:order-first = appears left on desktop) */}
+          {/* Right Column: Art carousel (lg:order-first = appears left on desktop) */}
           <motion.div 
             className="lg:order-first space-y-6 md:space-y-8"
             initial={{ opacity: 0, x: 20 }}

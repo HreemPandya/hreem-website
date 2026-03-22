@@ -45,19 +45,35 @@ body,
   z-index: 1;
 }
 
-/* Light Mode — Sage & Cream (Option B) */
+/* Light Mode — Sage & Cream: layered atmosphere + subtle grain (mirrors dark-mode depth) */
 .light-mode {
-  --lm-bg-base: #F8F6F2;
-  --lm-bg-surface: #FDFCF9;
-  --lm-text-primary: #2A2A2A;
-  --lm-text-muted: #5A5A5A;
-  --lm-accent: #4A6B4E;
+  --lm-bg-base: #f7f5f0;
+  --lm-bg-surface: #fcfaf7;
+  --lm-text-primary: #2a2a2a;
+  --lm-text-muted: #5a5a5a;
+  --lm-accent: #4a6b4e;
   --lm-accent-muted: rgba(74, 107, 78, 0.3);
   --lm-border: rgba(74, 107, 78, 0.2);
   color: var(--lm-text-primary);
-  background: var(--lm-bg-base);
-  background-image: radial-gradient(ellipse 60% 40% at 10% 0%, rgba(74, 107, 78, 0.06) 0%, transparent 50%);
+  background-color: var(--lm-bg-base);
+  /* Sage glow (top-left + bottom-right) + whisper of warmth so it isn’t flat cream */
+  background-image:
+    radial-gradient(ellipse 80% 55% at 5% -10%, rgba(74, 107, 78, 0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 100% 105%, rgba(74, 107, 78, 0.08) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 85% 15%, rgba(74, 107, 78, 0.04) 0%, transparent 45%),
+    radial-gradient(ellipse 60% 50% at 20% 90%, rgba(200, 175, 130, 0.06) 0%, transparent 50%);
   background-attachment: fixed;
+}
+
+/* Very subtle paper grain in light mode (same technique as dark; lower opacity on light) */
+html.light-mode .app::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.022;
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* Scroll Progress Indicator (single accent) */

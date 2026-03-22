@@ -13,7 +13,7 @@ const LandingTagline = ({ isDarkMode }) => (
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: 0.65 }}
     >
-      Computer Engineer @ uWaterloo
+      Software Engineer · Comp Eng @ uWaterloo
     </motion.h2>
   </div>
 );
