@@ -68,7 +68,7 @@ const Footer = ({ isDarkMode }) => {
                     isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"
                   }`}
                 >
-                  Software Engineer · Comp Eng @ uWaterloo
+                  AI Intern · Comp Eng @ uWaterloo
                 </p>
               </div>
               <div
@@ -129,7 +129,12 @@ const Footer = ({ isDarkMode }) => {
               isDarkMode ? "text-[#8B9DB0]/80" : "text-[var(--lm-text-muted)]/80"
             }`}
           >
-            Built with React
+            Updated on{" "}
+            {new Date().toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
           </p>
         </motion.div>
       </div>

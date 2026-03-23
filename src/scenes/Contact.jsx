@@ -1,20 +1,58 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import SocialMediaIcons from "../components/SocialMediaIcons";
 
+const CONTACT_SENT_KEY = "hreem-contact-form-sent";
+
 const Contact = ({ isDarkMode }) => {
-  const [submitted, setSubmitted] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
   });
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem(CONTACT_SENT_KEY)) setSent(true);
+    } catch {
+      /* private mode / storage blocked */
+    }
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
-    e.target.submit();
+    if (sent || submitting) return;
+
+    const form = e.currentTarget;
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      const res = await fetch(
+        "https://formsubmit.co/ajax/hreempandya@gmail.com",
+        {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        }
+      );
+      if (!res.ok) throw new Error("Request failed");
+
+      setFormData({ name: "", email: "", message: "" });
+      setSent(true);
+      try {
+        sessionStorage.setItem(CONTACT_SENT_KEY, String(Date.now()));
+      } catch {
+        /* ignore */
+      }
+    } catch {
+      setError("Something went wrong. Please try again or email directly.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -24,7 +62,7 @@ const Contact = ({ isDarkMode }) => {
     });
   };
 
-  const inputBase = `w-full py-3 text-base border-b bg-transparent focus:outline-none transition-colors placeholder:opacity-50 ${
+  const inputBase = `w-full py-3 text-base border-b bg-transparent focus:outline-none transition-colors placeholder:opacity-50 disabled:opacity-60 disabled:cursor-not-allowed ${
     isDarkMode
       ? "border-white/[0.1] text-white placeholder-[#8B9DB0] focus:border-amber-500/60"
       : "border-[var(--lm-border)] text-[var(--lm-text-primary)] placeholder-[var(--lm-text-muted)] focus:border-[var(--lm-accent)]/60"
@@ -93,11 +131,6 @@ const Contact = ({ isDarkMode }) => {
             onSubmit={handleSubmit}
           >
             <input type="hidden" name="_captcha" value="false" />
-            <input
-              type="hidden"
-              name="_next"
-              value="https://hreempandya.github.io/hreem-website/"
-            />
 
             <div>
               <input
@@ -108,6 +141,7 @@ const Contact = ({ isDarkMode }) => {
                 onChange={handleInputChange}
                 placeholder="Your name"
                 required
+                disabled={sent}
               />
             </div>
             <div>
@@ -119,6 +153,7 @@ const Contact = ({ isDarkMode }) => {
                 onChange={handleInputChange}
                 placeholder="Email"
                 required
+                disabled={sent}
               />
             </div>
             <div>
@@ -130,29 +165,40 @@ const Contact = ({ isDarkMode }) => {
                 placeholder="Your message"
                 rows={4}
                 required
+                disabled={sent}
               />
             </div>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-2">
               <motion.button
                 type="submit"
+                disabled={sent || submitting}
                 className={`inline-flex min-h-[44px] items-center justify-center px-6 py-2.5 rounded-full font-medium text-sm border transition-colors ${
                   isDarkMode
                     ? "border-amber-500/40 text-amber-400 hover:bg-amber-500/10"
                     : "border-[var(--lm-accent)]/40 text-[var(--lm-accent)] hover:bg-[var(--lm-accent)]/10"
-                }`}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                } ${sent || submitting ? "opacity-50 cursor-not-allowed pointer-events-none" : ""}`}
+                whileHover={sent || submitting ? undefined : { scale: 1.02 }}
+                whileTap={sent || submitting ? undefined : { scale: 0.98 }}
               >
-                Send message
+                {submitting ? "Sending…" : "Send message"}
               </motion.button>
-              {submitted && (
+              {sent && (
                 <span
                   className={`text-sm ${
                     isDarkMode ? "text-amber-400" : "text-[var(--lm-accent)]"
                   }`}
                 >
-                  Sent!
+                  Sent. Thanks!
+                </span>
+              )}
+              {error && (
+                <span
+                  className={`text-sm ${
+                    isDarkMode ? "text-red-400" : "text-red-600"
+                  }`}
+                >
+                  {error}
                 </span>
               )}
             </div>

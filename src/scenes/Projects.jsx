@@ -22,7 +22,6 @@ const projects = [
     image: `${process.env.PUBLIC_URL}/assets/base-fridgemind-proj.png`,
     modalImage: `${process.env.PUBLIC_URL}/assets/project-5.png`,
     gradient: "from-indigo-500 to-purple-500",
-    titleColor: "text-orange-600", // Orange to match FridgeMind tags
     tags: ['Raspberry Pi/QNX', 'Yolov5', 'Python', 'FastAPI', 'Expo Go' ],
     links: [
       { href: "https://devpost.com/software/fridge-mind", icon: <FaExternalLinkAlt size={20} />, label: "Devpost" },
@@ -33,14 +32,14 @@ const projects = [
   {
     id: 2,
     title: "Cliara: AI-Powered Shell with Natural Language & Macros",
-    description: "An AI-powered shell that wraps your existing terminal (bash, zsh, PowerShell) and adds natural language commands, reusable macros, and smart workflows. Use ? <query> to describe what you want and get shell commands, or ? fix to correct failed commands. Includes Cliara Cloud (GitHub login, 150 free queries/month), semantic history search, smart push (auto-commit messages), and smart deploy (auto-detects Vercel, Netlify, Docker, PyPI). Published on PyPI.",
+    description: "An AI-powered shell that wraps your existing terminal (bash, zsh, PowerShell) and adds natural language commands, reusable macros, and smart workflows. Use ? <query> to describe what you want and get shell commands, or ? fix to correct failed commands. Includes Cliara Cloud (GitHub login, 150 free queries/month), semantic history search, smart push and smart deploy (auto-detects Vercel, Netlify, Docker).",
     hoverText: "Built with Python, OpenAI, and Anthropic APIs for natural language command generation. Uses prompt-toolkit for a rich REPL experience and Rich for formatted terminal output. The FastAPI backend powers Cliara Cloud with GitHub OAuth and usage tracking. Features include semantic history search across your shell history, smart push that generates commit messages from diffs, and smart deploy that auto-detects Vercel, Netlify, Docker, and PyPI deployment targets. Wraps bash, zsh, and PowerShell so you keep your existing setup while adding AI superpowers.",
     image: `${process.env.PUBLIC_URL}/assets/base-cliara.png`,
     // object-cover + default center crops the monitor header; bias toward top so the Cliara logo stays in frame
     imageObjectClass: "object-[50%_18%] md:object-[50%_20%] origin-top",
+    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-cliara.png`,
     gradient: "from-emerald-500 to-teal-500",
-    titleColor: "text-emerald-600",
-    tags: ['Python', 'OpenAI', 'Anthropic', 'prompt-toolkit', 'Rich', 'FastAPI', 'PyPI'],
+    tags: ['Python', 'LLMs', 'FastAPI', 'OpenAI', 'Anthropic', 'Shell', 'PyPI'],
     badge: "Published on PyPI",
     links: [
       { href: "https://github.com/HreemPandya/cliara-app", icon: <FaGithub size={20} />, label: "Code" },
@@ -51,10 +50,9 @@ const projects = [
     id: 3,
     title: "InvestEd: AI-Powered Financial Education @ Hack the North",
     description: "Banking app that turns finances into something engaging. Portfolius AI explains spending habits, highlights overspending, and generates personalized explainer videos so you know exactly where your money goes and how to invest smarter.",
-    hoverText: "Next.js + Tailwind frontend with a banking-inspired UI. FastAPI backend orchestrates the workflow: Cohere LLM generates plain-language scripts, Manim renders short explainer videos (720p/30fps), ElevenLabs voices Portfolius, and Supabase stores videos for smooth playback.",
+    hoverText: "Frontend: Next.js and Tailwind with a banking-inspired layout, including trend charts, portfolio views, and interactive elements like rebalance actions, wired to a FastAPI service layer. Backend: REST endpoints orchestrate an async pipeline where user and spending context is summarized, then Cohere's LLM drafts structured, plain-language narration and scene beats for each explainer. Manim (Python) renders motion graphics and captions at 720p/30fps; audio is synthesized with ElevenLabs so Portfolius has a consistent voice. Finished assets land in Supabase Storage with URLs served back to the client for reliable in-app playback without blocking the UI during generation.",
     image: `${process.env.PUBLIC_URL}/assets/project-8.png`,
     gradient: "from-emerald-500 to-cyan-500",
-    titleColor: "text-emerald-600",
     tags: ['Next.js', 'Tailwind', 'FastAPI', 'Cohere', 'Manim', 'ElevenLabs', 'Supabase'],
     links: [
       { href: "https://github.com/HreemPandya/invested", icon: <FaGithub size={20} />, label: "Code" },
@@ -70,7 +68,6 @@ const projects = [
     cardImageObjectClass: "-translate-y-[5px]",
     modalImage: `${process.env.PUBLIC_URL}/assets/project-3-copy.png`,
     gradient: "from-green-500 to-blue-500",
-    titleColor: "text-cyan-600", // Cyan to match BeMyEyes tags
     tags: ['Arduino', 'OpenCV', 'IoT', 'Embedded System'],
     links: [
       { href: "https://devpost.com/software/bemyeyes", icon: <FaExternalLinkAlt size={20} />, label: "Devpost" },
@@ -81,10 +78,10 @@ const projects = [
     id: 8,
     title: "HackCanada Judging: Scale Without the Spreadsheet Chaos",
     description: "Judging platform for HackCanada 2026 that absorbed the operational friction of a massive event: 210+ projects, 50+ judges, and 700+ participants. One place to manage projects, judges, rooms, and schedules; deployed on Vercel with TypeScript and Supabase.",
-    hoverText: "Instead of brittle spreadsheets and scattered updates, judges allocate virtual investment across projects for a clearer signal than arbitrary numeric scores, while organizers configure tracks, rooms, and calendar settings from a single admin surface. Built with Next.js (App Router), React, TypeScript, Tailwind, shadcn/ui, and Recharts on the frontend, backed by Supabase and hosted on Vercel so the whole pipeline could keep up under real event load.",
+    hoverText: "Instead of brittle spreadsheets and scattered updates, judges allocate virtual investment across projects so rankings reflect relative preference and budget constraints, not opaque 1 to 10 scores, while organizers configure tracks, rooms, and calendar blocks from one admin surface. The Next.js App Router frontend uses React Server and Client Components where it matters, TypeScript end to end, Tailwind and shadcn/ui for consistent forms and tables, and Recharts for live breakdowns of allocations and progress. Supabase backs auth, relational data for projects, judges, rooms, and schedules, and row level security so each role only sees what it should. Queries stay indexed for list views at hundreds of rows, and the app is deployed on Vercel with preview environments so the team could iterate safely right up to event day.",
     image: `${process.env.PUBLIC_URL}/assets/project-4.png`,
+    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-hc.png`,
     gradient: "from-violet-500 to-indigo-500",
-    titleColor: "text-violet-600",
     tags: ['Next.js', 'TypeScript', 'Supabase', 'Vercel', 'Tailwind'],
     links: [
       { href: "https://hackcanada-judging.vercel.app/", icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.559-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.559.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clipRule="evenodd"></path></svg>, label: "Website" },
@@ -95,10 +92,10 @@ const projects = [
     id: 5,
     title: "GestureGroove: AI Music Controller",
     description: "A real-time gesture recognition app built on React that translates hand movements into music control using OpenCV for hand tracking and MediaPipe for gesture classification",
-    hoverText: "Developed using OpenCV for video capture and MediaPipe Hands for real-time, 21-point hand landmark detection at low latency. GestureGroove interprets spatial coordinates and motion vectors to classify predefined gestures, which are mapped to playback controls and musical parameters such as pitch, volume, and audio effects. The system features debounced gesture recognition to prevent false triggers, asynchronous event handling for responsive UI feedback, and seamless integration with the Spotify Web API for track control and choice.",
+    hoverText: "The browser captures webcam frames through getUserMedia, then OpenCV handles acquisition and preprocessing while MediaPipe Hands tracks 21 landmarks per hand at interactive frame rates. Landmarks are normalized to screen space, smoothed over a short sliding window, and fed into rules that look at palm orientation, finger spread, and motion vectors so static poses and swipes map to different commands. Debouncing and minimum hold times cut accidental toggles when the hand jitters. The React UI runs the loop with requestAnimationFrame-friendly updates so the overlay and control panel stay responsive. Playback and library access go through the Spotify Web API with OAuth, mapping gestures to skip, play, pause, volume, and effect parameters so the whole stack stays in the browser without a native plugin.",
     image: `${process.env.PUBLIC_URL}/assets/project-6.png`,
+    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-gesture.png`,
     gradient: "from-cyan-500 to-blue-500",
-    titleColor: "text-green-600", // Green to match GestureGroove tags
     tags: ['OpenCV', 'MediaPipe', 'Spotify API', 'React'],
     links: [
       { href: "https://gesturegroove.vercel.app/", icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.559-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.559.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clipRule="evenodd"></path></svg>, label: "Demo" },
@@ -109,10 +106,10 @@ const projects = [
     id: 6,
     title: "CrisisCompass: First Responder's Emergency Management Tool",
     description: "Developed at NewHacks 2024, this React web application helps first responders and volunteers prioritize and manage local emergencies by aggregating and scraping real-time data from news outlets using OpenAI API to analyze and rank incidents based on urgency and using geolocation to rank incidents by proximity.",
-    hoverText: "Designed to help first responders and volunteers act faster during emergencies, CrisisCompass ranks incidents so the most urgent situations receive immediate attention. Built with a Flask-based backend API that aggregates, processes, and web scrapes emergency reports from trusted news and social media sources, it analyzes type, location, and critical keywords using OpenAI API to guide resource allocation during crises. A responsive React dashboard presents real-time updates with urgency badges and severity icons, ensuring clear situational awareness when every second counts.",
-    image: `${process.env.PUBLIC_URL}/assets/project-1.png`,
+    hoverText: "Designed to help first responders and volunteers act faster during emergencies, CrisisCompass merges ingestion, scoring, and map-ready views in one place. A Flask REST API exposes routes for listing incidents, triggering refresh jobs, and serving ranked results to the client. Workers scrape and normalize headlines and blurbs from news and social-style sources, strip boilerplate, then call the OpenAI API with structured prompts to label incident type, extract location hints and severity cues, and produce a comparable urgency score. Geolocation or inferred coordinates feed a proximity sort alongside urgency so nearby high-risk events bubble up. The React front end polls or refetches on an interval, renders cards with urgency badges and severity icons, and keeps layout responsive for laptops in a command center. Error handling and timeouts on external calls prevent one slow source from stalling the whole dashboard when every second counts.",
+    image: `${process.env.PUBLIC_URL}/assets/base-crisis.png`,
+    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-crisis.png`,
     gradient: "from-red-500 to-orange-500",
-    titleColor: "text-orange-600", // Orange to match CrisisCompass tags (changed from red)
     tags: ['React', 'OpenAI API', 'Flask', 'Web Scraping'],
     links: [
       { href: "https://github.com/HreemPandya/Crisis-Compass", icon: <FaGithub size={20} />, label: "Code" },
@@ -125,8 +122,8 @@ const projects = [
     description: "A secure learning platform built from STM32 microcontrollers that encrypts and transmits educational materials, using AES-based encryption and EEPROM-stored keys. Implements a progressive hint-based learning system where content is unlocked incrementally via access keys, ensuring controlled information disclosure",
     hoverText: "SecureEdu runs on STM32 microcontrollers that use AES encryption to keep textbook sections, quiz solutions, and hints safe from unauthorized access. For secure communication between devices, it integrates Diffie-Hellman Key Exchange so encryption keys are never exposed during transfer. On the hardware side, we configured UART, I2C, and GPIO peripherals to connect an LCD display, which gives students real-time feedback as they interact with the system, and a 4x4 keypad, which they use to securely enter access keys. The whole setup powers a progressive hint-based learning system, where you can unlock just the right amount of help without giving away the entire answer, all while keeping the data transmission secure.",
     image: `${process.env.PUBLIC_URL}/assets/base-securedu-copy.png`,
+    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-secure.png`,
     gradient: "from-blue-500 to-teal-500",
-    titleColor: "text-teal-600", // Teal to match SecureEdu tags (changed from blue)
     tags: ['STM32', 'C Programming', 'Embedded Systems','AES Encryption'],
     links: [
       { href: "https://github.com/HreemPandya/SecureEdu", icon: <FaGithub size={20} />, label: "Code" },
@@ -151,7 +148,7 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
 
   const handleMouseLeave = () => setTransform({ rotateX: 0, rotateY: 0 });
 
-  const tagCount = isMobile ? 2 : 3;
+  const tagCount = featured ? (isMobile ? 3 : 4) : isMobile ? 2 : 3;
 
   return (
     <motion.div
@@ -172,8 +169,12 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
           transformStyle: 'preserve-3d',
         }}
       >
-      <div className={`rounded-2xl border overflow-hidden transition-all duration-300 h-full ${featured ? "md:flex md:flex-row" : ""} ${isDarkMode ? "border-amber-500/20 bg-[#111827] backdrop-blur-xl group-hover:border-amber-500/40 group-hover:shadow-[0_12px_40px_rgba(245,158,11,0.08)]" : "border-[var(--lm-border)] bg-[var(--lm-bg-surface)] shadow-lg group-hover:border-[var(--lm-accent)]/40 group-hover:shadow-xl"}`}>
-        <div className={`relative overflow-hidden ${featured ? 'md:w-1/2 h-48 md:h-72' : 'h-36 md:h-48'}`}>
+      <div className={`rounded-2xl border overflow-hidden transition-all duration-300 h-full ${featured ? "md:flex md:flex-row md:h-72" : ""} ${isDarkMode ? "border-amber-500/20 bg-[#111827] backdrop-blur-xl group-hover:border-amber-500/40 group-hover:shadow-[0_12px_40px_rgba(245,158,11,0.08)]" : "border-[var(--lm-border)] bg-[var(--lm-bg-surface)] shadow-lg group-hover:border-[var(--lm-accent)]/40 group-hover:shadow-xl"}`}>
+        <div
+          className={`relative overflow-hidden ${
+            featured ? "h-48 md:h-full md:w-1/2 md:min-h-0 md:flex-shrink-0" : "h-36 md:h-48"
+          }`}
+        >
           <img
             src={project.image}
             alt={project.title}
@@ -186,14 +187,32 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
             </span>
           )}
         </div>
-        <div className={`p-4 md:p-6 ${featured ? 'md:flex md:flex-col md:justify-center md:w-1/2' : ''}`}>
-          <h3 className={`font-playfair text-lg md:text-xl font-bold mb-2 md:mb-3 group-hover:underline underline-offset-4 decoration-2 ${featured ? 'md:text-2xl' : ''} ${isDarkMode ? 'text-white' : project.titleColor} line-clamp-2`}>
+        <div
+          className={`p-4 ${
+            featured
+              ? "md:flex md:h-full md:min-h-0 md:w-1/2 md:flex-col md:justify-start md:overflow-hidden md:px-5 md:py-4"
+              : "md:p-6"
+          }`}
+        >
+          <h3
+            className={`font-playfair text-lg font-bold group-hover:underline underline-offset-4 decoration-2 line-clamp-2 ${
+              featured ? "mb-1.5 md:mb-2 md:text-2xl md:leading-tight" : "mb-2 md:mb-3 md:text-xl"
+            } ${isDarkMode ? "text-white" : "text-[var(--lm-accent)]"}`}
+          >
             {project.title}
           </h3>
-          <p className={`text-sm leading-relaxed mb-3 md:mb-4 ${featured ? 'line-clamp-4 md:line-clamp-none' : 'line-clamp-3'} ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
+          <p
+            className={`text-sm leading-relaxed ${
+              featured ? "mb-2 line-clamp-3 md:mb-2" : "mb-3 line-clamp-3 md:mb-4"
+            } ${isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"}`}
+          >
             {project.description}
           </p>
-          <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-4">
+          <div
+            className={`flex flex-wrap gap-1.5 md:gap-2 ${
+              featured ? "mb-2 shrink-0 md:mb-2" : "mb-3 md:mb-4"
+            }`}
+          >
             {project.tags.slice(0, tagCount).map(tag => (
               <span
                 key={tag}
