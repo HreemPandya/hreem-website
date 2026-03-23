@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import SocialMediaIcons from "../components/SocialMediaIcons";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import AnchorLink from "react-anchor-link-smooth-scroll";
 
 const PUBLIC = process.env.PUBLIC_URL || "";
@@ -21,6 +21,8 @@ const LandingTagline = ({ isDarkMode }) => (
 );
 
 const Landing = ({ setSelectedPage, isDarkMode }) => {
+  const reduceMotion = useReducedMotion();
+
   useEffect(() => {
     const urls = [
       `${PUBLIC}/assets/orange-pfp-hero.webp`,
@@ -57,24 +59,25 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
             initial={{ opacity: 0, scale: 0.9, x: 20 }}
             animate={{ opacity: 1, scale: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.5 }}
-            style={{ perspective: 1200 }}
           >
-            <motion.div
-              className="relative w-full aspect-[3/4] [contain:layout_paint]"
-              style={{ transformStyle: "preserve-3d" }}
-              animate={{ rotateY: isDarkMode ? 0 : 180 }}
-              transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
-            >
-              {/* Front face: dark mode */}
-              <div
-                className="absolute inset-0 rounded-3xl overflow-hidden"
-                style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
+            {/* Opacity crossfade: Safari/iOS often breaks 3D backface-visibility, showing a mirrored dark image in light mode */}
+            <div className="relative w-full aspect-[3/4] [contain:layout_paint]">
+              <motion.div
+                className={`absolute inset-0 rounded-3xl overflow-hidden ${isDarkMode ? "z-[2]" : "z-[1] pointer-events-none"}`}
+                initial={false}
+                animate={{
+                  opacity: isDarkMode ? 1 : 0,
+                  rotateY: reduceMotion ? 0 : isDarkMode ? 0 : -12,
+                }}
+                transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
+                style={{ transformStyle: "preserve-3d" }}
+                aria-hidden={!isDarkMode}
               >
                 <picture className="absolute inset-0 block h-full w-full">
                   <source srcSet={`${PUBLIC}/assets/orange-pfp-hero.webp`} type="image/webp" />
                   <img
                     alt="Hreem Pandya"
-                    className="absolute inset-0 w-full h-full object-cover object-center scale-[2.2] -translate-x-14 shadow-[0_0_40px_rgba(245,158,11,0.12)] border border-amber-500/15 motion-safe:hover:scale-[2.25] motion-safe:hover:-translate-x-8 motion-reduce:transition-none transition-transform duration-500"
+                    className="absolute inset-0 w-full h-full object-cover object-center scale-[2.2] -translate-x-14 shadow-[0_0_40px_rgba(245,158,11,0.12)] border border-amber-500/15"
                     src={`${PUBLIC}/assets/orange-pfp-hero.png`}
                     width={1200}
                     height={1600}
@@ -82,29 +85,31 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
                     fetchPriority="high"
                   />
                 </picture>
-              </div>
-              {/* Back face: light mode */}
-              <div
-                className="absolute inset-0 rounded-3xl overflow-hidden"
-                style={{
-                  backfaceVisibility: "hidden",
-                  WebkitBackfaceVisibility: "hidden",
-                  transform: "rotateY(180deg)",
+              </motion.div>
+              <motion.div
+                className={`absolute inset-0 rounded-3xl overflow-hidden ${isDarkMode ? "z-[1] pointer-events-none" : "z-[2]"}`}
+                initial={false}
+                animate={{
+                  opacity: isDarkMode ? 0 : 1,
+                  rotateY: reduceMotion ? 0 : isDarkMode ? 12 : 0,
                 }}
+                transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
+                style={{ transformStyle: "preserve-3d" }}
+                aria-hidden={isDarkMode}
               >
                 <picture className="absolute inset-0 block h-full w-full">
                   <source srcSet={`${PUBLIC}/assets/light-mode-hero.webp`} type="image/webp" />
                   <img
-                    alt=""
-                    className="absolute inset-0 w-full h-full object-cover scale-[1.5] -translate-x-14 shadow-2xl border border-[var(--lm-border)] motion-safe:hover:scale-[2.4] motion-safe:hover:-translate-x-8 motion-reduce:transition-none transition-transform duration-500"
+                    alt="Hreem Pandya"
+                    className="absolute inset-0 w-full h-full object-cover scale-[1.5] -translate-x-14 shadow-2xl border border-[var(--lm-border)]"
                     src={`${PUBLIC}/assets/light-mode-hero.png`}
                     width={1200}
                     height={1600}
                     decoding="async"
                   />
                 </picture>
-              </div>
-            </motion.div>
+              </motion.div>
+            </div>
           </motion.div>
         </div>
 
