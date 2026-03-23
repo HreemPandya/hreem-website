@@ -36,6 +36,47 @@ const MODE_HINTS = {
   zig: "it zigzags",
 };
 
+/** Modes where points can damp to rest — stop rAF once |vx|,|vy| are tiny. */
+const SETTLING_MODES = new Set(["gravity", "rise", "magnet", "repel"]);
+
+/** Modes with continuous forces so animation never “finishes” while strokes exist. */
+const PERPETUAL_MODES = new Set([
+  "drift",
+  "orbit",
+  "jitter",
+  "wave",
+  "pinball",
+  "zig",
+]);
+
+const VELOCITY_EPS = 0.08;
+const GLOW_ALPHA_EPS = 0.002;
+
+function strokesSettled(strokes) {
+  for (const s of strokes) {
+    for (const p of s.points) {
+      const vx = p.vx ?? 0;
+      const vy = p.vy ?? 0;
+      if (Math.abs(vx) >= VELOCITY_EPS || Math.abs(vy) >= VELOCITY_EPS) return false;
+    }
+  }
+  return true;
+}
+
+function shouldContinueAfterFrame(modeNow, strokes, isDrawing, currentLen) {
+  if (isDrawing) return true;
+  if (currentLen > 1) return true;
+  if (strokes.length === 0) return false;
+
+  if (modeNow === "static") return false;
+  if (modeNow === "glow") {
+    return strokes.some((s) => s.alpha > GLOW_ALPHA_EPS);
+  }
+  if (PERPETUAL_MODES.has(modeNow)) return true;
+  if (SETTLING_MODES.has(modeNow)) return !strokesSettled(strokes);
+  return true;
+}
+
 const DoodleBoard = ({ isDarkMode, topSpacing = "2.5rem" }) => {
   const [mode, setMode] = useState("gravity");
   const canvasRef = useRef(null);
@@ -43,9 +84,12 @@ const DoodleBoard = ({ isDarkMode, topSpacing = "2.5rem" }) => {
   const strokesRef = useRef([]);
   const isDrawingRef = useRef(false);
   const currentStrokeRef = useRef([]);
-  const animationRef = useRef(null);
+  const rafRef = useRef(null);
+  const modeRef = useRef(mode);
   const lastPointRef = useRef(null);
   const frameCountRef = useRef(0);
+
+  modeRef.current = mode;
 
   const strokeColor = isDarkMode ? "rgba(245, 158, 11, 0.85)" : "rgba(74, 107, 78, 0.85)";
   const glowColor = isDarkMode ? "rgba(245, 158, 11, 0.3)" : "rgba(74, 107, 78, 0.3)";
@@ -74,41 +118,6 @@ const DoodleBoard = ({ isDarkMode, topSpacing = "2.5rem" }) => {
     if (dist < SAMPLE_DISTANCE) return null;
     lastPointRef.current = { x, y };
     return { x, y, vx: 0, vy: 0 };
-  }, []);
-
-  const handlePointerDown = useCallback(
-    (e) => {
-      isDrawingRef.current = true;
-      const p = getCanvasPoint(e);
-      if (p) {
-        currentStrokeRef.current = [{ ...p }];
-        lastPointRef.current = { x: p.x, y: p.y };
-      }
-    },
-    [getCanvasPoint]
-  );
-
-  const handlePointerMove = useCallback(
-    (e) => {
-      if (!isDrawingRef.current) return;
-      const raw = getCanvasPoint(e);
-      if (!raw) return;
-      const p = samplePoint(raw.x, raw.y);
-      if (p) currentStrokeRef.current.push(p);
-    },
-    [getCanvasPoint, samplePoint]
-  );
-
-  const handlePointerUp = useCallback(() => {
-    if (isDrawingRef.current && currentStrokeRef.current.length > 1) {
-      strokesRef.current.push({
-        points: [...currentStrokeRef.current],
-        alpha: 1,
-      });
-    }
-    isDrawingRef.current = false;
-    currentStrokeRef.current = [];
-    lastPointRef.current = null;
   }, []);
 
   const runPhysics = useCallback(() => {
@@ -319,8 +328,66 @@ const DoodleBoard = ({ isDarkMode, topSpacing = "2.5rem" }) => {
     drawStroke(currentStrokeRef.current);
 
     runPhysics();
-    animationRef.current = requestAnimationFrame(draw);
+
+    const cont = shouldContinueAfterFrame(
+      modeRef.current,
+      strokesRef.current,
+      isDrawingRef.current,
+      currentStrokeRef.current.length
+    );
+    if (cont) {
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = null;
+        draw();
+      });
+    }
   }, [strokeColor, glowColor, mode, runPhysics]);
+
+  const kickAnimation = useCallback(() => {
+    if (rafRef.current !== null) return;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
+      draw();
+    });
+  }, [draw]);
+
+  const handlePointerDown = useCallback(
+    (e) => {
+      isDrawingRef.current = true;
+      const p = getCanvasPoint(e);
+      if (p) {
+        currentStrokeRef.current = [{ ...p }];
+        lastPointRef.current = { x: p.x, y: p.y };
+      }
+      kickAnimation();
+    },
+    [getCanvasPoint, kickAnimation]
+  );
+
+  const handlePointerMove = useCallback(
+    (e) => {
+      if (!isDrawingRef.current) return;
+      const raw = getCanvasPoint(e);
+      if (!raw) return;
+      const p = samplePoint(raw.x, raw.y);
+      if (p) currentStrokeRef.current.push(p);
+      kickAnimation();
+    },
+    [getCanvasPoint, samplePoint, kickAnimation]
+  );
+
+  const handlePointerUp = useCallback(() => {
+    if (isDrawingRef.current && currentStrokeRef.current.length > 1) {
+      strokesRef.current.push({
+        points: [...currentStrokeRef.current],
+        alpha: 1,
+      });
+    }
+    isDrawingRef.current = false;
+    currentStrokeRef.current = [];
+    lastPointRef.current = null;
+    kickAnimation();
+  }, [kickAnimation]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -334,26 +401,55 @@ const DoodleBoard = ({ isDarkMode, topSpacing = "2.5rem" }) => {
       canvas.height = rect.height * dpr;
       canvas.style.width = `${rect.width}px`;
       canvas.style.height = `${rect.height}px`;
+      const hasVisual =
+        strokesRef.current.length > 0 ||
+        isDrawingRef.current ||
+        currentStrokeRef.current.length > 0;
+      if (hasVisual) {
+        kickAnimation();
+      } else {
+        const c = canvas.getContext("2d");
+        if (c) c.clearRect(0, 0, canvas.width, canvas.height);
+      }
     };
 
     resize();
     window.addEventListener("resize", resize);
 
-    const raf = requestAnimationFrame(draw);
-
     return () => {
       window.removeEventListener("resize", resize);
-      cancelAnimationFrame(raf);
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
     };
-  }, [draw]);
+  }, [draw, kickAnimation]);
+
+  useEffect(() => {
+    if (
+      strokesRef.current.length > 0 ||
+      isDrawingRef.current ||
+      currentStrokeRef.current.length > 0
+    ) {
+      kickAnimation();
+    }
+  }, [mode, kickAnimation]);
 
   const handleClear = useCallback((e) => {
     e?.stopPropagation?.();
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
     strokesRef.current = [];
     currentStrokeRef.current = [];
     isDrawingRef.current = false;
     lastPointRef.current = null;
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
   }, []);
 
   return (
