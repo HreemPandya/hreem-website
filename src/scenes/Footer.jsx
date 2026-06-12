@@ -1,8 +1,9 @@
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import AnchorLink from "react-anchor-link-smooth-scroll";
 
-const FooterCatIllustration = ({ theme }) => (
-  <div className="footer-cat-wrapper" data-theme={theme}>
+const FooterCatIllustration = ({ theme, twitch }) => (
+  <div className={`footer-cat-wrapper ${twitch ? "footer-cat-twitch" : ""}`} data-theme={theme}>
     <div className="footer-cat-container" data-theme={theme}>
       <div className="footer-cat-shadow" />
       <div className="footer-cat">
@@ -19,6 +20,24 @@ const FooterCatIllustration = ({ theme }) => (
 );
 
 const Footer = ({ isDarkMode }) => {
+  // ear twitch when a site doodle lands near the cat (see SiteDoodleLayer)
+  const [twitch, setTwitch] = useState(false);
+  const twitchTimerRef = useRef(null);
+
+  useEffect(() => {
+    const onDoodleLanded = () => {
+      setTwitch(false);
+      clearTimeout(twitchTimerRef.current);
+      requestAnimationFrame(() => setTwitch(true));
+      twitchTimerRef.current = setTimeout(() => setTwitch(false), 950);
+    };
+    window.addEventListener("hreem:doodle-landed", onDoodleLanded);
+    return () => {
+      window.removeEventListener("hreem:doodle-landed", onDoodleLanded);
+      clearTimeout(twitchTimerRef.current);
+    };
+  }, []);
+
   const navLinks = [
     { href: "#home", label: "Home" },
     { href: "#projects", label: "Projects" },
@@ -28,6 +47,7 @@ const Footer = ({ isDarkMode }) => {
 
   return (
     <footer
+      id="site-footer"
       className={`relative w-full py-12 md:py-16 mt-8 md:mt-24 overflow-hidden ${
         isDarkMode ? "bg-[#07090D]" : "bg-[var(--lm-bg-base)]"
       }`}
@@ -77,6 +97,7 @@ const Footer = ({ isDarkMode }) => {
               >
                 <FooterCatIllustration
                   theme={isDarkMode ? "dark" : "light"}
+                  twitch={twitch}
                 />
               </div>
             </div>
@@ -105,7 +126,7 @@ const Footer = ({ isDarkMode }) => {
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
           >
-            <FooterCatIllustration theme={isDarkMode ? "dark" : "light"} />
+            <FooterCatIllustration theme={isDarkMode ? "dark" : "light"} twitch={twitch} />
           </motion.div>
         </div>
 

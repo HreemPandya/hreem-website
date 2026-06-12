@@ -1,52 +1,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef, useLayoutEffect, useCallback } from "react";
 import DoodleBoard from "../components/DoodleBoard";
-
-// Expertise Bricks: falling from top, stacking
-const ExpertiseBricks = ({ isDarkMode }) => {
-  const pillars = [
-    { title: "AI & ML", tech: "LangChain · MCP · TensorFlow · PyTorch" },
-    { title: "Languages", tech: "Python · C++ · C · TypeScript" },
-    { title: "Embedded & Hardware", tech: "Arduino · STM32 · OpenCV · Raspberry Pi" },
-    { title: "Systems & Tooling", tech: "Git · Docker · Linux · Bash" },
-  ];
-
-  return (
-    <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-8 md:mb-16">
-      {pillars.map((pillar, index) => (
-        <motion.div
-          key={pillar.title}
-          initial={{ opacity: 0, y: -80, rotate: -2 }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-            rotate: index % 2 === 0 ? -1 : 1,
-            transition: {
-              type: "spring",
-              stiffness: 80,
-              damping: 15,
-              delay: 0.1,
-            },
-          }}
-          viewport={{ once: true, amount: 0.2 }}
-          whileHover={{ y: -2, rotate: 0, transition: { duration: 0.2 } }}
-          className={`flex-shrink-0 rounded-xl px-4 py-3 md:px-5 md:py-4 border backdrop-blur-xl transition-all duration-300 ${
-            isDarkMode
-              ? "bg-[#111827] border-white/[0.06] hover:border-amber-500/30"
-              : "bg-[var(--lm-bg-surface)] border-[var(--lm-border)] hover:border-[var(--lm-accent)]/40 shadow-lg"
-          }`}
-        >
-          <h3 className={`font-playfair font-bold text-sm md:text-base mb-1 ${isDarkMode ? "text-amber-400" : "text-[var(--lm-accent)]"}`}>
-            {pillar.title}
-          </h3>
-          <p className={`text-xs md:text-sm ${isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"}`}>
-            {pillar.tech}
-          </p>
-        </motion.div>
-      ))}
-    </div>
-  );
-};
+import PhysicsBricks from "../components/PhysicsBricks";
 
 // 8 artwork images (shared)
 const artworks = [
@@ -285,8 +240,8 @@ const AboutMe = ({ isDarkMode }) => {
           </h1>
         </motion.div>
 
-        {/* Expertise Bricks */}
-        <ExpertiseBricks isDarkMode={isDarkMode} />
+        {/* Expertise Bricks — real physics on desktop, animated fallback elsewhere */}
+        <PhysicsBricks isDarkMode={isDarkMode} />
 
         {/* Main Content: editorial layout, no emoji cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16">

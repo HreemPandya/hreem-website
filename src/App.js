@@ -5,6 +5,7 @@ import LineGradient from "./components/LineGradient";
 import Projects from "./scenes/Projects";
 import Contact from "./scenes/Contact";
 import Footer from "./scenes/Footer";
+import SiteDoodleLayer from "./components/SiteDoodleLayer";
 import useMediaQuery from "./hooks/useMediaQuery";
 import { useEffect, useState } from "react";
 import AboutMe from "./scenes/AboutMe";
@@ -95,6 +96,8 @@ function App() {
       </div>
 
       <Footer isDarkMode={isDarkMode} />
+
+      <SiteDoodleLayer isDarkMode={isDarkMode} />
     </div>
   );
 }
