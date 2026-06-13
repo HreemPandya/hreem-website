@@ -160,27 +160,67 @@ const PhysicsArena = ({ isDarkMode, onFail }) => {
       const setGrabbing = (on) => {
         container.style.cursor = on ? "grabbing" : "grab";
       };
-      Events.on(mouseConstraint, "startdrag", () => setGrabbing(true));
-      Events.on(mouseConstraint, "enddrag", () => setGrabbing(false));
+      Events.on(mouseConstraint, "startdrag", () => {
+        setGrabbing(true);
+        run();
+      });
+      Events.on(mouseConstraint, "enddrag", () => {
+        setGrabbing(false);
+        run();
+      });
       setGrabbing(false);
 
       let raf = null;
       let running = false;
-      const tick = () => {
-        Engine.update(engine, 1000 / 60);
-        bodies.forEach((b, i) => {
+      let lastTs = 0;
+      let acc = 0;
+      const STEP = 1000 / 60; // fixed physics step → frame-rate independent
+      const MAX_FRAME = STEP * 5; // clamp after a stall to avoid a spiral of death
+
+      const render = () => {
+        for (let i = 0; i < bodies.length; i++) {
+          const b = bodies[i];
           const el = brickRefs.current[i];
-          if (!el) return;
-          el.style.opacity = "1";
-          el.style.transform = `translate(${b.position.x - sizes[i].w / 2}px, ${
+          if (!el) continue;
+          // translate3d keeps each brick on its own GPU layer (composited, no repaint)
+          el.style.transform = `translate3d(${b.position.x - sizes[i].w / 2}px, ${
             b.position.y - sizes[i].h / 2
-          }px) rotate(${b.angle}rad)`;
-        });
-        if (running) raf = requestAnimationFrame(tick);
+          }px, 0) rotate(${b.angle}rad)`;
+        }
+      };
+
+      const allAsleep = () => {
+        for (const b of bodies) if (!b.isSleeping) return false;
+        return true;
+      };
+
+      const tick = (now) => {
+        if (!running) return;
+        if (!lastTs) lastTs = now;
+        let delta = now - lastTs;
+        lastTs = now;
+        if (delta > MAX_FRAME) delta = MAX_FRAME;
+        acc += delta;
+        let stepped = false;
+        while (acc >= STEP) {
+          Engine.update(engine, STEP);
+          acc -= STEP;
+          stepped = true;
+        }
+        if (stepped) render();
+        // idle the loop once everything settles; a grab (mousedown) restarts it
+        if (allAsleep() && !mouseConstraint.body) {
+          running = false;
+          raf = null;
+          return;
+        }
+        raf = requestAnimationFrame(tick);
       };
       const run = () => {
         if (running) return;
         running = true;
+        lastTs = 0;
+        acc = 0;
         raf = requestAnimationFrame(tick);
       };
       const pause = () => {
@@ -188,6 +228,17 @@ const PhysicsArena = ({ isDarkMode, onFail }) => {
         if (raf) cancelAnimationFrame(raf);
         raf = null;
       };
+      // place bricks at their spawn (above the arena) before revealing, so
+      // there's no one-frame flash at the top-left untransformed origin
+      render();
+      els.forEach((el) => {
+        el.style.opacity = "1";
+      });
+
+      // wake the (possibly idle) loop the instant a grab begins, so matter's
+      // own drag detection — which only runs inside Engine.update — can engage
+      const wake = () => run();
+      container.addEventListener("mousedown", wake);
       run();
 
       worldRef.current = {
@@ -208,6 +259,7 @@ const PhysicsArena = ({ isDarkMode, onFail }) => {
 
       teardown = () => {
         pause();
+        container.removeEventListener("mousedown", wake);
         Events.off(mouseConstraint);
         Composite.clear(engine.world, false);
         Engine.clear(engine);

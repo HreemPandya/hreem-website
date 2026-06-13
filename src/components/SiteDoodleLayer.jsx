@@ -5,11 +5,18 @@ import { Pencil, X, Undo2, Trash2 } from "lucide-react";
 // Same physics DNA as DoodleBoard, promoted to a site-wide layer.
 // Strokes live in DOCUMENT space (pageX/pageY) so ink stays anchored to the
 // page while you scroll — the fixed canvas just renders a scrolled window.
+//
+// Perf model: TWO canvases.
+//   • base  — settled ink. Repainted only when it changes (commit / scroll /
+//             resize / theme / physics tick). Costs nothing while you draw.
+//   • live  — only the in-progress stroke. Cheap clear+redraw of ONE stroke
+//             per frame, so latency stays flat no matter how much history.
 const GRAVITY = 0.12;
 const DAMPING = 0.985;
 const BOUNCE = 0.4;
-const SAMPLE_DISTANCE = 6;
+const SAMPLE_DISTANCE = 5;
 const STROKE_WIDTH = 2.5;
+const MAX_DPR = 2; // beyond 2x the visual gain is nil but fill cost is quadratic
 
 const STORAGE_KEY = "hreem-site-doodles-v1";
 const HINT_KEY = "hreem-doodle-hint-dismissed";
@@ -40,6 +47,16 @@ function strokesSettled(strokes) {
   return true;
 }
 
+function computeBBox(points) {
+  let minY = Infinity;
+  let maxY = -Infinity;
+  for (const p of points) {
+    if (p.y < minY) minY = p.y;
+    if (p.y > maxY) maxY = p.y;
+  }
+  return { minY, maxY };
+}
+
 const safeStorage = {
   get(key) {
     try {
@@ -64,7 +81,8 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
   const [showHint, setShowHint] = useState(false);
   const [hasInk, setHasInk] = useState(false);
 
-  const canvasRef = useRef(null);
+  const baseCanvasRef = useRef(null);
+  const liveCanvasRef = useRef(null);
   const strokesRef = useRef([]);
   const currentStrokeRef = useRef([]);
   const isDrawingRef = useRef(false);
@@ -77,12 +95,17 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
   const saveTimerRef = useRef(null);
   const lastTwitchRef = useRef(0);
   const hintTimersRef = useRef([]);
+  const baseDirtyRef = useRef(false);
+  const dprRef = useRef(1);
+  // colors read through a ref so render fns stay stable across theme changes
+  const colorsRef = useRef({ stroke: "", glow: "" });
+  colorsRef.current = {
+    stroke: isDarkMode ? "rgba(245, 158, 11, 0.85)" : "rgba(74, 107, 78, 0.85)",
+    glow: isDarkMode ? "rgba(245, 158, 11, 0.3)" : "rgba(74, 107, 78, 0.3)",
+  };
 
   modeRef.current = mode;
   activeRef.current = active;
-
-  const strokeColor = isDarkMode ? "rgba(245, 158, 11, 0.85)" : "rgba(74, 107, 78, 0.85)";
-  const glowColor = isDarkMode ? "rgba(245, 158, 11, 0.3)" : "rgba(74, 107, 78, 0.3)";
 
   const visibleModes = reduceMotion ? MODES.filter((m) => REDUCED_MODE_IDS.has(m.id)) : MODES;
 
@@ -143,9 +166,8 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
       const pts = stroke.points;
 
       if (modeNow === "fall") {
-        pts.forEach((p) => {
+        for (const p of pts) {
           p.vy += GRAVITY;
-          // whisper of a pull toward the cat so doodles gather near it
           if (catCx !== null) p.vx += Math.sign(catCx - p.x) * 0.006;
           p.vx *= DAMPING;
           p.vy *= DAMPING;
@@ -163,10 +185,11 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
           if (p.y < 2) { p.y = 2; p.vy *= -BOUNCE; }
           if (p.x < 2) { p.x = 2; p.vx *= -BOUNCE; }
           if (p.x > docW - 2) { p.x = docW - 2; p.vx *= -BOUNCE; }
-        });
+        }
+        stroke.bbox = computeBBox(pts);
       } else if (modeNow === "drift") {
         const wind = Math.sin(t * 0.5) * 0.08;
-        pts.forEach((p) => {
+        for (const p of pts) {
           p.vx += wind;
           p.vy += 0.02;
           p.vx *= DAMPING;
@@ -177,7 +200,8 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
           if (p.y < 2) { p.y = 2; p.vy *= -0.3; }
           if (p.x < 2) { p.x = 2; p.vx *= -0.3; }
           if (p.x > docW - 2) { p.x = docW - 2; p.vx *= -0.3; }
-        });
+        }
+        stroke.bbox = computeBBox(pts);
       } else if (modeNow === "glow") {
         stroke.alpha = Math.max(0, stroke.alpha - 0.004);
       }
@@ -188,89 +212,130 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
     if (frameCountRef.current % 180 === 0 && modeNow !== "stay") measureWorld();
   }, [measureWorld, pokeCat]);
 
-  const draw = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  // ----- shared stroke renderer: quadratic smoothing for silky lines -----
+  const drawStroke = useCallback((ctx, points, glow, alpha) => {
+    const n = points.length;
+    if (n < 2) return;
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    if (n === 2) {
+      ctx.lineTo(points[1].x, points[1].y);
+    } else {
+      for (let i = 1; i < n - 1; i++) {
+        const xc = (points[i].x + points[i + 1].x) / 2;
+        const yc = (points[i].y + points[i + 1].y) / 2;
+        ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+      }
+      ctx.quadraticCurveTo(points[n - 2].x, points[n - 2].y, points[n - 1].x, points[n - 1].y);
+    }
+    const { stroke, glow: glowCol } = colorsRef.current;
+    if (glow) {
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = glowCol;
+      ctx.strokeStyle = stroke.replace(/[\d.]+\)$/, `${alpha})`);
+    } else {
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = stroke;
+    }
+    ctx.lineWidth = STROKE_WIDTH;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  }, []);
 
-    const dpr = window.devicePixelRatio || 1;
+  const renderBase = useCallback(() => {
+    const canvas = baseCanvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+    const dpr = dprRef.current;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // render the document-space strokes through the current scroll window
     ctx.setTransform(dpr, 0, 0, dpr, 0, -window.scrollY * dpr);
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
 
     const modeNow = modeRef.current;
-    const viewTop = window.scrollY - 60;
-    const viewBottom = window.scrollY + window.innerHeight + 60;
+    const viewTop = window.scrollY - 80;
+    const viewBottom = window.scrollY + window.innerHeight + 80;
 
-    const drawStroke = (points, alpha = 1) => {
-      if (!points || points.length < 2) return;
-      ctx.beginPath();
-      ctx.moveTo(points[0].x, points[0].y);
-      for (let i = 1; i < points.length; i++) {
-        ctx.lineTo(points[i].x, points[i].y);
-      }
-      if (modeNow === "glow") {
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = glowColor;
-        ctx.strokeStyle = strokeColor.replace(/[\d.]+\)$/, `${alpha})`);
-      } else {
-        ctx.strokeStyle = strokeColor;
-      }
-      ctx.lineWidth = STROKE_WIDTH;
-      ctx.stroke();
-      ctx.shadowBlur = 0;
-    };
-
-    const before = strokesRef.current.length;
+    let removed = false;
     strokesRef.current = strokesRef.current.filter((s) => {
-      if (modeNow === "glow" && s.alpha <= 0) return false;
-      // cheap cull: skip strokes entirely outside the viewport
-      let visible = false;
-      for (const p of s.points) {
-        if (p.y >= viewTop && p.y <= viewBottom) { visible = true; break; }
+      if (modeNow === "glow" && s.alpha <= 0) {
+        removed = true;
+        return false;
       }
-      if (visible) drawStroke(s.points, s.alpha);
+      const bb = s.bbox;
+      const culled = bb && (bb.maxY < viewTop || bb.minY > viewBottom);
+      if (!culled) drawStroke(ctx, s.points, modeNow === "glow", s.alpha);
       return true;
     });
-    if (strokesRef.current.length !== before) {
+    if (removed) {
       setHasInk(strokesRef.current.length > 0);
       scheduleSave();
     }
+  }, [drawStroke, scheduleSave]);
 
-    drawStroke(currentStrokeRef.current);
-    runPhysics();
+  const renderLive = useCallback(() => {
+    const canvas = liveCanvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+    const dpr = dprRef.current;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const pts = currentStrokeRef.current;
+    if (pts.length < 2) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, -window.scrollY * dpr);
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    drawStroke(ctx, pts, modeRef.current === "glow", 1);
+  }, [drawStroke]);
 
-    const modeAfter = modeRef.current;
+  const clearLive = useCallback(() => {
+    const canvas = liveCanvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }, []);
+
+  const frame = useCallback(() => {
+    rafRef.current = null;
+    const modeNow = modeRef.current;
     const strokes = strokesRef.current;
-    let cont;
-    if (isDrawingRef.current || currentStrokeRef.current.length > 1) cont = true;
-    else if (strokes.length === 0) cont = false;
-    else if (modeAfter === "stay") cont = false;
-    else if (modeAfter === "glow") cont = strokes.some((s) => s.alpha > GLOW_ALPHA_EPS);
-    else if (modeAfter === "drift") cont = true;
-    else cont = !strokesSettled(strokes);
+
+    let physicsActive = false;
+    if (strokes.length > 0) {
+      if (modeNow === "fall" || modeNow === "drift") physicsActive = true;
+      else if (modeNow === "glow") physicsActive = strokes.some((s) => s.alpha > GLOW_ALPHA_EPS);
+    }
+
+    if (physicsActive) {
+      runPhysics();
+      baseDirtyRef.current = true;
+    }
+    if (baseDirtyRef.current) {
+      renderBase();
+      baseDirtyRef.current = false;
+    }
+    if (isDrawingRef.current) renderLive();
+
+    let cont = false;
+    if (physicsActive) {
+      if (modeNow === "fall") cont = !strokesSettled(strokes);
+      else if (modeNow === "drift") cont = true;
+      else if (modeNow === "glow") cont = strokes.some((s) => s.alpha > GLOW_ALPHA_EPS);
+    }
 
     if (cont) {
-      rafRef.current = requestAnimationFrame(() => {
-        rafRef.current = null;
-        draw();
-      });
-    } else if (modeAfter === "fall") {
+      rafRef.current = requestAnimationFrame(frame);
+    } else if (modeNow === "fall" || modeNow === "glow") {
       scheduleSave();
     }
-  }, [strokeColor, glowColor, runPhysics, scheduleSave]);
+  }, [runPhysics, renderBase, renderLive, scheduleSave]);
 
-  const kickAnimation = useCallback(() => {
+  const kick = useCallback(() => {
     if (rafRef.current !== null) return;
-    rafRef.current = requestAnimationFrame(() => {
-      rafRef.current = null;
-      draw();
-    });
-  }, [draw]);
+    rafRef.current = requestAnimationFrame(frame);
+  }, [frame]);
 
   // ----- input (only reachable while the layer is active) -----
   const handlePointerDown = useCallback(
@@ -281,28 +346,36 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
       const p = { x: e.clientX, y: e.clientY + window.scrollY, vx: 0, vy: 0 };
       currentStrokeRef.current = [p];
       lastPointRef.current = { x: p.x, y: p.y };
-      kickAnimation();
+      kick();
     },
-    [kickAnimation]
+    [kick]
   );
 
   const handlePointerMove = useCallback(
     (e) => {
       if (!isDrawingRef.current) return;
-      const x = e.clientX;
-      const y = e.clientY + window.scrollY;
-      const last = lastPointRef.current;
-      if (last && Math.hypot(x - last.x, y - last.y) < SAMPLE_DISTANCE) return;
-      lastPointRef.current = { x, y };
-      currentStrokeRef.current.push({ x, y, vx: 0, vy: 0 });
-      kickAnimation();
+      // coalesced events recover every sub-frame sample the browser captured,
+      // so fast strokes stay accurate on high-refresh displays
+      const events = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+      const batch = events && events.length ? events : [e];
+      const scrollY = window.scrollY;
+      for (const ev of batch) {
+        const x = ev.clientX;
+        const y = ev.clientY + scrollY;
+        const last = lastPointRef.current;
+        if (last && Math.hypot(x - last.x, y - last.y) < SAMPLE_DISTANCE) continue;
+        lastPointRef.current = { x, y };
+        currentStrokeRef.current.push({ x, y, vx: 0, vy: 0 });
+      }
+      kick();
     },
-    [kickAnimation]
+    [kick]
   );
 
   const handlePointerUp = useCallback(() => {
     if (isDrawingRef.current && currentStrokeRef.current.length > 1) {
-      strokesRef.current.push({ points: [...currentStrokeRef.current], alpha: 1 });
+      const points = [...currentStrokeRef.current];
+      strokesRef.current.push({ points, alpha: 1, bbox: computeBBox(points) });
       // keep memory + storage bounded: drop oldest ink first
       while (strokesRef.current.length > MAX_STROKES) strokesRef.current.shift();
       let total = strokesRef.current.reduce((n, s) => n + s.points.length, 0);
@@ -311,19 +384,22 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
       }
       setHasInk(true);
       scheduleSave();
+      baseDirtyRef.current = true;
     }
     isDrawingRef.current = false;
     currentStrokeRef.current = [];
     lastPointRef.current = null;
-    kickAnimation();
-  }, [kickAnimation, scheduleSave]);
+    clearLive();
+    kick();
+  }, [kick, clearLive, scheduleSave]);
 
   const handleUndo = useCallback(() => {
     strokesRef.current.pop();
     setHasInk(strokesRef.current.length > 0);
     persist();
-    kickAnimation();
-  }, [persist, kickAnimation]);
+    baseDirtyRef.current = true;
+    kick();
+  }, [persist, kick]);
 
   const handleClear = useCallback(() => {
     if (rafRef.current !== null) {
@@ -336,13 +412,10 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
     lastPointRef.current = null;
     setHasInk(false);
     persist();
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
-    if (canvas && ctx) {
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-  }, [persist]);
+    baseDirtyRef.current = true;
+    kick();
+    clearLive();
+  }, [persist, kick, clearLive]);
 
   const dismissHint = useCallback(() => {
     setShowHint(false);
@@ -360,21 +433,30 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
 
   // ----- canvas sizing + scroll/resize redraws -----
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const base = baseCanvasRef.current;
+    const live = liveCanvasRef.current;
+    if (!base || !live) return;
 
     const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      canvas.style.width = `${window.innerWidth}px`;
-      canvas.style.height = `${window.innerHeight}px`;
+      const dpr = Math.min(MAX_DPR, window.devicePixelRatio || 1);
+      dprRef.current = dpr;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      for (const c of [base, live]) {
+        c.width = Math.round(w * dpr);
+        c.height = Math.round(h * dpr);
+        c.style.width = `${w}px`;
+        c.style.height = `${h}px`;
+      }
       measureWorld();
-      if (strokesRef.current.length > 0) kickAnimation();
+      baseDirtyRef.current = true;
+      kick();
     };
 
     const onScroll = () => {
-      if (strokesRef.current.length > 0 || isDrawingRef.current) kickAnimation();
+      if (strokesRef.current.length === 0 && !isDrawingRef.current) return;
+      baseDirtyRef.current = true;
+      kick();
     };
 
     resize();
@@ -388,7 +470,7 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
         rafRef.current = null;
       }
     };
-  }, [measureWorld, kickAnimation]);
+  }, [measureWorld, kick]);
 
   // restore saved doodles once layout has had a moment to settle
   useEffect(() => {
@@ -403,25 +485,26 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
         const scale = data.w > 0 ? docW / data.w : 1;
         strokesRef.current = data.strokes
           .filter((s) => Array.isArray(s?.pts) && s.pts.length > 1)
-          .map((s) => ({
-            alpha: 1,
-            points: s.pts.map(([x, y]) => ({
+          .map((s) => {
+            const points = s.pts.map(([x, y]) => ({
               x: Math.max(2, Math.min(docW - 2, x * scale)),
               y: Math.max(2, Math.min(floorY, y)),
               vx: 0,
               vy: 0,
-            })),
-          }));
+            }));
+            return { points, alpha: 1, bbox: computeBBox(points) };
+          });
         if (strokesRef.current.length > 0) {
           setHasInk(true);
-          kickAnimation();
+          baseDirtyRef.current = true;
+          kick();
         }
       } catch {
         /* corrupted save — start fresh */
       }
     }, 300);
     return () => clearTimeout(timer);
-  }, [measureWorld, kickAnimation]);
+  }, [measureWorld, kick]);
 
   // first-visit hint
   useEffect(() => {
@@ -442,11 +525,12 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [active]);
 
-  // mode / theme changes need a redraw (and physics kick)
+  // mode / theme changes need a base repaint (and physics kick)
   useEffect(() => {
     if (mode === "fall" || mode === "drift") measureWorld();
-    if (strokesRef.current.length > 0) kickAnimation();
-  }, [mode, isDarkMode, measureWorld, kickAnimation]);
+    baseDirtyRef.current = true;
+    kick();
+  }, [mode, isDarkMode, measureWorld, kick]);
 
   useEffect(() => () => clearTimeout(saveTimerRef.current), []);
 
@@ -472,7 +556,12 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
   return (
     <>
       <canvas
-        ref={canvasRef}
+        ref={baseCanvasRef}
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-[34]"
+      />
+      <canvas
+        ref={liveCanvasRef}
         aria-hidden="true"
         className={`fixed inset-0 z-[35] ${active ? "doodle-cursor" : ""}`}
         style={{
