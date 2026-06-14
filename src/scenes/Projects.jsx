@@ -169,10 +169,10 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
           transformStyle: 'preserve-3d',
         }}
       >
-      <div className={`rounded-2xl border overflow-hidden transition-all duration-300 h-full ${featured ? "md:flex md:flex-row md:h-72" : ""} ${isDarkMode ? "border-amber-500/20 bg-[#111827] backdrop-blur-xl group-hover:border-amber-500/40 group-hover:shadow-[0_12px_40px_rgba(245,158,11,0.08)]" : "border-[var(--lm-border)] bg-[var(--lm-bg-surface)] shadow-lg group-hover:border-[var(--lm-accent)]/40 group-hover:shadow-xl"}`}>
+      <div className={`rounded-2xl border overflow-hidden transition-all duration-300 h-full ${featured ? "md:flex md:flex-row md:h-60" : ""} ${isDarkMode ? "border-white/[0.08] bg-white/[0.04] backdrop-blur-2xl backdrop-saturate-150 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.10),0_8px_32px_rgba(0,0,0,0.25)] group-hover:border-amber-500/40 group-hover:bg-white/[0.06] group-hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.12),0_12px_44px_rgba(245,158,11,0.12)]" : "border-white/60 bg-white/40 backdrop-blur-2xl backdrop-saturate-150 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_8px_28px_rgba(74,107,78,0.10)] group-hover:border-[var(--lm-accent)]/40 group-hover:bg-white/[0.55] group-hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.8),0_12px_36px_rgba(74,107,78,0.14)]"}`}>
         <div
           className={`relative overflow-hidden ${
-            featured ? "h-48 md:h-full md:w-1/2 md:min-h-0 md:flex-shrink-0" : "h-36 md:h-48"
+            featured ? "h-40 md:h-full md:w-1/2 md:min-h-0 md:flex-shrink-0" : "h-32 md:h-40"
           }`}
         >
           <img
@@ -182,35 +182,35 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
           />
           <div className={`absolute inset-0 bg-gradient-to-t ${project.gradient} opacity-20 group-hover:opacity-40 transition-opacity duration-500`} />
           {featured && project.badge && (
-            <span className={`absolute top-4 left-4 px-3 py-1 text-xs font-bold rounded-full ${isDarkMode ? 'bg-amber-500 text-[#07090D]' : 'bg-[#4A6B4E] text-white'}`}>
+            <span className={`absolute top-3 left-3 px-2.5 py-1 text-[11px] font-bold rounded-full backdrop-blur-md ${isDarkMode ? 'bg-amber-500/90 text-[#07090D]' : 'bg-[#4A6B4E]/95 text-white'}`}>
               {project.badge}
             </span>
           )}
         </div>
         <div
-          className={`p-4 ${
+          className={`p-3.5 ${
             featured
               ? "md:flex md:h-full md:min-h-0 md:w-1/2 md:flex-col md:justify-start md:overflow-hidden md:px-5 md:py-4"
-              : "md:p-6"
+              : "md:p-4"
           }`}
         >
           <h3
-            className={`font-playfair text-lg font-bold group-hover:underline underline-offset-4 decoration-2 line-clamp-2 ${
-              featured ? "mb-1.5 md:mb-2 md:text-2xl md:leading-tight" : "mb-2 md:mb-3 md:text-xl"
+            className={`font-playfair text-base font-bold group-hover:underline underline-offset-4 decoration-2 line-clamp-2 ${
+              featured ? "mb-1 md:mb-1.5 md:text-xl md:leading-tight" : "mb-1.5 md:mb-2 md:text-lg"
             } ${isDarkMode ? "text-white" : "text-[var(--lm-accent)]"}`}
           >
             {project.title}
           </h3>
           <p
-            className={`text-sm leading-relaxed ${
-              featured ? "mb-2 line-clamp-3 md:mb-2" : "mb-3 line-clamp-3 md:mb-4"
+            className={`text-xs leading-relaxed md:text-sm ${
+              featured ? "mb-1.5 line-clamp-2 md:mb-2 md:line-clamp-3" : "mb-2 line-clamp-2 md:mb-3"
             } ${isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"}`}
           >
             {project.description}
           </p>
           <div
             className={`flex flex-wrap gap-1.5 md:gap-2 ${
-              featured ? "mb-2 shrink-0 md:mb-2" : "mb-3 md:mb-4"
+              featured ? "mb-1.5 shrink-0 md:mb-2" : "mb-2 md:mb-3"
             }`}
           >
             {project.tags.slice(0, tagCount).map(tag => (
@@ -313,7 +313,7 @@ const Projects = ({ isDarkMode }) => {
 
         {/* FEATURED PROJECTS - FridgeMind & Cliara (full-width) */}
         <motion.div
-          className="max-w-7xl mx-auto px-4 space-y-6 md:space-y-8"
+          className="max-w-7xl mx-auto px-4 space-y-5 md:space-y-6"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -325,7 +325,7 @@ const Projects = ({ isDarkMode }) => {
 
         {/* PROJECTS GRID - Remaining projects */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-8 md:mt-12 max-w-7xl mx-auto px-4"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 mt-6 md:mt-8 max-w-7xl mx-auto px-4"
           variants={container}
           initial="hidden"
           whileInView="visible"
@@ -366,6 +366,7 @@ const Projects = ({ isDarkMode }) => {
         <AnimatePresence>
           {selectedProject && (
           <motion.div
+            data-doodle-ignore
             className={`fixed inset-0 z-[1100] flex items-center justify-center p-4 ${
               isDarkMode ? "bg-[#07090D]/95 backdrop-blur-xl" : "bg-[#2a2a2a]/50"
             }`}

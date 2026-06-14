@@ -18,6 +18,83 @@ const SAMPLE_DISTANCE = 5;
 const STROKE_WIDTH = 2.5;
 const MAX_DPR = 2; // beyond 2x the visual gain is nil but fill cost is quadratic
 
+// ---- element collision (ink ricochets off real on-page blocks) ----
+// Falling ink treats visible content blocks as solid: it drapes over the TOP
+// edge, slides/bounces off the SIDES, and rests on top. Obstacles are measured
+// in document space and indexed in a static spatial grid, so the per-point test
+// each frame is one Map lookup against a tiny candidate list (not every block).
+const OBSTACLE_SELECTOR =
+  '#projects .rounded-2xl,[aria-label^="Areas of expertise"],h1,h2,h3,p,img';
+const OBSTACLE_BOUNCE = 0.32; // restitution off element edges in Fall
+const OBSTACLE_BOUNCE_DRIFT = 0.5; // livelier bounce so Drift keeps wandering
+const OBSTACLE_MIN_W = 40; // ignore tiny things (icons, single tags)
+const OBSTACLE_MIN_H = 14;
+const OBSTACLE_PAD = 2; // inflate rects by ~half the stroke width
+const REST_SPEED = 0.5; // supported + slower than this → snap to rest (lets rAF idle)
+const GRID_CELL = 220; // spatial-hash cell size in px
+const GRID_STRIDE = 8192; // key = cy * stride + cx (cx range is tiny)
+
+// Swept, direction-aware resolve against blocks in the point's grid cell.
+// Classifies the collision by which edge the point CROSSED this frame (using its
+// previous position p − v), so it can't tunnel through or get ejected out the far
+// side of a block. Returns 1 when the point is supported (landed on / rests on a block).
+//   • crossed a TOP edge falling   → land on the highest such top
+//   • crossed a SIDE face          → ricochet off it
+//   • already inside (e.g. drawn on a block) → rest in place
+function collidePoint(p, obst, bounce) {
+  const grid = obst.grid;
+  if (grid.size === 0) return 0;
+  const cell = obst.cell;
+  const arr = grid.get(Math.floor(p.y / cell) * GRID_STRIDE + Math.floor(p.x / cell));
+  if (!arr) return 0;
+
+  const prevX = p.x - p.vx;
+  const prevY = p.y - p.vy;
+  let topY = Infinity; // highest top edge we dropped onto
+  let underB = Infinity; // nearest underside we rose into
+  let sideHit = 0; // 1 left face, 2 right face
+  let sideX = 0;
+  let inside = false;
+
+  for (let i = 0; i < arr.length; i++) {
+    const a = arr[i];
+    const l = a.l - OBSTACLE_PAD;
+    const r = a.r + OBSTACLE_PAD;
+    const t = a.t - OBSTACLE_PAD;
+    const b = a.b + OBSTACLE_PAD;
+    if (p.x <= l || p.x >= r || p.y <= t || p.y >= b) continue; // not penetrating now
+    if (p.vy > 0 && prevY <= t) {
+      if (t < topY) topY = t; // came down through the top → land
+    } else if (p.vy < 0 && prevY >= b) {
+      if (b < underB) underB = b; // came up through the bottom
+    } else if (p.vx > 0 && prevX <= l) {
+      if (!sideHit) { sideHit = 1; sideX = l; }
+    } else if (p.vx < 0 && prevX >= r) {
+      if (!sideHit) { sideHit = 2; sideX = r; }
+    } else {
+      inside = true; // no clean crossing → originated inside this block
+    }
+  }
+
+  if (topY !== Infinity) {
+    p.y = topY;
+    if (p.vy > 0) p.vy = -p.vy * bounce;
+    p.vx *= 0.82; // friction along the surface
+    return 1;
+  }
+  if (sideHit) {
+    p.x = sideX;
+    p.vx = -p.vx * bounce;
+    return 0;
+  }
+  if (underB !== Infinity) {
+    p.y = underB;
+    if (p.vy < 0) p.vy = -p.vy * bounce;
+    return 0;
+  }
+  return inside ? 1 : 0; // resting on a block it was drawn on
+}
+
 const STORAGE_KEY = "hreem-site-doodles-v1";
 const HINT_KEY = "hreem-doodle-hint-dismissed";
 const MAX_STROKES = 80;
@@ -92,6 +169,7 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
   const modeRef = useRef(mode);
   const activeRef = useRef(active);
   const worldRef = useRef({ floorY: 0, catL: -1, catR: -1, docW: 1024, docH: 4000 });
+  const obstaclesRef = useRef({ rects: [], grid: new Map(), cell: GRID_CELL });
   const saveTimerRef = useRef(null);
   const lastTwitchRef = useRef(0);
   const hintTimersRef = useRef([]);
@@ -130,6 +208,69 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
     worldRef.current = { floorY, catL, catR, docW, docH };
   }, []);
 
+  // ----- solid blocks the falling ink ricochets off (document space) -----
+  // Only built for fall/drift; otherwise cleared so it costs nothing.
+  const measureObstacles = useCallback(() => {
+    const modeNow = modeRef.current;
+    if (modeNow !== "fall" && modeNow !== "drift") {
+      obstaclesRef.current = { rects: [], grid: new Map(), cell: GRID_CELL };
+      return;
+    }
+    const sx = window.scrollX;
+    const sy = window.scrollY;
+    const maxH = window.innerHeight * 1.1; // taller than the screen ⇒ a backdrop, not a block
+    const cands = [];
+    const nodes = document.querySelectorAll(OBSTACLE_SELECTOR);
+    for (const el of nodes) {
+      // skip animated/movable widgets, the footer (keep the floor→cat path clean),
+      // and the doodle UI itself
+      if (el.closest("[data-doodle-ignore]") || el.closest("#site-footer")) continue;
+      const r = el.getBoundingClientRect();
+      if (r.width < OBSTACLE_MIN_W || r.height < OBSTACLE_MIN_H) continue;
+      if (r.height > maxH) continue; // full-bleed background images / section backdrops
+      const pos = getComputedStyle(el).position;
+      if (pos === "fixed" || pos === "sticky") continue; // scroll-anchored ≠ document space
+      cands.push({
+        el,
+        l: r.left + sx,
+        t: r.top + sy,
+        r: r.right + sx,
+        b: r.bottom + sy,
+      });
+    }
+
+    // Collapse nesting by DOM ancestry: a card absorbs ONLY its own descendants
+    // (its heading/paragraph/image) into one clean rectangle, while standalone
+    // blocks survive. Geometry-only nesting would wrongly let an unrelated
+    // overlapping element swallow a card.
+    const kept = cands.filter(
+      (a) => !cands.some((b) => b.el !== a.el && b.el.contains(a.el))
+    );
+
+    // Spatial hash — static for the life of a fall, so per-point lookup is O(1)-ish.
+    const rects = kept.map((k) => ({ l: k.l, t: k.t, r: k.r, b: k.b }));
+    const grid = new Map();
+    for (let i = 0; i < rects.length; i++) {
+      const a = rects[i];
+      const cx0 = Math.floor((a.l - OBSTACLE_PAD) / GRID_CELL);
+      const cx1 = Math.floor((a.r + OBSTACLE_PAD) / GRID_CELL);
+      const cy0 = Math.floor((a.t - OBSTACLE_PAD) / GRID_CELL);
+      const cy1 = Math.floor((a.b + OBSTACLE_PAD) / GRID_CELL);
+      for (let cy = cy0; cy <= cy1; cy++) {
+        for (let cx = cx0; cx <= cx1; cx++) {
+          const key = cy * GRID_STRIDE + cx;
+          let bucket = grid.get(key);
+          if (!bucket) {
+            bucket = [];
+            grid.set(key, bucket);
+          }
+          bucket.push(a);
+        }
+      }
+    }
+    obstaclesRef.current = { rects, grid, cell: GRID_CELL };
+  }, []);
+
   const pokeCat = useCallback(() => {
     const now = Date.now();
     if (now - lastTwitchRef.current < TWITCH_THROTTLE_MS) return;
@@ -166,13 +307,19 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
       const pts = stroke.points;
 
       if (modeNow === "fall") {
+        const obst = obstaclesRef.current;
         for (const p of pts) {
+          if (p.rest) continue; // already settled — frozen until cleared/redrawn
           p.vy += GRAVITY;
           if (catCx !== null) p.vx += Math.sign(catCx - p.x) * 0.006;
           p.vx *= DAMPING;
           p.vy *= DAMPING;
           p.x += p.vx;
           p.y += p.vy;
+
+          // ricochet off / rest on real page blocks on the way down
+          let onSurface = collidePoint(p, obst, OBSTACLE_BOUNCE);
+
           if (p.y > floorY) {
             p.y = floorY;
             if (!p.landed && Math.abs(p.vy) > 0.5) {
@@ -181,21 +328,34 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
             }
             p.vy *= -BOUNCE;
             p.vx *= 0.8;
+            onSurface = 1;
           }
           if (p.y < 2) { p.y = 2; p.vy *= -BOUNCE; }
           if (p.x < 2) { p.x = 2; p.vx *= -BOUNCE; }
           if (p.x > docW - 2) { p.x = docW - 2; p.vx *= -BOUNCE; }
+
+          // supported + slow on both axes → freeze for good. Without this, the
+          // gentle pull toward the cat keeps nudging settled ink so it creeps
+          // off edges forever and the rAF loop never idles.
+          if (onSurface && Math.abs(p.vy) < REST_SPEED && Math.abs(p.vx) < REST_SPEED) {
+            p.vx = 0;
+            p.vy = 0;
+            p.rest = true;
+          }
         }
         stroke.bbox = computeBBox(pts);
       } else if (modeNow === "drift") {
+        const obst = obstaclesRef.current;
         const wind = Math.sin(t * 0.5) * 0.08;
         for (const p of pts) {
+          p.rest = false; // the breeze re-animates everything
           p.vx += wind;
           p.vy += 0.02;
           p.vx *= DAMPING;
           p.vy *= DAMPING;
           p.x += p.vx;
           p.y += p.vy;
+          collidePoint(p, obst, OBSTACLE_BOUNCE_DRIFT); // bump around blocks, keep floating
           if (p.y > floorY) { p.y = floorY; p.vy *= -0.3; }
           if (p.y < 2) { p.y = 2; p.vy *= -0.3; }
           if (p.x < 2) { p.x = 2; p.vx *= -0.3; }
@@ -209,8 +369,11 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
 
     frameCountRef.current += 1;
     // layout can shift under long falls (lazy images etc.) — re-measure occasionally
-    if (frameCountRef.current % 180 === 0 && modeNow !== "stay") measureWorld();
-  }, [measureWorld, pokeCat]);
+    if (frameCountRef.current % 180 === 0 && modeNow !== "stay") {
+      measureWorld();
+      measureObstacles();
+    }
+  }, [measureWorld, measureObstacles, pokeCat]);
 
   // ----- shared stroke renderer: quadratic smoothing for silky lines -----
   const drawStroke = useCallback((ctx, points, glow, alpha) => {
@@ -449,6 +612,7 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
         c.style.height = `${h}px`;
       }
       measureWorld();
+      measureObstacles();
       baseDirtyRef.current = true;
       kick();
     };
@@ -470,7 +634,7 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
         rafRef.current = null;
       }
     };
-  }, [measureWorld, kick]);
+  }, [measureWorld, measureObstacles, kick]);
 
   // restore saved doodles once layout has had a moment to settle
   useEffect(() => {
@@ -527,10 +691,13 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
 
   // mode / theme changes need a base repaint (and physics kick)
   useEffect(() => {
-    if (mode === "fall" || mode === "drift") measureWorld();
+    if (mode === "fall" || mode === "drift") {
+      measureWorld();
+      measureObstacles();
+    }
     baseDirtyRef.current = true;
     kick();
-  }, [mode, isDarkMode, measureWorld, kick]);
+  }, [mode, isDarkMode, measureWorld, measureObstacles, kick]);
 
   useEffect(() => () => clearTimeout(saveTimerRef.current), []);
 
@@ -575,6 +742,7 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
       />
 
       <div
+        data-doodle-ignore
         className="fixed right-5 z-[45] flex flex-col items-end gap-2"
         style={{ bottom: "calc(1.25rem + env(safe-area-inset-bottom, 0px))" }}
       >

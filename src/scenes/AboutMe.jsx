@@ -112,6 +112,7 @@ const CreativeCarousel = ({ isDarkMode }) => {
   return (
     <div
       ref={containerRef}
+      data-doodle-ignore
       className="relative flex min-h-[400px] md:min-h-[800px] w-full flex-row items-stretch gap-2 md:gap-3 overflow-hidden"
       onMouseMove={(e) => handleMouseMove(e, containerRef)}
       onMouseLeave={() => {
@@ -304,7 +305,9 @@ const AboutMe = ({ isDarkMode }) => {
               <p className={`text-base md:text-lg leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
                 Digital art, workouts, hikes. Art lives on <a href="https://www.instagram.com/hreemdoodles" target="_blank" rel="noreferrer" className={`font-medium border-b transition-colors ${isDarkMode ? 'border-amber-500/50 text-amber-400 hover:border-amber-400' : 'border-[var(--lm-accent)]/50 text-[var(--lm-accent)] hover:border-[var(--lm-accent)]'}`}>Instagram</a>.
               </p>
-              <DoodleBoard isDarkMode={isDarkMode} topSpacing="3rem" />
+              <div data-doodle-ignore>
+                <DoodleBoard isDarkMode={isDarkMode} topSpacing="3rem" />
+              </div>
             </motion.div>
           </motion.div>
 
