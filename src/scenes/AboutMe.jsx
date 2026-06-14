@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useLayoutEffect, useCallback } from "react
 import DoodleBoard from "../components/DoodleBoard";
 import PhysicsBricks from "../components/PhysicsBricks";
 import GitHubContributions from "../components/GitHubContributions";
+import BlogList from "../components/BlogList";
 
 // 8 artwork images (shared)
 const artworks = [
@@ -346,6 +347,9 @@ const AboutMe = ({ isDarkMode }) => {
 
             {/* GitHub commit history — fills the space below the carousel */}
             <GitHubContributions isDarkMode={isDarkMode} username="HreemPandya" year={2026} />
+
+            {/* Latest blogs — minimal link list below the contributions */}
+            <BlogList isDarkMode={isDarkMode} />
           </motion.div>
         </div>
       </div>

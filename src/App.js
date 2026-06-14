@@ -9,7 +9,6 @@ import SiteDoodleLayer from "./components/SiteDoodleLayer";
 import useMediaQuery from "./hooks/useMediaQuery";
 import { useEffect, useState } from "react";
 import AboutMe from "./scenes/AboutMe";
-import Writing from "./scenes/Writing";
 import BlogPost from "./scenes/BlogPost";
 import { motion } from "framer-motion";
 
@@ -117,12 +116,6 @@ function App() {
         <motion.div onViewportEnter={() => setSelectedPage("about me")}>
           <AboutMe isDarkMode={isDarkMode} />
         </motion.div>
-      </div>
-
-      <LineGradient isDarkMode={isDarkMode} />
-
-      <div id="writing-wrap" className="max-w-7xl mx-auto min-w-0 px-4 sm:px-6">
-        <Writing isDarkMode={isDarkMode} />
       </div>
 
       <LineGradient isDarkMode={isDarkMode} />
