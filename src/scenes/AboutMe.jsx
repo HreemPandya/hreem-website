@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect, useRef, useLayoutEffect, useCallback } from "react";
 import DoodleBoard from "../components/DoodleBoard";
 import PhysicsBricks from "../components/PhysicsBricks";
+import GitHubContributions from "../components/GitHubContributions";
 
 // 8 artwork images (shared)
 const artworks = [
@@ -342,6 +343,9 @@ const AboutMe = ({ isDarkMode }) => {
               {/* Interactive Carousel */}
               <CreativeCarousel isDarkMode={isDarkMode} />
             </div>
+
+            {/* GitHub commit history — fills the space below the carousel */}
+            <GitHubContributions isDarkMode={isDarkMode} username="HreemPandya" year={2026} />
           </motion.div>
         </div>
       </div>
