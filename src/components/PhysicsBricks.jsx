@@ -239,6 +239,20 @@ const PhysicsArena = ({ isDarkMode, onFail }) => {
       // own drag detection — which only runs inside Engine.update — can engage
       const wake = () => run();
       container.addEventListener("mousedown", wake);
+
+      // matter's Mouse only listens for mouseup on its own element, so releasing
+      // the button after the cursor has left the arena (flicking a brick out, or
+      // scrolling/moving past it mid-drag) never resets mouse.button. The
+      // constraint then stays latched to the old brick and ignores every later
+      // grab. Catch the release on window so a drag always ends, then wake the
+      // loop so MouseConstraint can process the release and fire enddrag.
+      const endDragAnywhere = () => {
+        if (mouse.button === -1) return;
+        mouse.button = -1;
+        run();
+      };
+      window.addEventListener("mouseup", endDragAnywhere);
+      window.addEventListener("blur", endDragAnywhere);
       run();
 
       worldRef.current = {
@@ -260,6 +274,8 @@ const PhysicsArena = ({ isDarkMode, onFail }) => {
       teardown = () => {
         pause();
         container.removeEventListener("mousedown", wake);
+        window.removeEventListener("mouseup", endDragAnywhere);
+        window.removeEventListener("blur", endDragAnywhere);
         Events.off(mouseConstraint);
         Composite.clear(engine.world, false);
         Engine.clear(engine);
