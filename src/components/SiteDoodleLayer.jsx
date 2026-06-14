@@ -761,7 +761,7 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
                   : "border-[var(--lm-border)] bg-white/95 text-[var(--lm-text-muted)]"
               }`}
             >
-              psst — you can{" "}
+              psst, you can{" "}
               <span className={isDarkMode ? "text-amber-400" : "text-[var(--lm-accent)]"}>
                 draw on this site
               </span>

@@ -321,7 +321,7 @@ const PhysicsArena = ({ isDarkMode, onFail }) => {
         }`}
         style={{ touchAction: "pan-y" }}
         role="group"
-        aria-label="Areas of expertise — draggable physics bricks"
+        aria-label="Areas of expertise, draggable physics bricks"
       >
         {PILLARS.map((pillar, i) => (
           <div
@@ -339,7 +339,7 @@ const PhysicsArena = ({ isDarkMode, onFail }) => {
         ))}
       </div>
       <p className={`mt-2 text-xs ${isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"}`}>
-        These obey real gravity — grab one.{" "}
+        These obey real gravity, grab one.{" "}
         <button
           type="button"
           onClick={() => worldRef.current?.reset()}
