@@ -93,7 +93,7 @@ const BlogPost = ({ slug, isDarkMode }) => {
             </p>
 
             <p className={`mt-3 max-w-md text-sm md:text-base ${isDarkMode ? "text-[#8B9DB0]/80" : "text-[var(--lm-text-muted)]"}`}>
-              this entry is still being written. i&apos;m putting it together now — check back soon.
+              this entry is still being written. i&apos;m putting it together now, check back soon.
             </p>
 
             {/* Indeterminate shimmer to signal it's being built */}

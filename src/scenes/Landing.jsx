@@ -50,12 +50,12 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
       )}
 
       <section
-        className={`${isDarkMode ? 'bg-transparent' : 'bg-transparent'} flex min-h-screen min-w-0 flex-col md:flex-row md:justify-between md:items-center gap-8 md:gap-16 py-8 md:py-10 pt-20 md:pt-32 relative z-10 px-4 sm:px-5`}
+        className={`${isDarkMode ? 'bg-transparent' : 'bg-transparent'} flex min-h-screen min-w-0 flex-col md:flex-row md:justify-between md:items-center gap-6 md:gap-12 py-6 md:py-8 pt-20 md:pt-28 relative z-10 px-4 sm:px-5`}
       >
         {/* IMAGE SECTION - Overlap for asymmetry, flip between dark/light pics */}
         <div className="basis-3/5 z-10 flex justify-center md:order-2 order-1 md:-ml-8 lg:-ml-12">
           <motion.div 
-            className="relative z-0 w-full max-w-[280px] md:max-w-[400px] lg:max-w-[600px] overflow-hidden rounded-3xl"
+            className="relative z-0 w-full max-w-[260px] md:max-w-[360px] lg:max-w-[520px] overflow-hidden rounded-3xl"
             initial={{ opacity: 0, scale: 0.9, x: 20 }}
             animate={{ opacity: 1, scale: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.5 }}
@@ -127,7 +127,7 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
             }}
           >
             <motion.p 
-              className={`text-[clamp(1.875rem,6vw,2.25rem)] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-playfair ${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'} text-center md:text-start mb-4 md:mb-6 font-bold leading-tight`}
+              className={`text-[clamp(1.875rem,6vw,2.25rem)] sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-playfair ${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'} text-center md:text-start mb-3 md:mb-4 font-bold leading-tight`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
@@ -136,7 +136,7 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
             </motion.p>
 
             <motion.p 
-              className={`text-[clamp(2rem,7vw,2.5rem)] sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-playfair z-10 text-center md:text-start break-words ${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'} mb-6 md:mb-8 leading-tight`}
+              className={`text-[clamp(2rem,7vw,2.5rem)] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-playfair z-10 text-center md:text-start break-words ${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'} mb-4 md:mb-6 leading-tight`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -147,14 +147,14 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
               </span>
             </motion.p>
 
-            <div className="mt-6 md:mt-8 mb-6 md:mb-8">
+            <div className="mt-4 md:mt-6 mb-4 md:mb-6">
               <LandingTagline isDarkMode={isDarkMode} />
             </div>
           </motion.div>
 
           {/* CALL TO ACTIONS */}
           <motion.div
-            className="flex mt-5 justify-center md:justify-start gap-3 md:gap-4 flex-wrap sm:flex-nowrap"
+            className="flex mt-4 justify-center md:justify-start gap-3 md:gap-4 flex-wrap sm:flex-nowrap"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 1.0 }}
@@ -178,7 +178,7 @@ const Landing = ({ setSelectedPage, isDarkMode }) => {
           </motion.div>
 
           <motion.div
-            className="flex mt-5 justify-center md:justify-start"
+            className="flex mt-4 justify-center md:justify-start"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 1.2 }}
