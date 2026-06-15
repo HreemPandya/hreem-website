@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Pencil, X, Undo2, Trash2 } from "lucide-react";
+import { motion, AnimatePresence, useReducedMotion, useMotionValue, animate } from "framer-motion";
+import { Pencil, Undo2, Trash2 } from "lucide-react";
 
 // Same physics DNA as DoodleBoard, promoted to a site-wide layer.
 // Strokes live in DOCUMENT space (pageX/pageY) so ink stays anchored to the
@@ -135,6 +135,15 @@ const VELOCITY_EPS = 0.08;
 const GLOW_ALPHA_EPS = 0.002;
 const TWITCH_THROTTLE_MS = 1400;
 
+// Drop the pen with its centre within this many px of the holder centre and it
+// snaps home. Generous so "bring it back to the corner" reliably docks it.
+const PEN_SNAP_RADIUS = 90;
+// Where the pen lifts to when popped out by a tap / keyboard (offset from holder).
+const PEN_DEPLOY_OFFSET = { x: -8, y: -150 };
+const PEN_SPRING = { type: "spring", stiffness: 500, damping: 32 };
+// Key that opens/closes the mode panel while the pen is out.
+const MODE_PANEL_KEY = "m";
+
 const MODES = [
   { id: "stay", label: "Stay", hint: "ink stays where you put it" },
   { id: "fall", label: "Fall", hint: "ink tumbles down to the cat" },
@@ -181,14 +190,41 @@ const safeStorage = {
       /* private mode / storage blocked */
     }
   },
+  remove(key) {
+    try {
+      window.localStorage.removeItem(key);
+    } catch {
+      /* ignore */
+    }
+  },
 };
 
 const SiteDoodleLayer = ({ isDarkMode }) => {
   const reduceMotion = useReducedMotion();
-  const [active, setActive] = useState(false);
+  // Interaction is a small state machine:
+  //   penOut   — the pen has been lifted out of its holder
+  //   armed    — a mode was chosen from the panel; only now can you draw
+  //   panelOpen— the mode panel is showing (toggled by the M shortcut)
+  // Drawing is enabled only when penOut && armed.
+  const [penOut, setPenOut] = useState(false);
+  const [armed, setArmed] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(false);
   const [mode, setMode] = useState("stay");
   const [showHint, setShowHint] = useState(false);
   const [hasInk, setHasInk] = useState(false);
+  const [nearHolder, setNearHolder] = useState(false);
+
+  const canDraw = penOut && armed;
+
+  // The pen is a draggable object whose (x, y) are an offset from its docked home
+  // in the bottom-right holder. The holder is a FIXED element, so a dropped pen
+  // follows the viewport as you scroll; drag it back near the holder to dock it.
+  const penX = useMotionValue(0);
+  const penY = useMotionValue(0);
+  const draggingRef = useRef(false);
+  const penRef = useRef(null);
+  const holderRef = useRef(null);
+  const penOutRef = useRef(false);
 
   const baseCanvasRef = useRef(null);
   const liveCanvasRef = useRef(null);
@@ -199,10 +235,9 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
   const lastPointRef = useRef(null);
   const frameCountRef = useRef(0);
   const modeRef = useRef(mode);
-  const activeRef = useRef(active);
+  const activeRef = useRef(false);
   const worldRef = useRef({ floorY: 0, catL: -1, catR: -1, docW: 1024, docH: 4000 });
   const obstaclesRef = useRef({ rects: [], grid: new Map(), cell: GRID_CELL });
-  const saveTimerRef = useRef(null);
   const lastTwitchRef = useRef(0);
   const hintTimersRef = useRef([]);
   const baseDirtyRef = useRef(false);
@@ -215,7 +250,8 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
   };
 
   modeRef.current = mode;
-  activeRef.current = active;
+  activeRef.current = canDraw;
+  penOutRef.current = penOut;
 
   const visibleModes = reduceMotion ? MODES.filter((m) => REDUCED_MODE_IDS.has(m.id)) : MODES;
 
@@ -309,24 +345,6 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
     lastTwitchRef.current = now;
     window.dispatchEvent(new CustomEvent("hreem:doodle-landed"));
   }, []);
-
-  // ----- persistence -----
-  const persist = useCallback(() => {
-    const { docW } = worldRef.current;
-    const data = {
-      v: 1,
-      w: docW,
-      strokes: strokesRef.current.map((s) => ({
-        pts: s.points.map((p) => [Math.round(p.x), Math.round(p.y)]),
-      })),
-    };
-    safeStorage.set(STORAGE_KEY, JSON.stringify(data));
-  }, []);
-
-  const scheduleSave = useCallback(() => {
-    clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = setTimeout(persist, 800);
-  }, [persist]);
 
   // ----- physics (document space; floor is the footer cat's ground line) -----
   const runPhysics = useCallback(() => {
@@ -475,9 +493,8 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
     });
     if (removed) {
       setHasInk(strokesRef.current.length > 0);
-      scheduleSave();
     }
-  }, [drawStroke, scheduleSave]);
+  }, [drawStroke]);
 
   const renderLive = useCallback(() => {
     const canvas = liveCanvasRef.current;
@@ -532,10 +549,8 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
 
     if (cont) {
       rafRef.current = requestAnimationFrame(frame);
-    } else if (modeNow === "fall" || modeNow === "glow") {
-      scheduleSave();
     }
-  }, [runPhysics, renderBase, renderLive, scheduleSave]);
+  }, [runPhysics, renderBase, renderLive]);
 
   const kick = useCallback(() => {
     if (rafRef.current !== null) return;
@@ -545,7 +560,7 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
   // ----- input (only reachable while the layer is active) -----
   const handlePointerDown = useCallback(
     (e) => {
-      if (!activeRef.current || e.button > 0) return;
+      if (!activeRef.current || draggingRef.current || e.button > 0) return;
       e.currentTarget.setPointerCapture?.(e.pointerId);
       isDrawingRef.current = true;
       const p = { x: e.clientX, y: e.clientY + window.scrollY, vx: 0, vy: 0 };
@@ -581,14 +596,13 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
     if (isDrawingRef.current && currentStrokeRef.current.length > 1) {
       const points = [...currentStrokeRef.current];
       strokesRef.current.push({ points, alpha: 1, bbox: computeBBox(points) });
-      // keep memory + storage bounded: drop oldest ink first
+      // keep memory bounded: drop oldest ink first
       while (strokesRef.current.length > MAX_STROKES) strokesRef.current.shift();
       let total = strokesRef.current.reduce((n, s) => n + s.points.length, 0);
       while (total > MAX_POINTS && strokesRef.current.length > 1) {
         total -= strokesRef.current.shift().points.length;
       }
       setHasInk(true);
-      scheduleSave();
       baseDirtyRef.current = true;
     }
     isDrawingRef.current = false;
@@ -596,15 +610,14 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
     lastPointRef.current = null;
     clearLive();
     kick();
-  }, [kick, clearLive, scheduleSave]);
+  }, [kick, clearLive]);
 
   const handleUndo = useCallback(() => {
     strokesRef.current.pop();
     setHasInk(strokesRef.current.length > 0);
-    persist();
     baseDirtyRef.current = true;
     kick();
-  }, [persist, kick]);
+  }, [kick]);
 
   const handleClear = useCallback(() => {
     if (rafRef.current !== null) {
@@ -616,25 +629,90 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
     isDrawingRef.current = false;
     lastPointRef.current = null;
     setHasInk(false);
-    persist();
     baseDirtyRef.current = true;
     kick();
     clearLive();
-  }, [persist, kick, clearLive]);
+  }, [kick, clearLive]);
 
   const dismissHint = useCallback(() => {
     setShowHint(false);
     safeStorage.set(HINT_KEY, "1");
   }, []);
 
-  const toggleActive = useCallback(() => {
+  // ----- the pen: lift it out, drop it on the page, or drag it back to dock -----
+  // Distance (px) between the pen's centre and the holder's centre, measured from
+  // their real rendered rects (both live in a fixed dock, so viewport space is
+  // fine). Robust against transform/layout quirks, unlike the raw drag offset.
+  const penHolderDistance = useCallback(() => {
+    const p = penRef.current?.getBoundingClientRect();
+    const h = holderRef.current?.getBoundingClientRect();
+    if (!p || !h) return Infinity;
+    return Math.hypot(
+      p.left + p.width / 2 - (h.left + h.width / 2),
+      p.top + p.height / 2 - (h.top + h.height / 2)
+    );
+  }, []);
+
+  // Pen home: snaps to the holder, drawing fully off.
+  const dockPen = useCallback(() => {
+    animate(penX, 0, PEN_SPRING);
+    animate(penY, 0, PEN_SPRING);
+    setNearHolder(false);
+    setPanelOpen(false);
+    setArmed(false);
+    setPenOut(false);
+  }, [penX, penY]);
+
+  // Pen is out (you're holding it) but NOT armed yet — press M to pick a mode.
+  const liftPen = useCallback(() => {
     dismissHint();
-    setActive((a) => {
-      const next = !a;
-      if (next) measureWorld();
-      return next;
-    });
+    measureWorld();
+    setArmed(false);
+    setPenOut(true);
   }, [dismissHint, measureWorld]);
+
+  // Pop the pen out to a default spot (tap / keyboard, no specific drop point).
+  const deployPen = useCallback(() => {
+    animate(penX, PEN_DEPLOY_OFFSET.x, PEN_SPRING);
+    animate(penY, PEN_DEPLOY_OFFSET.y, PEN_SPRING);
+    liftPen();
+  }, [penX, penY, liftPen]);
+
+  const handlePenDragStart = useCallback(() => {
+    draggingRef.current = true;
+    dismissHint();
+  }, [dismissHint]);
+
+  // Highlight the holder while the pen hovers over it (the snap target).
+  const handlePenDrag = useCallback(() => {
+    const within = penHolderDistance() < PEN_SNAP_RADIUS;
+    setNearHolder((prev) => (prev === within ? prev : within));
+  }, [penHolderDistance]);
+
+  const handlePenDragEnd = useCallback(() => {
+    draggingRef.current = false;
+    setNearHolder(false);
+    if (penHolderDistance() < PEN_SNAP_RADIUS) dockPen();
+    else liftPen();
+  }, [penHolderDistance, dockPen, liftPen]);
+
+  // Keyboard parity for the drag: pop the pen out / dock it.
+  const handlePenKeyDown = useCallback(
+    (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      e.preventDefault();
+      if (penOutRef.current) dockPen();
+      else deployPen();
+    },
+    [dockPen, deployPen]
+  );
+
+  // Choosing a mode from the panel arms the pen (drawing turns on) and closes it.
+  const selectMode = useCallback((id) => {
+    setMode(id);
+    setArmed(true);
+    setPanelOpen(false);
+  }, []);
 
   // ----- canvas sizing + scroll/resize redraws -----
   useEffect(() => {
@@ -678,39 +756,18 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
     };
   }, [measureWorld, measureObstacles, kick]);
 
-  // restore saved doodles once layout has had a moment to settle
+  // Doodles are ephemeral — never persisted. Purge any legacy saved ink, and wipe
+  // the in-memory ink when the page is hidden / unloaded, so leaving and coming
+  // back (reload, navigation, bfcache restore) always starts on a blank page.
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const raw = safeStorage.get(STORAGE_KEY);
-      if (!raw) return;
-      try {
-        const data = JSON.parse(raw);
-        if (data?.v !== 1 || !Array.isArray(data.strokes) || data.strokes.length === 0) return;
-        measureWorld();
-        const { floorY, docW } = worldRef.current;
-        const scale = data.w > 0 ? docW / data.w : 1;
-        strokesRef.current = data.strokes
-          .filter((s) => Array.isArray(s?.pts) && s.pts.length > 1)
-          .map((s) => {
-            const points = s.pts.map(([x, y]) => ({
-              x: Math.max(2, Math.min(docW - 2, x * scale)),
-              y: Math.max(2, Math.min(floorY, y)),
-              vx: 0,
-              vy: 0,
-            }));
-            return { points, alpha: 1, bbox: computeBBox(points) };
-          });
-        if (strokesRef.current.length > 0) {
-          setHasInk(true);
-          baseDirtyRef.current = true;
-          kick();
-        }
-      } catch {
-        /* corrupted save — start fresh */
-      }
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [measureWorld, kick]);
+    safeStorage.remove(STORAGE_KEY);
+    const wipe = () => {
+      strokesRef.current = [];
+      currentStrokeRef.current = [];
+    };
+    window.addEventListener("pagehide", wipe);
+    return () => window.removeEventListener("pagehide", wipe);
+  }, []);
 
   // first-visit hint
   useEffect(() => {
@@ -721,15 +778,25 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
     return () => timers.forEach(clearTimeout);
   }, []);
 
-  // Esc exits draw mode
+  // While the pen is out: M toggles the mode panel, Esc docks the pen.
   useEffect(() => {
-    if (!active) return;
+    if (!penOut) return;
     const onKeyDown = (e) => {
-      if (e.key === "Escape") setActive(false);
+      if (e.key === "Escape") {
+        dockPen();
+        return;
+      }
+      const el = e.target;
+      const typing =
+        el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable);
+      if (!typing && e.key.toLowerCase() === MODE_PANEL_KEY) {
+        e.preventDefault();
+        setPanelOpen((open) => !open);
+      }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [active]);
+  }, [penOut, dockPen]);
 
   // mode / theme changes need a base repaint (and physics kick)
   useEffect(() => {
@@ -740,8 +807,6 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
     baseDirtyRef.current = true;
     kick();
   }, [mode, isDarkMode, measureWorld, measureObstacles, kick]);
-
-  useEffect(() => () => clearTimeout(saveTimerRef.current), []);
 
   const activeModeHint = MODES.find((m) => m.id === mode)?.hint ?? "";
 
@@ -772,10 +837,10 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
       <canvas
         ref={liveCanvasRef}
         aria-hidden="true"
-        className={`fixed inset-0 z-[35] ${active ? "doodle-cursor" : ""}`}
+        className={`fixed inset-0 z-[35] ${canDraw ? "doodle-cursor" : ""}`}
         style={{
-          pointerEvents: active ? "auto" : "none",
-          touchAction: active ? "none" : "auto",
+          pointerEvents: canDraw ? "auto" : "none",
+          touchAction: canDraw ? "none" : "auto",
         }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
@@ -789,10 +854,10 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
         style={{ bottom: "calc(1.25rem + env(safe-area-inset-bottom, 0px))" }}
       >
         <AnimatePresence>
-          {showHint && !active && (
+          {showHint && !penOut && (
             <motion.button
               type="button"
-              onClick={toggleActive}
+              onClick={dismissHint}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 8 }}
@@ -803,7 +868,7 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
                   : "border-[var(--lm-border)] bg-white/95 text-[var(--lm-text-muted)]"
               }`}
             >
-              psst, you can{" "}
+              psst, grab the pen and{" "}
               <span className={isDarkMode ? "text-amber-400" : "text-[var(--lm-accent)]"}>
                 draw on this site
               </span>
@@ -811,8 +876,31 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
           )}
         </AnimatePresence>
 
+        {/* Pen is out but no mode picked yet — nudge toward the M shortcut. */}
         <AnimatePresence>
-          {active && (
+          {penOut && !armed && !panelOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 6 }}
+              transition={{ duration: 0.25 }}
+              className={`rounded-xl border px-3 py-2 text-xs shadow-lg backdrop-blur-xl ${
+                isDarkMode
+                  ? "border-amber-500/25 bg-[#0B0F18]/90 text-[#8B9DB0]"
+                  : "border-[var(--lm-border)] bg-white/95 text-[var(--lm-text-muted)]"
+              }`}
+            >
+              press{" "}
+              <kbd className={`rounded px-1 font-mono ${isDarkMode ? "bg-white/10 text-amber-300" : "bg-[var(--lm-accent)]/10 text-[var(--lm-accent)]"}`}>
+                M
+              </kbd>{" "}
+              to pick a mode and draw
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {panelOpen && (
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -829,8 +917,8 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
                   <button
                     key={m.id}
                     type="button"
-                    onClick={() => setMode(m.id)}
-                    className={chipClass(mode === m.id)}
+                    onClick={() => selectMode(m.id)}
+                    className={chipClass(armed && mode === m.id)}
                   >
                     {m.label}
                   </button>
@@ -868,32 +956,64 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
               >
                 {activeModeHint}
                 <br />
-                esc to stop · doodles are saved
+                M toggles this · esc docks the pen · doodles clear when you leave
               </p>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <motion.button
-          type="button"
-          onClick={toggleActive}
-          aria-pressed={active}
-          aria-label={active ? "Stop drawing" : "Draw on this site"}
-          title={active ? "Stop drawing (Esc)" : "Draw on this site"}
-          whileHover={{ scale: 1.06 }}
-          whileTap={{ scale: 0.94 }}
-          className={`inline-flex h-11 w-11 items-center justify-center rounded-full border shadow-lg backdrop-blur-xl transition-colors ${
-            active
-              ? isDarkMode
-                ? "border-transparent bg-amber-500 text-[#07090D]"
-                : "border-transparent bg-[#4A6B4E] text-white"
-              : isDarkMode
-                ? "border-amber-500/35 bg-[#0B0F18]/80 text-amber-400 hover:bg-amber-500/10"
-                : "border-[#4A6B4E]/40 bg-white/90 text-[#4A6B4E] hover:bg-[#4A6B4E]/10"
-          }`}
-        >
-          {active ? <X size={17} /> : <Pencil size={17} />}
-        </motion.button>
+        {/* Static holder circle (never moves) + the draggable pen glyph inside it.
+            Only the pen lifts out and becomes your cursor; drag it back near the
+            holder to put it away. */}
+        <div className="relative h-11 w-11">
+          {/* Holder — stays put. Filled circle when the pen is resting in it;
+              an empty dashed ring (the drop target) while the pen is out. */}
+          <div
+            ref={holderRef}
+            className={`pointer-events-none absolute inset-0 rounded-full shadow-lg backdrop-blur-xl transition-all duration-200 ${
+              penOut
+                ? `border-2 border-dashed ${
+                    nearHolder
+                      ? isDarkMode
+                        ? "scale-110 border-amber-400 bg-amber-500/10"
+                        : "scale-110 border-[#4A6B4E] bg-[#4A6B4E]/10"
+                      : isDarkMode
+                        ? "border-amber-500/30 bg-[#0B0F18]/50"
+                        : "border-[#4A6B4E]/35 bg-white/60"
+                  }`
+                : isDarkMode
+                  ? "border border-amber-500/35 bg-[#0B0F18]/80"
+                  : "border border-[#4A6B4E]/40 bg-white/90"
+            }`}
+          />
+
+          {/* The pen — the ONLY thing that moves. Transparent hit-area, just the
+              glyph, so the holder circle stays in place when you lift it out. */}
+          <motion.button
+            ref={penRef}
+            type="button"
+            drag
+            dragMomentum={false}
+            dragElastic={0}
+            style={{ x: penX, y: penY, touchAction: "none" }}
+            onDragStart={handlePenDragStart}
+            onDrag={handlePenDrag}
+            onDragEnd={handlePenDragEnd}
+            onTap={() => { if (!penOutRef.current) deployPen(); }}
+            onKeyDown={handlePenKeyDown}
+            whileHover={{ scale: 1.12 }}
+            whileTap={{ scale: 0.95 }}
+            whileDrag={{ scale: 1.25, rotate: -14 }}
+            aria-pressed={penOut}
+            aria-label={penOut ? "Pen (drag back to the holder to put it away)" : "Pick up the pen to draw"}
+            title={penOut ? "Drag back to the holder to stop (Esc)" : "Pick up the pen to draw"}
+            className={`absolute inset-0 z-10 inline-flex cursor-grab items-center justify-center rounded-full bg-transparent transition-colors active:cursor-grabbing ${
+              isDarkMode ? "text-amber-400" : "text-[#4A6B4E]"
+            }`}
+          >
+            <Pencil size={19} className="drop-shadow-[0_1px_3px_rgba(0,0,0,0.55)]" />
+          </motion.button>
+        </div>
       </div>
     </>
   );
