@@ -13,86 +13,118 @@ import { Pencil, X, Undo2, Trash2 } from "lucide-react";
 //             per frame, so latency stays flat no matter how much history.
 const GRAVITY = 0.12;
 const DAMPING = 0.985;
-const BOUNCE = 0.4;
 const SAMPLE_DISTANCE = 5;
 const STROKE_WIDTH = 2.5;
 const MAX_DPR = 2; // beyond 2x the visual gain is nil but fill cost is quadratic
 
-// ---- element collision (ink ricochets off real on-page blocks) ----
-// Falling ink treats visible content blocks as solid: it drapes over the TOP
-// edge, slides/bounces off the SIDES, and rests on top. Obstacles are measured
-// in document space and indexed in a static spatial grid, so the per-point test
-// each frame is one Map lookup against a tiny candidate list (not every block).
+// ---- rope model ----
+// A stroke is a chain of points joined by fixed-length segments and integrated
+// with Verlet (velocity is implicit in the previous position). Distance
+// constraints keep the line at its DRAWN length, so it can't stretch as it
+// falls; and because the constraints transmit the pull of the hanging part, an
+// overhang drags the supported part off a ledge once enough of it hangs over.
+const CONSTRAINT_ITERS = 6; // relaxation passes per frame (higher = stiffer rope)
+const SURFACE_FRICTION = 0.9; // tangential damping while a point rests on a surface
+
+// ---- element collision ----
+// Only real "blocks" are solid — project cards, the expertise panel, images.
+// Text (headings/paragraphs) is intentionally NOT solid, so ink falls past it
+// and only drapes/rests on blocks. Obstacles are measured in document space and
+// indexed in a static spatial grid, so each per-point test is one Map lookup.
 const OBSTACLE_SELECTOR =
-  '#projects .rounded-2xl,[aria-label^="Areas of expertise"],h1,h2,h3,p,img';
-const OBSTACLE_BOUNCE = 0.32; // restitution off element edges in Fall
-const OBSTACLE_BOUNCE_DRIFT = 0.5; // livelier bounce so Drift keeps wandering
+  '#projects .rounded-2xl,[aria-label^="Areas of expertise"],img';
 const OBSTACLE_MIN_W = 40; // ignore tiny things (icons, single tags)
 const OBSTACLE_MIN_H = 14;
 const OBSTACLE_PAD = 2; // inflate rects by ~half the stroke width
-const REST_SPEED = 0.5; // supported + slower than this → snap to rest (lets rAF idle)
 const GRID_CELL = 220; // spatial-hash cell size in px
 const GRID_STRIDE = 8192; // key = cy * stride + cx (cx range is tiny)
 
-// Swept, direction-aware resolve against blocks in the point's grid cell.
-// Classifies the collision by which edge the point CROSSED this frame (using its
-// previous position p − v), so it can't tunnel through or get ejected out the far
-// side of a block. Returns 1 when the point is supported (landed on / rests on a block).
-//   • crossed a TOP edge falling   → land on the highest such top
-//   • crossed a SIDE face          → ricochet off it
-//   • already inside (e.g. drawn on a block) → rest in place
-function collidePoint(p, obst, bounce) {
+// Give a stroke its rope state: fixed segment lengths (captured from its drawn
+// shape) and a Verlet "previous position" per point. Idempotent — only fills in
+// what's missing, so re-entering Fall/Drift never re-stretches an existing line.
+function primeStroke(stroke) {
+  const pts = stroke.points;
+  if (!stroke.seg || stroke.seg.length !== pts.length - 1) {
+    const seg = new Array(Math.max(0, pts.length - 1));
+    for (let i = 0; i < pts.length - 1; i++) {
+      const dx = pts[i + 1].x - pts[i].x;
+      const dy = pts[i + 1].y - pts[i].y;
+      seg[i] = Math.sqrt(dx * dx + dy * dy) || 0.0001;
+    }
+    stroke.seg = seg;
+  }
+  for (const p of pts) {
+    if (p.px === undefined) {
+      p.px = p.x;
+      p.py = p.y;
+    }
+  }
+}
+
+// One Jakobsen relaxation pass: nudge each adjacent pair back toward its rest
+// length, splitting the correction so the chain behaves as one inextensible line.
+function satisfyConstraints(pts, seg) {
+  for (let i = 0; i < pts.length - 1; i++) {
+    const a = pts[i];
+    const b = pts[i + 1];
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const d = Math.sqrt(dx * dx + dy * dy);
+    if (d < 1e-6) continue;
+    const diff = ((d - seg[i]) / d) * 0.5;
+    const ox = dx * diff;
+    const oy = dy * diff;
+    a.x += ox;
+    a.y += oy;
+    b.x -= ox;
+    b.y -= oy;
+  }
+}
+
+// Push a point out of any solid block / floor / wall it has entered, choosing the
+// entry face from its previous position (px, py) so it lands ON a top edge rather
+// than tunneling through. Returns 1 when it's resting on a surface (so friction
+// can be applied), 0 otherwise.
+function resolveCollision(p, obst, floorY, docW) {
+  let support = 0;
+  if (p.x < 2) p.x = 2;
+  else if (p.x > docW - 2) p.x = docW - 2;
+
   const grid = obst.grid;
-  if (grid.size === 0) return 0;
-  const cell = obst.cell;
-  const arr = grid.get(Math.floor(p.y / cell) * GRID_STRIDE + Math.floor(p.x / cell));
-  if (!arr) return 0;
-
-  const prevX = p.x - p.vx;
-  const prevY = p.y - p.vy;
-  let topY = Infinity; // highest top edge we dropped onto
-  let underB = Infinity; // nearest underside we rose into
-  let sideHit = 0; // 1 left face, 2 right face
-  let sideX = 0;
-  let inside = false;
-
-  for (let i = 0; i < arr.length; i++) {
-    const a = arr[i];
-    const l = a.l - OBSTACLE_PAD;
-    const r = a.r + OBSTACLE_PAD;
-    const t = a.t - OBSTACLE_PAD;
-    const b = a.b + OBSTACLE_PAD;
-    if (p.x <= l || p.x >= r || p.y <= t || p.y >= b) continue; // not penetrating now
-    if (p.vy > 0 && prevY <= t) {
-      if (t < topY) topY = t; // came down through the top → land
-    } else if (p.vy < 0 && prevY >= b) {
-      if (b < underB) underB = b; // came up through the bottom
-    } else if (p.vx > 0 && prevX <= l) {
-      if (!sideHit) { sideHit = 1; sideX = l; }
-    } else if (p.vx < 0 && prevX >= r) {
-      if (!sideHit) { sideHit = 2; sideX = r; }
-    } else {
-      inside = true; // no clean crossing → originated inside this block
+  if (grid.size > 0) {
+    const cell = obst.cell;
+    const arr = grid.get(Math.floor(p.y / cell) * GRID_STRIDE + Math.floor(p.x / cell));
+    if (arr) {
+      for (let i = 0; i < arr.length; i++) {
+        const a = arr[i];
+        const l = a.l - OBSTACLE_PAD;
+        const r = a.r + OBSTACLE_PAD;
+        const tp = a.t - OBSTACLE_PAD;
+        const bt = a.b + OBSTACLE_PAD;
+        if (p.x <= l || p.x >= r || p.y <= tp || p.y >= bt) continue; // not penetrating
+        if (p.py <= tp) { p.y = tp; support = 1; } // dropped onto the top → rest there
+        else if (p.py >= bt) { p.y = bt; } // rose into the underside
+        else if (p.px <= l) { p.x = l; } // came in from the left face
+        else if (p.px >= r) { p.x = r; } // came in from the right face
+        else {
+          // already inside (drawn on it / pushed in by a constraint) → eject the nearest edge
+          const dl = p.x - l;
+          const dr = r - p.x;
+          const dt = p.y - tp;
+          const db = bt - p.y;
+          const m = Math.min(dl, dr, dt, db);
+          if (m === dt) { p.y = tp; support = 1; }
+          else if (m === db) { p.y = bt; }
+          else if (m === dl) { p.x = l; }
+          else { p.x = r; }
+        }
+      }
     }
   }
 
-  if (topY !== Infinity) {
-    p.y = topY;
-    if (p.vy > 0) p.vy = -p.vy * bounce;
-    p.vx *= 0.82; // friction along the surface
-    return 1;
-  }
-  if (sideHit) {
-    p.x = sideX;
-    p.vx = -p.vx * bounce;
-    return 0;
-  }
-  if (underB !== Infinity) {
-    p.y = underB;
-    if (p.vy < 0) p.vy = -p.vy * bounce;
-    return 0;
-  }
-  return inside ? 1 : 0; // resting on a block it was drawn on
+  if (p.y > floorY) { p.y = floorY; support = 1; }
+  else if (p.y < 2) { p.y = 2; }
+  return support;
 }
 
 const STORAGE_KEY = "hreem-site-doodles-v1";
@@ -298,74 +330,84 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
 
   // ----- physics (document space; floor is the footer cat's ground line) -----
   const runPhysics = useCallback(() => {
-    const { floorY, catL, catR, docW } = worldRef.current;
+    const { floorY, docW } = worldRef.current;
     const modeNow = modeRef.current;
     const t = frameCountRef.current * 0.016;
-    const catCx = catL > 0 ? (catL + catR) / 2 : null;
 
-    strokesRef.current.forEach((stroke) => {
-      const pts = stroke.points;
+    if (modeNow === "fall") {
+      const obst = obstaclesRef.current;
+      strokesRef.current.forEach((stroke) => {
+        primeStroke(stroke);
+        const pts = stroke.points;
+        const seg = stroke.seg;
 
-      if (modeNow === "fall") {
-        const obst = obstaclesRef.current;
+        // 1. integrate each point (Verlet — gravity is added straight to position)
         for (const p of pts) {
-          if (p.rest) continue; // already settled — frozen until cleared/redrawn
-          p.vy += GRAVITY;
-          if (catCx !== null) p.vx += Math.sign(catCx - p.x) * 0.006;
-          p.vx *= DAMPING;
-          p.vy *= DAMPING;
-          p.x += p.vx;
-          p.y += p.vy;
+          p.support = 0;
+          const vx = (p.x - p.px) * DAMPING;
+          const vy = (p.y - p.py) * DAMPING;
+          p.px = p.x;
+          p.py = p.y;
+          p.x += vx;
+          p.y += vy + GRAVITY;
+        }
 
-          // ricochet off / rest on real page blocks on the way down
-          let onSurface = collidePoint(p, obst, OBSTACLE_BOUNCE);
+        // 2. relax the chain back to its drawn length, then push points out of
+        //    solids — interleaved so the line keeps its length AND an overhang
+        //    can drag the supported part off a block.
+        for (let k = 0; k < CONSTRAINT_ITERS; k++) {
+          satisfyConstraints(pts, seg);
+          for (const p of pts) p.support |= resolveCollision(p, obst, floorY, docW);
+        }
 
-          if (p.y > floorY) {
-            p.y = floorY;
-            if (!p.landed && Math.abs(p.vy) > 0.5) {
-              p.landed = true;
-              pokeCat();
-            }
-            p.vy *= -BOUNCE;
-            p.vx *= 0.8;
-            onSurface = 1;
+        // 3. derive velocity (for the settle check), apply surface friction, and
+        //    poke the cat the first time a point lands hard on the floor.
+        for (const p of pts) {
+          let vx = p.x - p.px;
+          const vy = p.y - p.py;
+          if (p.support) {
+            vx *= SURFACE_FRICTION;
+            p.px = p.x - vx;
           }
-          if (p.y < 2) { p.y = 2; p.vy *= -BOUNCE; }
-          if (p.x < 2) { p.x = 2; p.vx *= -BOUNCE; }
-          if (p.x > docW - 2) { p.x = docW - 2; p.vx *= -BOUNCE; }
-
-          // supported + slow on both axes → freeze for good. Without this, the
-          // gentle pull toward the cat keeps nudging settled ink so it creeps
-          // off edges forever and the rAF loop never idles.
-          if (onSurface && Math.abs(p.vy) < REST_SPEED && Math.abs(p.vx) < REST_SPEED) {
-            p.vx = 0;
-            p.vy = 0;
-            p.rest = true;
+          p.vx = vx;
+          p.vy = vy;
+          if (!p.landed && p.y >= floorY - 0.5 && vy > 0.4) {
+            p.landed = true;
+            pokeCat();
           }
         }
         stroke.bbox = computeBBox(pts);
-      } else if (modeNow === "drift") {
-        const obst = obstaclesRef.current;
-        const wind = Math.sin(t * 0.5) * 0.08;
+      });
+    } else if (modeNow === "drift") {
+      const obst = obstaclesRef.current;
+      const wind = Math.sin(t * 0.5) * 0.08;
+      strokesRef.current.forEach((stroke) => {
+        primeStroke(stroke);
+        const pts = stroke.points;
+        const seg = stroke.seg;
         for (const p of pts) {
-          p.rest = false; // the breeze re-animates everything
-          p.vx += wind;
-          p.vy += 0.02;
-          p.vx *= DAMPING;
-          p.vy *= DAMPING;
-          p.x += p.vx;
-          p.y += p.vy;
-          collidePoint(p, obst, OBSTACLE_BOUNCE_DRIFT); // bump around blocks, keep floating
-          if (p.y > floorY) { p.y = floorY; p.vy *= -0.3; }
-          if (p.y < 2) { p.y = 2; p.vy *= -0.3; }
-          if (p.x < 2) { p.x = 2; p.vx *= -0.3; }
-          if (p.x > docW - 2) { p.x = docW - 2; p.vx *= -0.3; }
+          const vx = (p.x - p.px) * DAMPING;
+          const vy = (p.y - p.py) * DAMPING;
+          p.px = p.x;
+          p.py = p.y;
+          p.x += vx + wind;
+          p.y += vy + 0.02;
+        }
+        for (let k = 0; k < CONSTRAINT_ITERS; k++) {
+          satisfyConstraints(pts, seg);
+          for (const p of pts) resolveCollision(p, obst, floorY, docW);
+        }
+        for (const p of pts) {
+          p.vx = p.x - p.px;
+          p.vy = p.y - p.py;
         }
         stroke.bbox = computeBBox(pts);
-      } else if (modeNow === "glow") {
+      });
+    } else if (modeNow === "glow") {
+      strokesRef.current.forEach((stroke) => {
         stroke.alpha = Math.max(0, stroke.alpha - 0.004);
-      }
-    });
+      });
+    }
 
     frameCountRef.current += 1;
     // layout can shift under long falls (lazy images etc.) — re-measure occasionally
