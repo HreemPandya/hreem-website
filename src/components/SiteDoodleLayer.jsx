@@ -154,17 +154,6 @@ const MODES = [
 // Modes safe under prefers-reduced-motion: nothing moves on its own.
 const REDUCED_MODE_IDS = new Set(["stay", "glow"]);
 
-function strokesSettled(strokes) {
-  for (const s of strokes) {
-    for (const p of s.points) {
-      if (Math.abs(p.vx ?? 0) >= VELOCITY_EPS || Math.abs(p.vy ?? 0) >= VELOCITY_EPS) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
 function computeBBox(points) {
   let minY = Infinity;
   let maxY = -Infinity;
@@ -222,12 +211,14 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
   const penX = useMotionValue(0);
   const penY = useMotionValue(0);
   const draggingRef = useRef(false);
-  const penRef = useRef(null);
-  const holderRef = useRef(null);
   const penOutRef = useRef(false);
 
   const baseCanvasRef = useRef(null);
   const liveCanvasRef = useRef(null);
+  // 2D contexts are cached once (getContext returns the same instance anyway) so
+  // the per-frame render path never pays a getContext lookup.
+  const baseCtxRef = useRef(null);
+  const liveCtxRef = useRef(null);
   const strokesRef = useRef([]);
   const currentStrokeRef = useRef([]);
   const isDrawingRef = useRef(false);
@@ -347,10 +338,14 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
   }, []);
 
   // ----- physics (document space; floor is the footer cat's ground line) -----
+  // Advances one physics step and returns whether anything is still in motion,
+  // so the frame loop can decide to continue WITHOUT a second full scan over
+  // every point (the old separate strokesSettled pass).
   const runPhysics = useCallback(() => {
     const { floorY, docW } = worldRef.current;
     const modeNow = modeRef.current;
     const t = frameCountRef.current * 0.016;
+    let moving = false;
 
     if (modeNow === "fall") {
       const obst = obstaclesRef.current;
@@ -389,6 +384,9 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
           }
           p.vx = vx;
           p.vy = vy;
+          if (!moving && (Math.abs(vx) >= VELOCITY_EPS || Math.abs(vy) >= VELOCITY_EPS)) {
+            moving = true;
+          }
           if (!p.landed && p.y >= floorY - 0.5 && vy > 0.4) {
             p.landed = true;
             pokeCat();
@@ -421,9 +419,11 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
         }
         stroke.bbox = computeBBox(pts);
       });
+      moving = true; // drift never settles — it floats forever on the breeze
     } else if (modeNow === "glow") {
       strokesRef.current.forEach((stroke) => {
         stroke.alpha = Math.max(0, stroke.alpha - 0.004);
+        if (stroke.alpha > GLOW_ALPHA_EPS) moving = true;
       });
     }
 
@@ -433,6 +433,7 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
       measureWorld();
       measureObstacles();
     }
+    return moving;
   }, [measureWorld, measureObstacles, pokeCat]);
 
   // ----- shared stroke renderer: quadratic smoothing for silky lines -----
@@ -467,28 +468,44 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
 
   const renderBase = useCallback(() => {
     const canvas = baseCanvasRef.current;
-    const ctx = canvas?.getContext("2d");
+    const ctx = baseCtxRef.current;
     if (!canvas || !ctx) return;
     const dpr = dprRef.current;
+    const scrollY = window.scrollY;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, -window.scrollY * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, -scrollY * dpr);
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
 
     const modeNow = modeRef.current;
-    const viewTop = window.scrollY - 80;
-    const viewBottom = window.scrollY + window.innerHeight + 80;
+    const glow = modeNow === "glow";
+    const viewTop = scrollY - 80;
+    const viewBottom = scrollY + window.innerHeight + 80;
+    const strokes = strokesRef.current;
 
+    // Fast path (stay / fall / drift): no stroke is ever removed here, so walk
+    // the array in place — no per-frame .filter() allocation while animating.
+    if (!glow) {
+      for (let i = 0; i < strokes.length; i++) {
+        const s = strokes[i];
+        const bb = s.bbox;
+        if (bb && (bb.maxY < viewTop || bb.minY > viewBottom)) continue;
+        drawStroke(ctx, s.points, false, s.alpha);
+      }
+      return;
+    }
+
+    // Glow is the only mode that retires faded strokes, so only it compacts.
     let removed = false;
-    strokesRef.current = strokesRef.current.filter((s) => {
-      if (modeNow === "glow" && s.alpha <= 0) {
+    strokesRef.current = strokes.filter((s) => {
+      if (s.alpha <= 0) {
         removed = true;
         return false;
       }
       const bb = s.bbox;
       const culled = bb && (bb.maxY < viewTop || bb.minY > viewBottom);
-      if (!culled) drawStroke(ctx, s.points, modeNow === "glow", s.alpha);
+      if (!culled) drawStroke(ctx, s.points, true, s.alpha);
       return true;
     });
     if (removed) {
@@ -498,7 +515,7 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
 
   const renderLive = useCallback(() => {
     const canvas = liveCanvasRef.current;
-    const ctx = canvas?.getContext("2d");
+    const ctx = liveCtxRef.current;
     if (!canvas || !ctx) return;
     const dpr = dprRef.current;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -513,7 +530,7 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
 
   const clearLive = useCallback(() => {
     const canvas = liveCanvasRef.current;
-    const ctx = canvas?.getContext("2d");
+    const ctx = liveCtxRef.current;
     if (!canvas || !ctx) return;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -530,8 +547,9 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
       else if (modeNow === "glow") physicsActive = strokes.some((s) => s.alpha > GLOW_ALPHA_EPS);
     }
 
+    let moving = false;
     if (physicsActive) {
-      runPhysics();
+      moving = runPhysics();
       baseDirtyRef.current = true;
     }
     if (baseDirtyRef.current) {
@@ -540,14 +558,9 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
     }
     if (isDrawingRef.current) renderLive();
 
-    let cont = false;
-    if (physicsActive) {
-      if (modeNow === "fall") cont = !strokesSettled(strokes);
-      else if (modeNow === "drift") cont = true;
-      else if (modeNow === "glow") cont = strokes.some((s) => s.alpha > GLOW_ALPHA_EPS);
-    }
-
-    if (cont) {
+    // fall stops once nothing moves; drift never settles; glow ends when faded —
+    // all three are captured by runPhysics's `moving` return, no extra scan.
+    if (physicsActive && moving) {
       rafRef.current = requestAnimationFrame(frame);
     }
   }, [runPhysics, renderBase, renderLive]);
@@ -608,9 +621,17 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
     isDrawingRef.current = false;
     currentStrokeRef.current = [];
     lastPointRef.current = null;
+    // Commit the finished stroke onto the base layer FIRST, then wipe the live
+    // layer. Doing it in this order (rather than clear-now-repaint-next-frame)
+    // means the released ink never blinks out for a frame — important now that
+    // the live canvas is desynchronized and can present ahead of the base one.
+    if (baseDirtyRef.current) {
+      renderBase();
+      baseDirtyRef.current = false;
+    }
     clearLive();
-    kick();
-  }, [kick, clearLive]);
+    kick(); // start the fall / drift / glow animation if this mode has one
+  }, [kick, clearLive, renderBase]);
 
   const handleUndo = useCallback(() => {
     strokesRef.current.pop();
@@ -640,27 +661,27 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
   }, []);
 
   // ----- the pen: lift it out, drop it on the page, or drag it back to dock -----
-  // Distance (px) between the pen's centre and the holder's centre, measured from
-  // their real rendered rects (both live in a fixed dock, so viewport space is
-  // fine). Robust against transform/layout quirks, unlike the raw drag offset.
-  const penHolderDistance = useCallback(() => {
-    const p = penRef.current?.getBoundingClientRect();
-    const h = holderRef.current?.getBoundingClientRect();
-    if (!p || !h) return Infinity;
-    return Math.hypot(
-      p.left + p.width / 2 - (h.left + h.width / 2),
-      p.top + p.height / 2 - (h.top + h.height / 2)
-    );
-  }, []);
+  // The pen and the holder share the same box (both inset-0 of the holder slot),
+  // so the pen's distance from its docked home is exactly the drag offset. Using
+  // the motion values directly is immune to ref/rect/transform timing quirks.
+  const penHolderDistance = useCallback(
+    () => Math.hypot(penX.get(), penY.get()),
+    [penX, penY]
+  );
 
-  // Pen home: snaps to the holder, drawing fully off.
+  // Pen home: snaps to the holder, drawing fully off. The spring is deferred a
+  // frame so framer-motion's own drag-release (which writes x/y on the same
+  // frame onDragEnd fires) can't clobber it — without this, dropping the pen on
+  // the holder flips state to "docked" but the glyph never travels back.
   const dockPen = useCallback(() => {
-    animate(penX, 0, PEN_SPRING);
-    animate(penY, 0, PEN_SPRING);
     setNearHolder(false);
     setPanelOpen(false);
     setArmed(false);
     setPenOut(false);
+    requestAnimationFrame(() => {
+      animate(penX, 0, PEN_SPRING);
+      animate(penY, 0, PEN_SPRING);
+    });
   }, [penX, penY]);
 
   // Pen is out (you're holding it) but NOT armed yet — press M to pick a mode.
@@ -719,6 +740,13 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
     const base = baseCanvasRef.current;
     const live = liveCanvasRef.current;
     if (!base || !live) return;
+
+    // Cache contexts once. The live (in-progress) stroke uses `desynchronized`:
+    // a low-latency hint that lets the browser skip a compositor round-trip, so
+    // ink tracks the pointer with noticeably less lag (the dominant fix for
+    // "drawing feels delayed right after opening").
+    if (!baseCtxRef.current) baseCtxRef.current = base.getContext("2d");
+    if (!liveCtxRef.current) liveCtxRef.current = live.getContext("2d", { desynchronized: true });
 
     const resize = () => {
       const dpr = Math.min(MAX_DPR, window.devicePixelRatio || 1);
@@ -969,7 +997,6 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
           {/* Holder — stays put. Filled circle when the pen is resting in it;
               an empty dashed ring (the drop target) while the pen is out. */}
           <div
-            ref={holderRef}
             className={`pointer-events-none absolute inset-0 rounded-full shadow-lg backdrop-blur-xl transition-all duration-200 ${
               penOut
                 ? `border-2 border-dashed ${
@@ -990,7 +1017,6 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
           {/* The pen — the ONLY thing that moves. Transparent hit-area, just the
               glyph, so the holder circle stays in place when you lift it out. */}
           <motion.button
-            ref={penRef}
             type="button"
             drag
             dragMomentum={false}

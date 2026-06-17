@@ -48,7 +48,11 @@ function App() {
   }, [route]);
 
   useEffect(() => {
-    const handleScroll = () => {
+    // rAF-coalesce scroll work to once per frame, and keep the layout reads and
+    // the style write together so they never interleave into a forced reflow.
+    let ticking = false;
+    const update = () => {
+      ticking = false;
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
       const scrollMax = scrollHeight - clientHeight;
 
@@ -62,10 +66,15 @@ function App() {
       const indicator = document.querySelector(".scroll-indicator");
       if (indicator) indicator.style.width = (scrollMax > 0 ? (scrollTop / scrollMax) * 100 : 0) + "%";
     };
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
 
-    handleScroll();
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   if (route.name === "blog") {
