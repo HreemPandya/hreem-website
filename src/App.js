@@ -6,6 +6,7 @@ import Projects from "./scenes/Projects";
 import Contact from "./scenes/Contact";
 import Footer from "./scenes/Footer";
 import SiteDoodleLayer from "./components/SiteDoodleLayer";
+import LivingBackground from "./components/LivingBackground";
 import useMediaQuery from "./hooks/useMediaQuery";
 import { useEffect, useState } from "react";
 import AboutMe from "./scenes/AboutMe";
@@ -80,6 +81,7 @@ function App() {
   if (route.name === "blog") {
     return (
       <div className={`app min-w-0 ${isDarkMode ? 'noise-overlay' : ''}`}>
+        <LivingBackground isDarkMode={isDarkMode} />
         <BlogPost slug={route.slug} isDarkMode={isDarkMode} />
       </div>
     );
@@ -87,6 +89,7 @@ function App() {
 
   return (
     <div className={`app min-w-0 ${isDarkMode ? 'noise-overlay' : ''}`}>
+      <LivingBackground isDarkMode={isDarkMode} />
       <div className="scroll-indicator"></div>
       <Navbar
         isTopOfPage={isTopOfPage}
