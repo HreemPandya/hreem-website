@@ -1,6 +1,6 @@
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { FaGithub, FaYoutube, FaTimes, FaExternalLinkAlt} from "react-icons/fa";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import useMediaQuery from "../hooks/useMediaQuery";
 import { createPortal } from "react-dom";
 const container = {
@@ -15,7 +15,7 @@ const container = {
 const projects = [
   {
     id: 1,
-    title: "FridgeMind: Winner of Hack the 6ix, Deliotte AI For Green",
+    title: "FridgeMind: Winner of Hack the 6ix, Deloitte AI For Green",
     badge: "Hack the 6ix Winner",
     description: "An intelligent recipe recommendation system built on a custom OS using QNX that analyzes available ingredients in your fridge and suggests personalized meals based on dietary preferences and nutritional goals.",
     hoverText: "Built by training a custom YOLOv5 model on a dataset of 300+ labeled food images, working together with a real time footage stream to identify ingredients in your fridge. Along with that, I created an Expo Go app that the device pairs with and uses Gemini's LLM API to generate customized recipes, and AssemblyAI for both speech-to-text and text-to-speech, making the system hands-free and accessible for everyone. Other features include expiry date tracking (recommends recipes with ingredients about to expire first), meal planning, shopping list generation, and nutritional tracking.",
@@ -174,8 +174,23 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
     >
       <div
         ref={cardRef}
-        className="h-full will-change-transform"
+        role="button"
+        tabIndex={0}
+        aria-haspopup="dialog"
+        aria-label={`Open details for ${project.title}`}
+        className={`h-full rounded-2xl outline-none will-change-transform focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent ${
+          isDarkMode ? "focus-visible:ring-amber-500/70" : "focus-visible:ring-[#4A6B4E]/70"
+        }`}
         onClick={() => openModal(project)}
+        onKeyDown={(e) => {
+          // Only the card itself opens the modal; let inner link buttons (Enter/
+          // Space on a focused link) handle their own keys without bubbling here.
+          if (e.target !== e.currentTarget) return;
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openModal(project);
+          }
+        }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={{
@@ -292,14 +307,88 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
 
 const Projects = ({ isDarkMode }) => {
   const [selectedProject, setSelectedProject] = useState(null);
+  const reduceMotion = useReducedMotion();
+  const modalRef = useRef(null);
+  const lastFocusedRef = useRef(null);
 
   const openModal = (project) => {
+    // Remember what had focus so we can hand it back when the dialog closes.
+    lastFocusedRef.current = document.activeElement;
     setSelectedProject(project);
   };
 
   const closeModal = () => {
     setSelectedProject(null);
   };
+
+  // Dialog behavior: Esc to close, focus trap, background scroll lock, and
+  // focus restoration to the opener. Runs only while a project is open.
+  useEffect(() => {
+    if (!selectedProject) return undefined;
+
+    const previouslyFocused = lastFocusedRef.current;
+
+    // Lock the page behind the modal; pad for the removed scrollbar so the
+    // content doesn't jump sideways as it disappears.
+    const html = document.documentElement;
+    const scrollbarW = window.innerWidth - html.clientWidth;
+    const prevOverflow = html.style.overflow;
+    const prevBodyPad = document.body.style.paddingRight;
+    html.style.overflow = "hidden";
+    if (scrollbarW > 0) document.body.style.paddingRight = `${scrollbarW}px`;
+
+    const focusableSel =
+      'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const getFocusable = () =>
+      modalRef.current
+        ? Array.from(modalRef.current.querySelectorAll(focusableSel)).filter(
+            (el) => el.offsetParent !== null
+          )
+        : [];
+
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setSelectedProject(null);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const focusable = getFocusable();
+      if (focusable.length === 0) {
+        e.preventDefault();
+        modalRef.current?.focus({ preventScroll: true });
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey && (active === first || !modalRef.current?.contains(active))) {
+        e.preventDefault();
+        last.focus({ preventScroll: true });
+      } else if (!e.shiftKey && (active === last || !modalRef.current?.contains(active))) {
+        e.preventDefault();
+        first.focus({ preventScroll: true });
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+
+    // Move focus into the dialog once it's committed.
+    const focusTimer = window.setTimeout(() => {
+      const focusable = getFocusable();
+      (focusable[0] ?? modalRef.current)?.focus({ preventScroll: true });
+    }, 0);
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      clearTimeout(focusTimer);
+      html.style.overflow = prevOverflow;
+      document.body.style.paddingRight = prevBodyPad;
+      if (previouslyFocused && typeof previouslyFocused.focus === "function") {
+        previouslyFocused.focus({ preventScroll: true });
+      }
+    };
+  }, [selectedProject]);
 
   return (
     <section
@@ -398,15 +487,20 @@ const Projects = ({ isDarkMode }) => {
             onClick={closeModal}
           >
             <motion.div
-              className={`max-h-[90vh] w-full max-w-6xl overflow-y-auto rounded-3xl border shadow-2xl ${
+              ref={modalRef}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="project-modal-title"
+              tabIndex={-1}
+              className={`max-h-[90vh] w-full max-w-6xl overflow-y-auto rounded-3xl border shadow-2xl outline-none ${
                 isDarkMode
                   ? "border-white/[0.06] bg-[#0B0F18] backdrop-blur-xl"
                   : "lm-project-modal border-[var(--lm-border)] bg-lm-bg-surface text-[var(--lm-text-primary)] shadow-[0_24px_64px_-16px_rgba(42,42,42,0.18)]"
               }`}
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.5, opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 500 }}
+              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 12 }}
+              animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
+              exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98, y: 8 }}
+              transition={reduceMotion ? { duration: 0.15 } : { type: "spring", damping: 30, stiffness: 400 }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close Button */}
@@ -452,6 +546,7 @@ const Projects = ({ isDarkMode }) => {
                   }`}
                 >
                   <h2
+                    id="project-modal-title"
                     className={`font-playfair text-2xl font-bold md:text-4xl ${
                       isDarkMode ? "text-[#F0F4F8]" : "text-[var(--lm-text-primary)]"
                     }`}
