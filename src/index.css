@@ -691,3 +691,34 @@ html.light-mode .doodle-cursor {
   transform: scale(0.46);
   transform-origin: bottom right;
 }
+
+/* Project cards: soft cursor-following spotlight (see Projects.jsx).
+   The cursor position (--mx/--my) and the tilt are written straight to the DOM
+   on mousemove, so the effect costs no React re-renders. Clipped to the card's
+   rounded corners by the card's own overflow:hidden. */
+.card-spotlight {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 300ms ease;
+  background: radial-gradient(
+    240px circle at var(--mx, 50%) var(--my, 50%),
+    var(--spot-color, transparent),
+    transparent 72%
+  );
+}
+
+/* Only light up on devices that actually hover with a precise pointer. */
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .card-spotlight {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-spotlight {
+    transition: none;
+  }
+}

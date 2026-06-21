@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { FaGithub, FaYoutube, FaTimes, FaExternalLinkAlt} from "react-icons/fa";
 import { useState, useRef } from "react";
 import useMediaQuery from "../hooks/useMediaQuery";
@@ -135,18 +135,32 @@ const projects = [
 // Project card with optional cursor-based tilt and featured layout
 const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) => {
   const cardRef = useRef(null);
-  const [transform, setTransform] = useState({ rotateX: 0, rotateY: 0 });
   const isMobile = useMediaQuery("(max-width: 767px)");
+  const reduceMotion = useReducedMotion();
 
+  // Drive the tilt + the cursor-spotlight position straight to the DOM (CSS vars
+  // and transform) so high-frequency mousemove never triggers a React re-render.
   const handleMouseMove = (e) => {
-    if (!cardRef.current || isMobile) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    setTransform({ rotateX: -y * 8, rotateY: x * 8 });
+    const el = cardRef.current;
+    if (!el || isMobile) return;
+    const rect = el.getBoundingClientRect();
+    const px = e.clientX - rect.left;
+    const py = e.clientY - rect.top;
+    el.style.setProperty("--mx", `${px}px`);
+    el.style.setProperty("--my", `${py}px`);
+    if (reduceMotion) return; // spotlight still tracks; skip the 3D tilt
+    const x = px / rect.width - 0.5;
+    const y = py / rect.height - 0.5;
+    el.style.transition = "transform 0s"; // crisp 1:1 tracking while hovering
+    el.style.transform = `perspective(800px) rotateX(${(-y * 8).toFixed(2)}deg) rotateY(${(x * 8).toFixed(2)}deg)`;
   };
 
-  const handleMouseLeave = () => setTransform({ rotateX: 0, rotateY: 0 });
+  const handleMouseLeave = () => {
+    const el = cardRef.current;
+    if (!el) return;
+    el.style.transition = "transform 400ms ease-out"; // smooth settle back to flat
+    el.style.transform = "perspective(800px) rotateX(0deg) rotateY(0deg)";
+  };
 
   const tagCount = featured ? (isMobile ? 3 : 4) : isMobile ? 2 : 3;
 
@@ -160,16 +174,17 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
     >
       <div
         ref={cardRef}
-        className="h-full"
+        className="h-full will-change-transform"
         onClick={() => openModal(project)}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={{
-          transform: `perspective(800px) rotateX(${transform.rotateX}deg) rotateY(${transform.rotateY}deg)`,
-          transformStyle: 'preserve-3d',
+          transform: "perspective(800px) rotateX(0deg) rotateY(0deg)",
+          transformStyle: "preserve-3d",
+          transition: "transform 400ms ease-out",
         }}
       >
-      <div className={`rounded-2xl border overflow-hidden transition-all duration-300 h-full ${featured ? "md:flex md:flex-row md:h-60" : ""} ${isDarkMode ? "border-white/[0.08] bg-white/[0.04] backdrop-blur-2xl backdrop-saturate-150 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.10),0_8px_32px_rgba(0,0,0,0.25)] group-hover:border-amber-500/40 group-hover:bg-white/[0.06] group-hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.12),0_12px_44px_rgba(245,158,11,0.12)]" : "border-white/60 bg-white/40 backdrop-blur-2xl backdrop-saturate-150 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_8px_28px_rgba(74,107,78,0.10)] group-hover:border-[var(--lm-accent)]/40 group-hover:bg-white/[0.55] group-hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.8),0_12px_36px_rgba(74,107,78,0.14)]"}`}>
+      <div className={`relative rounded-2xl border overflow-hidden transition-all duration-300 h-full ${featured ? "md:flex md:flex-row md:h-60" : ""} ${isDarkMode ? "border-white/[0.08] bg-white/[0.04] backdrop-blur-2xl backdrop-saturate-150 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.10),0_8px_32px_rgba(0,0,0,0.25)] group-hover:border-amber-500/40 group-hover:bg-white/[0.06] group-hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.12),0_12px_44px_rgba(245,158,11,0.12)]" : "border-white/60 bg-white/40 backdrop-blur-2xl backdrop-saturate-150 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_8px_28px_rgba(74,107,78,0.10)] group-hover:border-[var(--lm-accent)]/40 group-hover:bg-white/[0.55] group-hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.8),0_12px_36px_rgba(74,107,78,0.14)]"}`}>
         <div
           className={`relative overflow-hidden ${
             featured ? "h-40 md:h-full md:w-1/2 md:min-h-0 md:flex-shrink-0" : "h-32 md:h-40"
@@ -262,6 +277,13 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
             ))}
           </div>
         </div>
+        {/* Soft glow that tracks the cursor across the card (position set on the
+            parent via --mx/--my). Non-interactive, hover-capable devices only. */}
+        <div
+          className="card-spotlight"
+          aria-hidden="true"
+          style={{ "--spot-color": isDarkMode ? "rgba(245, 158, 11, 0.16)" : "rgba(74, 107, 78, 0.12)" }}
+        />
       </div>
       </div>
     </motion.div>
