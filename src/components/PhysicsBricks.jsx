@@ -9,31 +9,23 @@ const PILLARS = [
   { title: "Systems & Tooling", tech: "Git · Docker · Linux · Bash" },
 ];
 
-const brickClass = (isDarkMode) =>
-  `rounded-xl px-4 py-3 md:px-5 md:py-4 border backdrop-blur-xl ${
-    isDarkMode
-      ? "bg-[#111827] border-white/[0.06]"
-      : "bg-[var(--lm-bg-surface)] border-[var(--lm-border)] shadow-lg"
-  }`;
+// Theme-neutral: colors come from the global .expertise-brick* CSS rules (keyed
+// on html.dark-mode / html.light-mode), so these classNames are stable and a
+// theme toggle never re-renders the physics-driven brick DOM.
+const BRICK_CLASS = "expertise-brick rounded-xl px-4 py-3 md:px-5 md:py-4 backdrop-blur-xl";
 
-const BrickContent = ({ pillar, isDarkMode }) => (
+const BrickContent = ({ pillar }) => (
   <>
-    <h3
-      className={`font-playfair font-bold text-sm md:text-base mb-1 ${
-        isDarkMode ? "text-amber-400" : "text-[var(--lm-accent)]"
-      }`}
-    >
+    <h3 className="expertise-brick-title font-playfair font-bold text-sm md:text-base mb-1">
       {pillar.title}
     </h3>
-    <p className={`text-xs md:text-sm ${isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"}`}>
-      {pillar.tech}
-    </p>
+    <p className="expertise-brick-tech text-xs md:text-sm">{pillar.tech}</p>
   </>
 );
 
 // Original framer-motion version: mobile, coarse pointers, reduced motion,
 // or if the physics engine fails to load.
-const StaticBricks = ({ isDarkMode }) => (
+const StaticBricks = () => (
   <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-8 md:mb-16">
     {PILLARS.map((pillar, index) => (
       <motion.div
@@ -47,11 +39,9 @@ const StaticBricks = ({ isDarkMode }) => (
         }}
         viewport={{ once: true, amount: 0.2 }}
         whileHover={{ y: -2, rotate: 0, transition: { duration: 0.2 } }}
-        className={`flex-shrink-0 transition-all duration-300 ${brickClass(isDarkMode)} ${
-          isDarkMode ? "hover:border-amber-500/30" : "hover:border-[var(--lm-accent)]/40"
-        }`}
+        className={`flex-shrink-0 ${BRICK_CLASS}`}
       >
-        <BrickContent pillar={pillar} isDarkMode={isDarkMode} />
+        <BrickContent pillar={pillar} />
       </motion.div>
     ))}
   </div>
@@ -63,6 +53,14 @@ const StaticBricks = ({ isDarkMode }) => (
 const PhysicsArena = ({ isDarkMode, onFail }) => {
   const containerRef = useRef(null);
   const brickRefs = useRef([]);
+  // Stable per-brick ref callbacks (created once). Inline arrow refs change
+  // identity every render, so React would detach/reattach every brick on a theme
+  // toggle — these don't, keeping matter-js's element handles intact.
+  const setBrickRef = useRef(
+    PILLARS.map((_, i) => (el) => {
+      brickRefs.current[i] = el;
+    })
+  ).current;
   const worldRef = useRef(null);
   const [simKey, setSimKey] = useState(0);
 
@@ -342,15 +340,11 @@ const PhysicsArena = ({ isDarkMode, onFail }) => {
         {PILLARS.map((pillar, i) => (
           <div
             key={pillar.title}
-            ref={(el) => {
-              brickRefs.current[i] = el;
-            }}
-            className={`absolute left-0 top-0 w-max select-none opacity-0 will-change-transform ${brickClass(
-              isDarkMode
-            )}`}
+            ref={setBrickRef[i]}
+            className={`${BRICK_CLASS} absolute left-0 top-0 w-max select-none opacity-0 will-change-transform`}
             style={{ pointerEvents: "none" }}
           >
-            <BrickContent pillar={pillar} isDarkMode={isDarkMode} />
+            <BrickContent pillar={pillar} />
           </div>
         ))}
       </div>
@@ -379,7 +373,7 @@ const PhysicsBricks = ({ isDarkMode }) => {
   const onFail = useCallback(() => setEngineFailed(true), []);
 
   if (!finePointer || reduceMotion || engineFailed) {
-    return <StaticBricks isDarkMode={isDarkMode} />;
+    return <StaticBricks />;
   }
   return <PhysicsArena isDarkMode={isDarkMode} onFail={onFail} />;
 };

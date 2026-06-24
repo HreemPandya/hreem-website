@@ -692,6 +692,41 @@ html.light-mode .doodle-cursor {
   transform-origin: bottom right;
 }
 
+/* Expertise bricks (PhysicsBricks). Themed through the global mode class rather
+   than per-element isDarkMode classNames, so a dark/light toggle never re-renders
+   the physics-driven DOM (matter-js writes transform/opacity straight to it). */
+.expertise-brick {
+  border: 1px solid transparent;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+html.dark-mode .expertise-brick {
+  background-color: #111827;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+html.light-mode .expertise-brick {
+  background-color: var(--lm-bg-surface);
+  border-color: var(--lm-border);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+html.dark-mode .expertise-brick:hover {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+html.light-mode .expertise-brick:hover {
+  border-color: rgba(74, 107, 78, 0.4);
+}
+html.dark-mode .expertise-brick-title {
+  color: #fbbf24;
+}
+html.light-mode .expertise-brick-title {
+  color: var(--lm-accent);
+}
+html.dark-mode .expertise-brick-tech {
+  color: #8b9db0;
+}
+html.light-mode .expertise-brick-tech {
+  color: var(--lm-text-muted);
+}
+
 /* Project cards: soft cursor-following spotlight (see Projects.jsx).
    The cursor position (--mx/--my) and the tilt are written straight to the DOM
    on mousemove, so the effect costs no React re-renders. Clipped to the card's
