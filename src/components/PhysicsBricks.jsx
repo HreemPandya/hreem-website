@@ -12,7 +12,9 @@ const PILLARS = [
 // Theme-neutral: colors come from the global .expertise-brick* CSS rules (keyed
 // on html.dark-mode / html.light-mode), so these classNames are stable and a
 // theme toggle never re-renders the physics-driven brick DOM.
-const BRICK_CLASS = "expertise-brick rounded-xl px-4 py-3 md:px-5 md:py-4 backdrop-blur-xl";
+// No backdrop-blur: the brick backgrounds are fully opaque, so a blur renders
+// nothing while still forcing an expensive backdrop-filter pass. Dropped it.
+const BRICK_CLASS = "expertise-brick rounded-xl px-4 py-3 md:px-5 md:py-4";
 
 const BrickContent = ({ pillar }) => (
   <>

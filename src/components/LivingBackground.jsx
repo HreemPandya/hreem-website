@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useReducedMotion } from "framer-motion";
+import useMediaQuery from "../hooks/useMediaQuery";
 
 // Ambient "living background": a whisper of motion behind everything.
 //   • dark mode  → fireflies drifting and softly pulsing
@@ -70,8 +71,12 @@ function makeGlowSprite() {
 const LivingBackground = ({ isDarkMode }) => {
   const canvasRef = useRef(null);
   const reduceMotion = useReducedMotion();
+  // Skip the whole effect on phones/tablets: a perpetual rAF + canvas is the
+  // wrong tax to pay on low-power GPUs for an effect that's barely visible there.
+  const isMobile = useMediaQuery("(pointer: coarse), (max-width: 767px)");
 
   useEffect(() => {
+    if (isMobile) return undefined;
     const canvas = canvasRef.current;
     if (!canvas) return undefined;
     const ctx = canvas.getContext("2d");
@@ -279,7 +284,9 @@ const LivingBackground = ({ isDarkMode }) => {
       window.removeEventListener("resize", onResize);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [isDarkMode, reduceMotion]);
+  }, [isDarkMode, reduceMotion, isMobile]);
+
+  if (isMobile) return null;
 
   return (
     <canvas

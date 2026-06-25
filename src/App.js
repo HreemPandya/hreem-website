@@ -2,16 +2,21 @@ import Navbar from "./scenes/Navbar";
 import Landing from "./scenes/Landing";
 import DotGroup from "./scenes/DotGroup";
 import LineGradient from "./components/LineGradient";
-import Projects from "./scenes/Projects";
-import Contact from "./scenes/Contact";
-import Footer from "./scenes/Footer";
-import SiteDoodleLayer from "./components/SiteDoodleLayer";
-import LivingBackground from "./components/LivingBackground";
 import useMediaQuery from "./hooks/useMediaQuery";
-import { useEffect, useState } from "react";
-import AboutMe from "./scenes/AboutMe";
-import BlogPost from "./scenes/BlogPost";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { motion } from "framer-motion";
+
+// Below-the-fold / non-critical scenes are code-split so the initial download is
+// just the shell + the above-the-fold hero. Each loads its own chunk right after
+// first paint (react-hook-form rides with Contact, react-icons with Projects,
+// matter-js stays lazy inside PhysicsBricks), so time-to-interactive drops.
+const Projects = lazy(() => import("./scenes/Projects"));
+const AboutMe = lazy(() => import("./scenes/AboutMe"));
+const Contact = lazy(() => import("./scenes/Contact"));
+const Footer = lazy(() => import("./scenes/Footer"));
+const SiteDoodleLayer = lazy(() => import("./components/SiteDoodleLayer"));
+const LivingBackground = lazy(() => import("./components/LivingBackground"));
+const BlogPost = lazy(() => import("./scenes/BlogPost"));
 
 // Minimal hash router so blog links open shareable "pages" without breaking the
 // gh-pages deploy (hash routes never 404 on refresh). Section anchors like
@@ -81,15 +86,21 @@ function App() {
   if (route.name === "blog") {
     return (
       <div className={`app min-w-0 ${isDarkMode ? 'noise-overlay' : ''}`}>
-        <LivingBackground isDarkMode={isDarkMode} />
-        <BlogPost slug={route.slug} isDarkMode={isDarkMode} />
+        <Suspense fallback={null}>
+          <LivingBackground isDarkMode={isDarkMode} />
+        </Suspense>
+        <Suspense fallback={null}>
+          <BlogPost slug={route.slug} isDarkMode={isDarkMode} />
+        </Suspense>
       </div>
     );
   }
 
   return (
     <div className={`app min-w-0 ${isDarkMode ? 'noise-overlay' : ''}`}>
-      <LivingBackground isDarkMode={isDarkMode} />
+      <Suspense fallback={null}>
+        <LivingBackground isDarkMode={isDarkMode} />
+      </Suspense>
       <div className="scroll-indicator"></div>
       <Navbar
         isTopOfPage={isTopOfPage}
@@ -118,7 +129,9 @@ function App() {
 
       <div id="projects" className="max-w-7xl mx-auto min-w-0 px-4 sm:px-6">
         <motion.div onViewportEnter={() => setSelectedPage("projects")}>
-          <Projects isDarkMode={isDarkMode} />
+          <Suspense fallback={null}>
+            <Projects isDarkMode={isDarkMode} />
+          </Suspense>
         </motion.div>
       </div>
 
@@ -126,7 +139,9 @@ function App() {
 
       <div id="about me" className="max-w-7xl mx-auto min-w-0 px-4 sm:px-6">
         <motion.div onViewportEnter={() => setSelectedPage("about me")}>
-          <AboutMe isDarkMode={isDarkMode} />
+          <Suspense fallback={null}>
+            <AboutMe isDarkMode={isDarkMode} />
+          </Suspense>
         </motion.div>
       </div>
 
@@ -134,13 +149,19 @@ function App() {
 
       <div id="contact" className="max-w-7xl mx-auto min-w-0 px-4 sm:px-6">
         <motion.div onViewportEnter={() => setSelectedPage("contact")}>
-          <Contact isDarkMode={isDarkMode} />
+          <Suspense fallback={null}>
+            <Contact isDarkMode={isDarkMode} />
+          </Suspense>
         </motion.div>
       </div>
 
-      <Footer isDarkMode={isDarkMode} />
+      <Suspense fallback={null}>
+        <Footer isDarkMode={isDarkMode} />
+      </Suspense>
 
-      <SiteDoodleLayer isDarkMode={isDarkMode} />
+      <Suspense fallback={null}>
+        <SiteDoodleLayer isDarkMode={isDarkMode} />
+      </Suspense>
     </div>
   );
 }

@@ -7,14 +7,14 @@ import BlogList from "../components/BlogList";
 
 // 8 artwork images (shared)
 const artworks = [
-  { src: `${process.env.PUBLIC_URL}/assets/drawing1.png`, alt: "Digital Art 1", id: 1 },
-  { src: `${process.env.PUBLIC_URL}/assets/drawing2.png`, alt: "Digital Art 2", id: 2 },
-  { src: `${process.env.PUBLIC_URL}/assets/drawing3.png`, alt: "Digital Art 3", id: 3 },
-  { src: `${process.env.PUBLIC_URL}/assets/drawing4.png`, alt: "Digital Art 4", id: 4 },
-  { src: `${process.env.PUBLIC_URL}/assets/drawing5.png`, alt: "Digital Art 5", id: 5 },
-  { src: `${process.env.PUBLIC_URL}/assets/drawing6.png`, alt: "Digital Art 6", id: 6 },
-  { src: `${process.env.PUBLIC_URL}/assets/drawing7.png`, alt: "Digital Art 7", id: 7 },
-  { src: `${process.env.PUBLIC_URL}/assets/drawing8 (2).png`, alt: "Digital Art 8", id: 8 }
+  { src: `${process.env.PUBLIC_URL}/assets/drawing1.webp`, alt: "Digital Art 1", id: 1 },
+  { src: `${process.env.PUBLIC_URL}/assets/drawing2.webp`, alt: "Digital Art 2", id: 2 },
+  { src: `${process.env.PUBLIC_URL}/assets/drawing3.webp`, alt: "Digital Art 3", id: 3 },
+  { src: `${process.env.PUBLIC_URL}/assets/drawing4.webp`, alt: "Digital Art 4", id: 4 },
+  { src: `${process.env.PUBLIC_URL}/assets/drawing5.webp`, alt: "Digital Art 5", id: 5 },
+  { src: `${process.env.PUBLIC_URL}/assets/drawing6.webp`, alt: "Digital Art 6", id: 6 },
+  { src: `${process.env.PUBLIC_URL}/assets/drawing7.webp`, alt: "Digital Art 7", id: 7 },
+  { src: `${process.env.PUBLIC_URL}/assets/drawing8.webp`, alt: "Digital Art 8", id: 8 }
 ];
 
 // Creative Carousel Component — each image uses its natural aspect ratio (no fixed crop box)
@@ -191,6 +191,8 @@ const CreativeCarousel = ({ isDarkMode }) => {
                 <img
                   src={slide.src}
                   alt={slide.alt}
+                  loading="lazy"
+                  decoding="async"
                   className={`block max-w-full w-auto h-auto object-contain mx-auto ${
                     isCenter
                       ? "max-h-[min(75vh,720px)]"

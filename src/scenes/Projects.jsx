@@ -19,8 +19,8 @@ const projects = [
     badge: "Hack the 6ix Winner",
     description: "An intelligent recipe recommendation system built on a custom OS using QNX that analyzes available ingredients in your fridge and suggests personalized meals based on dietary preferences and nutritional goals.",
     hoverText: "Built by training a custom YOLOv5 model on a dataset of 300+ labeled food images, working together with a real time footage stream to identify ingredients in your fridge. Along with that, I created an Expo Go app that the device pairs with and uses Gemini's LLM API to generate customized recipes, and AssemblyAI for both speech-to-text and text-to-speech, making the system hands-free and accessible for everyone. Other features include expiry date tracking (recommends recipes with ingredients about to expire first), meal planning, shopping list generation, and nutritional tracking.",
-    image: `${process.env.PUBLIC_URL}/assets/base-fridgemind-proj.png`,
-    modalImage: `${process.env.PUBLIC_URL}/assets/project-5.png`,
+    image: `${process.env.PUBLIC_URL}/assets/base-fridgemind-proj.webp`,
+    modalImage: `${process.env.PUBLIC_URL}/assets/project-5.webp`,
     gradient: "from-indigo-500 to-purple-500",
     tags: ['Raspberry Pi/QNX', 'Yolov5', 'Python', 'FastAPI', 'Expo Go' ],
     links: [
@@ -34,10 +34,10 @@ const projects = [
     title: "Cliara: AI-Powered Shell with Natural Language & Macros",
     description: "An AI-powered shell that wraps your existing terminal (bash, zsh, PowerShell) and adds natural language commands, reusable macros, and smart workflows. Use ? <query> to describe what you want and get shell commands, or ? fix to correct failed commands. Includes Cliara Cloud (GitHub login, 150 free queries/month), semantic history search, smart push and smart deploy (auto-detects Vercel, Netlify, Docker).",
     hoverText: "Built with Python, OpenAI, and Anthropic APIs for natural language command generation. Uses prompt-toolkit for a rich REPL experience and Rich for formatted terminal output. The FastAPI backend powers Cliara Cloud with GitHub OAuth and usage tracking. Features include semantic history search across your shell history, smart push that generates commit messages from diffs, and smart deploy that auto-detects Vercel, Netlify, Docker, and PyPI deployment targets. Wraps bash, zsh, and PowerShell so you keep your existing setup while adding AI superpowers.",
-    image: `${process.env.PUBLIC_URL}/assets/base-cliara.png`,
+    image: `${process.env.PUBLIC_URL}/assets/base-cliara.webp`,
     // object-cover + default center crops the monitor header; bias toward top so the Cliara logo stays in frame
     imageObjectClass: "object-[50%_18%] md:object-[50%_20%] origin-top",
-    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-cliara.png`,
+    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-cliara.webp`,
     gradient: "from-emerald-500 to-teal-500",
     tags: ['Python', 'LLMs', 'FastAPI', 'OpenAI', 'Anthropic', 'Shell', 'PyPI'],
     badge: "Published on PyPI",
@@ -51,7 +51,7 @@ const projects = [
     title: "InvestEd: AI-Powered Financial Education @ Hack the North",
     description: "Banking app that turns finances into something engaging. Portfolius AI explains spending habits, highlights overspending, and generates personalized explainer videos so you know exactly where your money goes and how to invest smarter.",
     hoverText: "Frontend: Next.js and Tailwind with a banking-inspired layout, including trend charts, portfolio views, and interactive elements like rebalance actions, wired to a FastAPI service layer. Backend: REST endpoints orchestrate an async pipeline where user and spending context is summarized, then Cohere's LLM drafts structured, plain-language narration and scene beats for each explainer. Manim (Python) renders motion graphics and captions at 720p/30fps; audio is synthesized with ElevenLabs so Portfolius has a consistent voice. Finished assets land in Supabase Storage with URLs served back to the client for reliable in-app playback without blocking the UI during generation.",
-    image: `${process.env.PUBLIC_URL}/assets/project-8.png`,
+    image: `${process.env.PUBLIC_URL}/assets/project-8.webp`,
     gradient: "from-emerald-500 to-cyan-500",
     tags: ['Next.js', 'Tailwind', 'FastAPI', 'Cohere', 'Manim', 'ElevenLabs', 'Supabase'],
     links: [
@@ -63,10 +63,10 @@ const projects = [
     title: "BeMyEyes: Accessibility Tool",
     description: "A wearable assistive device for visually impaired users that integrates ultrasonic distance sensors for obstacle detection auricularly, real-time object recognition via OpenCV using an embedded camera, and Google TTS output for contextual feedback.",
     hoverText: "Built on an Arduino microcontroller with ultrasonic distance sensors for auricular obstacle detection and an embedded camera for real-time image capture. Uses a Python-based companion system with OpenCV for object recognition and Google TTS for contextual audio feedback. Communication between hardware and processing modules is handled via serial over USB, ensuring low-latency data transfer. The system implements non-blocking sensor polling for continuous environment scanning, progressive alert tones mapped to obstacle proximity, and modular firmware for easy expansion to additional sensors or features.",
-    image: `${process.env.PUBLIC_URL}/assets/base-bemyeyes-crop.png`,
+    image: `${process.env.PUBLIC_URL}/assets/base-bemyeyes-crop.webp`,
     // Card only: nudge crop up slightly so the top gutter is covered (no zoom)
     cardImageObjectClass: "-translate-y-[5px]",
-    modalImage: `${process.env.PUBLIC_URL}/assets/project-3-copy.png`,
+    modalImage: `${process.env.PUBLIC_URL}/assets/project-3-copy.webp`,
     gradient: "from-green-500 to-blue-500",
     tags: ['Arduino', 'OpenCV', 'IoT', 'Embedded System'],
     links: [
@@ -79,8 +79,8 @@ const projects = [
     title: "HackCanada Judging: Scale Without the Spreadsheet Chaos",
     description: "Judging platform for HackCanada 2026 that absorbed the operational friction of a massive event: 210+ projects, 50+ judges, and 700+ participants. One place to manage projects, judges, rooms, and schedules; deployed on Vercel with TypeScript and Supabase.",
     hoverText: "Instead of brittle spreadsheets and scattered updates, judges allocate virtual investment across projects so rankings reflect relative preference and budget constraints, not opaque 1 to 10 scores, while organizers configure tracks, rooms, and calendar blocks from one admin surface. The Next.js App Router frontend uses React Server and Client Components where it matters, TypeScript end to end, Tailwind and shadcn/ui for consistent forms and tables, and Recharts for live breakdowns of allocations and progress. Supabase backs auth, relational data for projects, judges, rooms, and schedules, and row level security so each role only sees what it should. Queries stay indexed for list views at hundreds of rows, and the app is deployed on Vercel with preview environments so the team could iterate safely right up to event day.",
-    image: `${process.env.PUBLIC_URL}/assets/project-4.png`,
-    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-hc.png`,
+    image: `${process.env.PUBLIC_URL}/assets/project-4.webp`,
+    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-hc.webp`,
     gradient: "from-violet-500 to-indigo-500",
     tags: ['Next.js', 'TypeScript', 'Supabase', 'Vercel', 'Tailwind'],
     links: [
@@ -93,8 +93,8 @@ const projects = [
     title: "GestureGroove: AI Music Controller",
     description: "A real-time gesture recognition app built on React that translates hand movements into music control using OpenCV for hand tracking and MediaPipe for gesture classification",
     hoverText: "The browser captures webcam frames through getUserMedia, then OpenCV handles acquisition and preprocessing while MediaPipe Hands tracks 21 landmarks per hand at interactive frame rates. Landmarks are normalized to screen space, smoothed over a short sliding window, and fed into rules that look at palm orientation, finger spread, and motion vectors so static poses and swipes map to different commands. Debouncing and minimum hold times cut accidental toggles when the hand jitters. The React UI runs the loop with requestAnimationFrame-friendly updates so the overlay and control panel stay responsive. Playback and library access go through the Spotify Web API with OAuth, mapping gestures to skip, play, pause, volume, and effect parameters so the whole stack stays in the browser without a native plugin.",
-    image: `${process.env.PUBLIC_URL}/assets/project-6.png`,
-    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-gesture.png`,
+    image: `${process.env.PUBLIC_URL}/assets/project-6.webp`,
+    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-gesture.webp`,
     gradient: "from-cyan-500 to-blue-500",
     tags: ['OpenCV', 'MediaPipe', 'Spotify API', 'React'],
     links: [
@@ -107,8 +107,8 @@ const projects = [
     title: "CrisisCompass: First Responder's Emergency Management Tool",
     description: "Developed at NewHacks 2024, this React web application helps first responders and volunteers prioritize and manage local emergencies by aggregating and scraping real-time data from news outlets using OpenAI API to analyze and rank incidents based on urgency and using geolocation to rank incidents by proximity.",
     hoverText: "Designed to help first responders and volunteers act faster during emergencies, CrisisCompass merges ingestion, scoring, and map-ready views in one place. A Flask REST API exposes routes for listing incidents, triggering refresh jobs, and serving ranked results to the client. Workers scrape and normalize headlines and blurbs from news and social-style sources, strip boilerplate, then call the OpenAI API with structured prompts to label incident type, extract location hints and severity cues, and produce a comparable urgency score. Geolocation or inferred coordinates feed a proximity sort alongside urgency so nearby high-risk events bubble up. The React front end polls or refetches on an interval, renders cards with urgency badges and severity icons, and keeps layout responsive for laptops in a command center. Error handling and timeouts on external calls prevent one slow source from stalling the whole dashboard when every second counts.",
-    image: `${process.env.PUBLIC_URL}/assets/base-crisis.png`,
-    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-crisis.png`,
+    image: `${process.env.PUBLIC_URL}/assets/base-crisis.webp`,
+    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-crisis.webp`,
     gradient: "from-red-500 to-orange-500",
     tags: ['React', 'OpenAI API', 'Flask', 'Web Scraping'],
     links: [
@@ -121,8 +121,8 @@ const projects = [
     title: "SecureEdu: Educational Material Encryption System",
     description: "A secure learning platform built from STM32 microcontrollers that encrypts and transmits educational materials, using AES-based encryption and EEPROM-stored keys. Implements a progressive hint-based learning system where content is unlocked incrementally via access keys, ensuring controlled information disclosure",
     hoverText: "SecureEdu runs on STM32 microcontrollers that use AES encryption to keep textbook sections, quiz solutions, and hints safe from unauthorized access. For secure communication between devices, it integrates Diffie-Hellman Key Exchange so encryption keys are never exposed during transfer. On the hardware side, we configured UART, I2C, and GPIO peripherals to connect an LCD display, which gives students real-time feedback as they interact with the system, and a 4x4 keypad, which they use to securely enter access keys. The whole setup powers a progressive hint-based learning system, where you can unlock just the right amount of help without giving away the entire answer, all while keeping the data transmission secure.",
-    image: `${process.env.PUBLIC_URL}/assets/base-securedu-copy.png`,
-    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-secure.png`,
+    image: `${process.env.PUBLIC_URL}/assets/base-securedu-copy.webp`,
+    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-secure.webp`,
     gradient: "from-blue-500 to-teal-500",
     tags: ['STM32', 'C Programming', 'Embedded Systems','AES Encryption'],
     links: [
@@ -199,7 +199,7 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
           transition: "transform 400ms ease-out",
         }}
       >
-      <div className={`relative rounded-2xl border overflow-hidden transition-all duration-300 h-full ${featured ? "md:flex md:flex-row md:h-60" : ""} ${isDarkMode ? "border-white/[0.08] bg-white/[0.04] backdrop-blur-2xl backdrop-saturate-150 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.10),0_8px_32px_rgba(0,0,0,0.25)] group-hover:border-amber-500/40 group-hover:bg-white/[0.06] group-hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.12),0_12px_44px_rgba(245,158,11,0.12)]" : "border-white/60 bg-white/40 backdrop-blur-2xl backdrop-saturate-150 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_8px_28px_rgba(74,107,78,0.10)] group-hover:border-[var(--lm-accent)]/40 group-hover:bg-white/[0.55] group-hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.8),0_12px_36px_rgba(74,107,78,0.14)]"}`}>
+      <div className={`relative rounded-2xl border overflow-hidden transition-all duration-300 h-full ${featured ? "md:flex md:flex-row md:h-60" : ""} ${isDarkMode ? "border-white/[0.08] bg-white/[0.04] backdrop-blur-md shadow-[inset_0_1px_0_0_rgba(255,255,255,0.10),0_8px_32px_rgba(0,0,0,0.25)] group-hover:border-amber-500/40 group-hover:bg-white/[0.06] group-hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.12),0_12px_44px_rgba(245,158,11,0.12)]" : "border-white/60 bg-white/40 backdrop-blur-md shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_8px_28px_rgba(74,107,78,0.10)] group-hover:border-[var(--lm-accent)]/40 group-hover:bg-white/[0.55] group-hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.8),0_12px_36px_rgba(74,107,78,0.14)]"}`}>
         <div
           className={`relative overflow-hidden ${
             featured ? "h-40 md:h-full md:w-1/2 md:min-h-0 md:flex-shrink-0" : "h-32 md:h-40"
@@ -208,6 +208,8 @@ const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) =>
           <img
             src={project.image}
             alt={project.title}
+            loading="lazy"
+            decoding="async"
             className={`w-full h-full object-cover transition-transform duration-700 ${project.cardImageObjectClass ?? project.imageObjectClass ?? ""} group-hover:scale-110`}
           />
           <div className={`absolute inset-0 bg-gradient-to-t ${project.gradient} opacity-20 group-hover:opacity-40 transition-opacity duration-500`} />
@@ -530,6 +532,7 @@ const Projects = ({ isDarkMode }) => {
                   <img
                     src={selectedProject.modalImage ?? selectedProject.image}
                     alt={selectedProject.title}
+                    decoding="async"
                     className={`w-full h-full object-cover ${selectedProject.imageObjectClass ?? ""}`}
                   />
                   <div

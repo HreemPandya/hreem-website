@@ -38,9 +38,6 @@ html {
   @apply text-white;
   background-color: #07090D;
   color: #F0F4F8;
-  background-image:
-    radial-gradient(ellipse 70% 40% at 10% 0%, rgba(245, 158, 11, 0.06) 0%, transparent 50%);
-  background-attachment: fixed;
 }
 
 /* Noise overlay for depth */
@@ -65,13 +62,30 @@ html {
   --lm-border: rgba(74, 107, 78, 0.2);
   color: var(--lm-text-primary);
   background-color: var(--lm-bg-base);
-  /* Sage glow (top-left + bottom-right) + whisper of warmth so it isn’t flat cream */
+}
+
+/* Ambient corner glow as a fixed, COMPOSITED pseudo-element rather than a
+   `background-attachment: fixed` image. Identical look, but the browser paints
+   it once onto its own layer instead of repainting the whole viewport on every
+   scroll frame (the latter is a major source of scroll jank, especially mobile). */
+.app::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+}
+html.dark-mode .app::before {
+  background-image:
+    radial-gradient(ellipse 70% 40% at 10% 0%, rgba(245, 158, 11, 0.06) 0%, transparent 50%);
+}
+html.light-mode .app::before {
+  /* Sage glow (top-left + bottom-right) + whisper of warmth so it isn't flat cream */
   background-image:
     radial-gradient(ellipse 80% 55% at 5% -10%, rgba(74, 107, 78, 0.12) 0%, transparent 55%),
     radial-gradient(ellipse 70% 50% at 100% 105%, rgba(74, 107, 78, 0.08) 0%, transparent 55%),
     radial-gradient(ellipse 50% 40% at 85% 15%, rgba(74, 107, 78, 0.04) 0%, transparent 45%),
     radial-gradient(ellipse 60% 50% at 20% 90%, rgba(200, 175, 130, 0.06) 0%, transparent 50%);
-  background-attachment: fixed;
 }
 
 /* Very subtle paper grain in light mode (same technique as dark; lower opacity on light) */
