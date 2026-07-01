@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Open+Sans:wght@400;600&family=Playfair+Display:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Open+Sans:wght@400;600&family=Playfair+Display:wght@400;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -770,4 +770,122 @@ html.light-mode .expertise-brick-tech {
   .card-spotlight {
     transition: none;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Projects — "darkroom drying line"
+   Polaroid prints pinned to a glowing wire (see Projects.jsx). The wire shows
+   in the gaps between prints; each print's white top edge sits on the wire and
+   a clip straddles it. Prints are tilted via framer-motion (transform-origin:
+   top center) so they pivot from the clip like a real hanging photo.
+--------------------------------------------------------------------------- */
+
+/* The wire. Fades out at both ends so it reads as strung between two walls. */
+.photo-line__string {
+  height: 2px;
+  border-radius: 2px;
+  pointer-events: none;
+}
+html.dark-mode .photo-line__string {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(245, 158, 11, 0.5) 14%,
+    rgba(245, 158, 11, 0.5) 86%,
+    transparent
+  );
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+html.light-mode .photo-line__string {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(74, 107, 78, 0.45) 14%,
+    rgba(74, 107, 78, 0.45) 86%,
+    transparent
+  );
+  box-shadow: 0 0 8px rgba(74, 107, 78, 0.2);
+}
+
+/* The clip/peg that grips each print. Stays upright while the print tilts. */
+.polaroid__peg {
+  width: 12px;
+  height: 26px;
+  border-radius: 3px 3px 4px 4px;
+}
+html.dark-mode .polaroid__peg {
+  background: linear-gradient(#fcd34d, #d97706);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+html.light-mode .polaroid__peg {
+  background: linear-gradient(#6f9173, #3d5a40);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+/* the clip's centre slit, so it reads as a clothes-peg rather than a bar */
+.polaroid__peg::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 14px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+/* The print itself: off-white card with the classic thick bottom border. */
+.polaroid {
+  background: #fbfaf6;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.3), 0 3px 7px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 300ms ease, background-color 300ms ease;
+}
+html.light-mode .polaroid {
+  background: #fdfcf9;
+  box-shadow: 0 12px 24px rgba(74, 107, 78, 0.18), 0 3px 7px rgba(0, 0, 0, 0.08);
+}
+.polaroid:hover {
+  box-shadow: 0 24px 44px rgba(0, 0, 0, 0.42), 0 8px 16px rgba(0, 0, 0, 0.26);
+}
+html.light-mode .polaroid:hover {
+  box-shadow: 0 24px 40px rgba(74, 107, 78, 0.26), 0 8px 16px rgba(0, 0, 0, 0.14);
+}
+
+/* Handwritten caption in the bottom border. Dark ink on the light print. */
+.polaroid__caption {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-family: "Caveat", cursive;
+  font-weight: 600;
+  font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.3rem);
+  line-height: 1.05;
+  color: #2a2a2a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* A little tilted sticker/stamp for award or release badges. */
+.polaroid__sticker {
+  position: absolute;
+  top: 8px;
+  right: -5px;
+  transform: rotate(6deg);
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+}
+html.dark-mode .polaroid__sticker {
+  background: #f59e0b;
+  color: #07090d;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+html.light-mode .polaroid__sticker {
+  background: #4a6b4e;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }

@@ -3,19 +3,13 @@ import { FaGithub, FaYoutube, FaTimes, FaExternalLinkAlt} from "react-icons/fa";
 import { useState, useRef, useEffect } from "react";
 import useMediaQuery from "../hooks/useMediaQuery";
 import { createPortal } from "react-dom";
-const container = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
 
 const projects = [
   {
     id: 1,
     title: "FridgeMind: Winner of Hack the 6ix, Deloitte AI For Green",
+    caption: "FridgeMind",
+    sticker: "Winner",
     badge: "Hack the 6ix Winner",
     description: "An intelligent recipe recommendation system built on a custom OS using QNX that analyzes available ingredients in your fridge and suggests personalized meals based on dietary preferences and nutritional goals.",
     hoverText: "Built by training a custom YOLOv5 model on a dataset of 300+ labeled food images, working together with a real time footage stream to identify ingredients in your fridge. Along with that, I created an Expo Go app that the device pairs with and uses Gemini's LLM API to generate customized recipes, and AssemblyAI for both speech-to-text and text-to-speech, making the system hands-free and accessible for everyone. Other features include expiry date tracking (recommends recipes with ingredients about to expire first), meal planning, shopping list generation, and nutritional tracking.",
@@ -32,6 +26,8 @@ const projects = [
   {
     id: 2,
     title: "Cliara: AI-Powered Shell with Natural Language & Macros",
+    caption: "Cliara",
+    sticker: "PyPI",
     description: "An AI-powered shell that wraps your existing terminal (bash, zsh, PowerShell) and adds natural language commands, reusable macros, and smart workflows. Use ? <query> to describe what you want and get shell commands, or ? fix to correct failed commands. Includes Cliara Cloud (GitHub login, 150 free queries/month), semantic history search, smart push and smart deploy (auto-detects Vercel, Netlify, Docker).",
     hoverText: "Built with Python, OpenAI, and Anthropic APIs for natural language command generation. Uses prompt-toolkit for a rich REPL experience and Rich for formatted terminal output. The FastAPI backend powers Cliara Cloud with GitHub OAuth and usage tracking. Features include semantic history search across your shell history, smart push that generates commit messages from diffs, and smart deploy that auto-detects Vercel, Netlify, Docker, and PyPI deployment targets. Wraps bash, zsh, and PowerShell so you keep your existing setup while adding AI superpowers.",
     image: `${process.env.PUBLIC_URL}/assets/base-cliara.webp`,
@@ -49,6 +45,7 @@ const projects = [
   {
     id: 3,
     title: "InvestEd: AI-Powered Financial Education @ Hack the North",
+    caption: "InvestEd",
     description: "Banking app that turns finances into something engaging. Portfolius AI explains spending habits, highlights overspending, and generates personalized explainer videos so you know exactly where your money goes and how to invest smarter.",
     hoverText: "Frontend: Next.js and Tailwind with a banking-inspired layout, including trend charts, portfolio views, and interactive elements like rebalance actions, wired to a FastAPI service layer. Backend: REST endpoints orchestrate an async pipeline where user and spending context is summarized, then Cohere's LLM drafts structured, plain-language narration and scene beats for each explainer. Manim (Python) renders motion graphics and captions at 720p/30fps; audio is synthesized with ElevenLabs so Portfolius has a consistent voice. Finished assets land in Supabase Storage with URLs served back to the client for reliable in-app playback without blocking the UI during generation.",
     image: `${process.env.PUBLIC_URL}/assets/project-8.webp`,
@@ -61,6 +58,7 @@ const projects = [
   {
     id: 4,
     title: "BeMyEyes: Accessibility Tool",
+    caption: "BeMyEyes",
     description: "A wearable assistive device for visually impaired users that integrates ultrasonic distance sensors for obstacle detection auricularly, real-time object recognition via OpenCV using an embedded camera, and Google TTS output for contextual feedback.",
     hoverText: "Built on an Arduino microcontroller with ultrasonic distance sensors for auricular obstacle detection and an embedded camera for real-time image capture. Uses a Python-based companion system with OpenCV for object recognition and Google TTS for contextual audio feedback. Communication between hardware and processing modules is handled via serial over USB, ensuring low-latency data transfer. The system implements non-blocking sensor polling for continuous environment scanning, progressive alert tones mapped to obstacle proximity, and modular firmware for easy expansion to additional sensors or features.",
     image: `${process.env.PUBLIC_URL}/assets/base-bemyeyes-crop.webp`,
@@ -77,6 +75,7 @@ const projects = [
   {
     id: 8,
     title: "HackCanada Judging: Scale Without the Spreadsheet Chaos",
+    caption: "HackCanada",
     description: "Judging platform for HackCanada 2026 that absorbed the operational friction of a massive event: 210+ projects, 50+ judges, and 700+ participants. One place to manage projects, judges, rooms, and schedules; deployed on Vercel with TypeScript and Supabase.",
     hoverText: "Instead of brittle spreadsheets and scattered updates, judges allocate virtual investment across projects so rankings reflect relative preference and budget constraints, not opaque 1 to 10 scores, while organizers configure tracks, rooms, and calendar blocks from one admin surface. The Next.js App Router frontend uses React Server and Client Components where it matters, TypeScript end to end, Tailwind and shadcn/ui for consistent forms and tables, and Recharts for live breakdowns of allocations and progress. Supabase backs auth, relational data for projects, judges, rooms, and schedules, and row level security so each role only sees what it should. Queries stay indexed for list views at hundreds of rows, and the app is deployed on Vercel with preview environments so the team could iterate safely right up to event day.",
     image: `${process.env.PUBLIC_URL}/assets/project-4.webp`,
@@ -91,6 +90,7 @@ const projects = [
   {
     id: 5,
     title: "GestureGroove: AI Music Controller",
+    caption: "GestureGroove",
     description: "A real-time gesture recognition app built on React that translates hand movements into music control using OpenCV for hand tracking and MediaPipe for gesture classification",
     hoverText: "The browser captures webcam frames through getUserMedia, then OpenCV handles acquisition and preprocessing while MediaPipe Hands tracks 21 landmarks per hand at interactive frame rates. Landmarks are normalized to screen space, smoothed over a short sliding window, and fed into rules that look at palm orientation, finger spread, and motion vectors so static poses and swipes map to different commands. Debouncing and minimum hold times cut accidental toggles when the hand jitters. The React UI runs the loop with requestAnimationFrame-friendly updates so the overlay and control panel stay responsive. Playback and library access go through the Spotify Web API with OAuth, mapping gestures to skip, play, pause, volume, and effect parameters so the whole stack stays in the browser without a native plugin.",
     image: `${process.env.PUBLIC_URL}/assets/project-6.webp`,
@@ -105,6 +105,7 @@ const projects = [
   {
     id: 6,
     title: "CrisisCompass: First Responder's Emergency Management Tool",
+    caption: "CrisisCompass",
     description: "Developed at NewHacks 2024, this React web application helps first responders and volunteers prioritize and manage local emergencies by aggregating and scraping real-time data from news outlets using OpenAI API to analyze and rank incidents based on urgency and using geolocation to rank incidents by proximity.",
     hoverText: "Designed to help first responders and volunteers act faster during emergencies, CrisisCompass merges ingestion, scoring, and map-ready views in one place. A Flask REST API exposes routes for listing incidents, triggering refresh jobs, and serving ranked results to the client. Workers scrape and normalize headlines and blurbs from news and social-style sources, strip boilerplate, then call the OpenAI API with structured prompts to label incident type, extract location hints and severity cues, and produce a comparable urgency score. Geolocation or inferred coordinates feed a proximity sort alongside urgency so nearby high-risk events bubble up. The React front end polls or refetches on an interval, renders cards with urgency badges and severity icons, and keeps layout responsive for laptops in a command center. Error handling and timeouts on external calls prevent one slow source from stalling the whole dashboard when every second counts.",
     image: `${process.env.PUBLIC_URL}/assets/base-crisis.webp`,
@@ -119,6 +120,7 @@ const projects = [
   {
     id: 7,
     title: "SecureEdu: Educational Material Encryption System",
+    caption: "SecureEdu",
     description: "A secure learning platform built from STM32 microcontrollers that encrypts and transmits educational materials, using AES-based encryption and EEPROM-stored keys. Implements a progressive hint-based learning system where content is unlocked incrementally via access keys, ensuring controlled information disclosure",
     hoverText: "SecureEdu runs on STM32 microcontrollers that use AES encryption to keep textbook sections, quiz solutions, and hints safe from unauthorized access. For secure communication between devices, it integrates Diffie-Hellman Key Exchange so encryption keys are never exposed during transfer. On the hardware side, we configured UART, I2C, and GPIO peripherals to connect an LCD display, which gives students real-time feedback as they interact with the system, and a 4x4 keypad, which they use to securely enter access keys. The whole setup powers a progressive hint-based learning system, where you can unlock just the right amount of help without giving away the entire answer, all while keeping the data transmission secure.",
     image: `${process.env.PUBLIC_URL}/assets/base-securedu-copy.webp`,
@@ -132,186 +134,114 @@ const projects = [
   },
 ];
 
-// Project card with optional cursor-based tilt and featured layout
-const ProjectCard = ({ project, isDarkMode, openModal, featured, index = 0 }) => {
-  const cardRef = useRef(null);
-  const isMobile = useMediaQuery("(max-width: 767px)");
-  const reduceMotion = useReducedMotion();
+// Per-print resting tilt (deg). Cycled by global index so the line stays "hung"
+// and slightly disoriented without looking random or messy.
+const HANG_ANGLES = [-4, 3.5, -2.5, 4, -3.5, 2.5, -1.5, 3];
 
-  // Drive the tilt + the cursor-spotlight position straight to the DOM (CSS vars
-  // and transform) so high-frequency mousemove never triggers a React re-render.
-  const handleMouseMove = (e) => {
-    const el = cardRef.current;
-    if (!el || isMobile) return;
-    const rect = el.getBoundingClientRect();
-    const px = e.clientX - rect.left;
-    const py = e.clientY - rect.top;
-    el.style.setProperty("--mx", `${px}px`);
-    el.style.setProperty("--my", `${py}px`);
-    if (reduceMotion) return; // spotlight still tracks; skip the 3D tilt
-    const x = px / rect.width - 0.5;
-    const y = py / rect.height - 0.5;
-    el.style.transition = "transform 0s"; // crisp 1:1 tracking while hovering
-    el.style.transform = `perspective(800px) rotateX(${(-y * 8).toFixed(2)}deg) rotateY(${(x * 8).toFixed(2)}deg)`;
-  };
+// Split the projects into rows so each row gets its own wire.
+const chunk = (arr, size) => {
+  const rows = [];
+  for (let i = 0; i < arr.length; i += size) rows.push(arr.slice(i, i + size));
+  return rows;
+};
 
-  const handleMouseLeave = () => {
-    const el = cardRef.current;
-    if (!el) return;
-    el.style.transition = "transform 400ms ease-out"; // smooth settle back to flat
-    el.style.transform = "perspective(800px) rotateX(0deg) rotateY(0deg)";
-  };
-
-  const tagCount = featured ? (isMobile ? 3 : 4) : isMobile ? 2 : 3;
+// A single polaroid pinned to the wire. The clip (peg) stays upright while the
+// print tilts around its top-center, so it pivots from the clip like a real
+// hanging photo. Click / Enter / Space opens the existing modal.
+const Polaroid = ({ project, isDarkMode, openModal, index = 0, reduceMotion }) => {
+  const angle = HANG_ANGLES[index % HANG_ANGLES.length];
 
   return (
-    <motion.div
-      className={`relative group cursor-pointer ${featured ? 'w-full' : ''}`}
-      variants={featured ? {} : { hidden: { opacity: 0, y: 50 }, visible: { opacity: 1, y: 0 } }}
-      transition={featured ? {} : { delay: index * 0.1 }}
-      whileHover={!featured && !isMobile ? { scale: 1.02 } : {}}
-      whileTap={{ scale: 0.98 }}
-    >
-      <div
-        ref={cardRef}
+    <div className="relative flex w-40 flex-col items-center xs:w-44 sm:w-48 md:w-52">
+      <span
+        className="polaroid__peg absolute left-1/2 top-[-13px] z-20 -translate-x-1/2"
+        aria-hidden="true"
+      />
+      <motion.div
         role="button"
         tabIndex={0}
         aria-haspopup="dialog"
         aria-label={`Open details for ${project.title}`}
-        className={`h-full rounded-2xl outline-none will-change-transform focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent ${
-          isDarkMode ? "focus-visible:ring-amber-500/70" : "focus-visible:ring-[#4A6B4E]/70"
-        }`}
         onClick={() => openModal(project)}
         onKeyDown={(e) => {
-          // Only the card itself opens the modal; let inner link buttons (Enter/
-          // Space on a focused link) handle their own keys without bubbling here.
-          if (e.target !== e.currentTarget) return;
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             openModal(project);
           }
         }}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          transform: "perspective(800px) rotateX(0deg) rotateY(0deg)",
-          transformStyle: "preserve-3d",
-          transition: "transform 400ms ease-out",
-        }}
+        className={`polaroid group relative w-full cursor-pointer select-none rounded-[2px] p-2.5 pb-8 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+          isDarkMode
+            ? "focus-visible:ring-amber-400 focus-visible:ring-offset-[#07090D]"
+            : "focus-visible:ring-[#4A6B4E] focus-visible:ring-offset-[#f7f5f0]"
+        }`}
+        style={{ transformOrigin: "top center" }}
+        initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -24, rotate: angle * 2 }}
+        whileInView={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, rotate: angle }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={
+          reduceMotion
+            ? { duration: 0.3, delay: index * 0.04 }
+            : { type: "spring", stiffness: 140, damping: 9, delay: index * 0.06 }
+        }
+        whileHover={reduceMotion ? {} : { rotate: 0, y: -8, scale: 1.04 }}
+        whileTap={{ scale: 0.97 }}
       >
-      <div className={`relative rounded-2xl border overflow-hidden transition-all duration-300 h-full ${featured ? "md:flex md:flex-row md:h-60" : ""} ${isDarkMode ? "border-white/[0.08] bg-white/[0.04] backdrop-blur-md shadow-[inset_0_1px_0_0_rgba(255,255,255,0.10),0_8px_32px_rgba(0,0,0,0.25)] group-hover:border-amber-500/40 group-hover:bg-white/[0.06] group-hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.12),0_12px_44px_rgba(245,158,11,0.12)]" : "border-white/60 bg-white/40 backdrop-blur-md shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_8px_28px_rgba(74,107,78,0.10)] group-hover:border-[var(--lm-accent)]/40 group-hover:bg-white/[0.55] group-hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.8),0_12px_36px_rgba(74,107,78,0.14)]"}`}>
-        <div
-          className={`relative overflow-hidden ${
-            featured ? "h-40 md:h-full md:w-1/2 md:min-h-0 md:flex-shrink-0" : "h-32 md:h-40"
-          }`}
-        >
+        <div className="relative overflow-hidden rounded-[2px]">
           <img
             src={project.image}
             alt={project.title}
             loading="lazy"
             decoding="async"
-            className={`w-full h-full object-cover transition-transform duration-700 ${project.cardImageObjectClass ?? project.imageObjectClass ?? ""} group-hover:scale-110`}
-          />
-          <div className={`absolute inset-0 bg-gradient-to-t ${project.gradient} opacity-20 group-hover:opacity-40 transition-opacity duration-500`} />
-          {featured && project.badge && (
-            <span className={`absolute top-3 left-3 px-2.5 py-1 text-[11px] font-bold rounded-full backdrop-blur-md ${isDarkMode ? 'bg-amber-500/90 text-[#07090D]' : 'bg-[#4A6B4E]/95 text-white'}`}>
-              {project.badge}
-            </span>
-          )}
-        </div>
-        <div
-          className={`p-3.5 ${
-            featured
-              ? "md:flex md:h-full md:min-h-0 md:w-1/2 md:flex-col md:justify-start md:overflow-hidden md:px-5 md:py-4"
-              : "md:p-4"
-          }`}
-        >
-          <h3
-            className={`font-playfair text-base font-bold group-hover:underline underline-offset-4 decoration-2 line-clamp-2 ${
-              featured ? "mb-1 md:mb-1.5 md:text-xl md:leading-tight" : "mb-1.5 md:mb-2 md:text-lg"
-            } ${isDarkMode ? "text-white" : "text-[var(--lm-accent)]"}`}
-          >
-            {project.title}
-          </h3>
-          <p
-            className={`text-xs leading-relaxed md:text-sm ${
-              featured ? "mb-1.5 line-clamp-2 md:mb-2 md:line-clamp-3" : "mb-2 line-clamp-2 md:mb-3"
-            } ${isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"}`}
-          >
-            {project.description}
-          </p>
-          <div
-            className={`flex flex-wrap gap-1.5 md:gap-2 ${
-              featured ? "mb-1.5 shrink-0 md:mb-2" : "mb-2 md:mb-3"
+            className={`aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-105 ${
+              project.cardImageObjectClass ?? project.imageObjectClass ?? ""
             }`}
-          >
-            {project.tags.slice(0, tagCount).map(tag => (
-              <span
-                key={tag}
-                className={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${
-                  isDarkMode
-                    ? "border-amber-500/[0.2] bg-amber-500/[0.12] text-amber-300"
-                    : "border-[var(--lm-accent)]/45 bg-white text-[#1e3324] shadow-sm"
-                }`}
-              >
-                {tag}
-              </span>
-            ))}
-            {project.tags.length > tagCount && (
-              <span
-                className={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${
-                  isDarkMode
-                    ? "border-amber-500/[0.2] bg-amber-500/[0.12] text-amber-300"
-                    : "border-[var(--lm-accent)]/45 bg-white text-[#1e3324] shadow-sm"
-                }`}
-              >
-                +{project.tags.length - tagCount} more
-              </span>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {project.links.slice(0, 2).map((link, idx) => (
-              <div
-                key={idx}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    window.open(link.href, "_blank");
-                  }
-                }}
-                className={`flex min-h-[44px] cursor-pointer items-center gap-1 rounded-full border px-3 py-2 text-xs font-semibold transition-all duration-300 md:min-h-0 md:px-3 md:py-2 ${
-                  isDarkMode
-                    ? "border-white/[0.06] bg-white/[0.04] text-[#8B9DB0] hover:border-amber-500/30 hover:bg-white/[0.08] hover:text-[#F0F4F8]"
-                    : "border-2 border-[var(--lm-accent)] bg-[var(--lm-bg-surface)] text-[var(--lm-accent)] shadow-sm hover:bg-[var(--lm-accent-muted)] [&_svg]:shrink-0 [&_svg]:text-[var(--lm-accent)]"
-                }`}
-                onClick={(e) => { e.stopPropagation(); window.open(link.href, '_blank'); }}
-              >
-                {link.icon}
-                <span className="hidden sm:inline">{link.label}</span>
-              </div>
-            ))}
-          </div>
+          />
+          <div
+            className={`pointer-events-none absolute inset-0 bg-gradient-to-t ${project.gradient} opacity-[0.14] transition-opacity duration-500 group-hover:opacity-25`}
+          />
+          {project.sticker && <span className="polaroid__sticker">{project.sticker}</span>}
         </div>
-        {/* Soft glow that tracks the cursor across the card (position set on the
-            parent via --mx/--my). Non-interactive, hover-capable devices only. */}
-        <div
-          className="card-spotlight"
-          aria-hidden="true"
-          style={{ "--spot-color": isDarkMode ? "rgba(245, 158, 11, 0.16)" : "rgba(74, 107, 78, 0.12)" }}
-        />
-      </div>
-      </div>
-    </motion.div>
+        <p className="polaroid__caption">{project.caption ?? project.title}</p>
+      </motion.div>
+    </div>
   );
 };
+
+// One wire's worth of polaroids. The wire shows in the gaps between prints.
+const PhotoLine = ({ items, startIndex, isDarkMode, openModal, reduceMotion }) => (
+  <div className="photo-line relative">
+    <span
+      className="photo-line__string absolute left-[6%] right-[6%] top-0"
+      aria-hidden="true"
+    />
+    <div className="relative flex flex-wrap items-start justify-center gap-x-8 gap-y-14 md:gap-x-12">
+      {items.map((project, i) => (
+        <Polaroid
+          key={project.id}
+          project={project}
+          isDarkMode={isDarkMode}
+          openModal={openModal}
+          index={startIndex + i}
+          reduceMotion={reduceMotion}
+        />
+      ))}
+    </div>
+  </div>
+);
 
 const Projects = ({ isDarkMode }) => {
   const [selectedProject, setSelectedProject] = useState(null);
   const reduceMotion = useReducedMotion();
   const modalRef = useRef(null);
   const lastFocusedRef = useRef(null);
+
+  // How many polaroids share a wire, by viewport. Screens are min-width, so we
+  // test from the bottom up.
+  const isXS = useMediaQuery("(max-width: 479px)");
+  const isSM = useMediaQuery("(max-width: 767px)");
+  const isMD = useMediaQuery("(max-width: 1059px)");
+  const perRow = isXS ? 1 : isSM ? 2 : isMD ? 3 : 4;
+  const rows = chunk(projects, perRow);
 
   const openModal = (project) => {
     // Remember what had focus so we can hand it back when the dialog closes.
@@ -397,17 +327,19 @@ const Projects = ({ isDarkMode }) => {
       id="projects"
       className={`pt-12 md:pt-20 pb-16 md:pb-24 transition-colors duration-300 ${isDarkMode ? "bg-transparent" : "bg-transparent"} relative overflow-hidden`}
     >
-      {/* Static background orbs */}
-      {isDarkMode && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-32 left-1/4 w-[500px] h-[500px] rounded-full bg-amber-500/[0.04] blur-[120px]" />
-        </div>
-      )}
+      {/* Darkroom safelight: a warm glow behind the hung prints */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div
+          className={`absolute left-1/2 top-1/3 h-[460px] w-[680px] max-w-[90%] -translate-x-1/2 rounded-full blur-[130px] ${
+            isDarkMode ? "bg-amber-500/[0.05]" : "bg-[#4A6B4E]/[0.05]"
+          }`}
+        />
+      </div>
 
       <div className="relative z-10">
         {/* Section header — minimal banner */}
         <motion.div
-          className="max-w-7xl mx-auto px-4 mb-8 md:mb-12"
+          className="max-w-7xl mx-auto px-4 mb-10 md:mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -424,34 +356,25 @@ const Projects = ({ isDarkMode }) => {
           </div>
         </motion.div>
 
-        {/* FEATURED PROJECTS - FridgeMind & Cliara (full-width) */}
-        <motion.div
-          className="max-w-7xl mx-auto px-4 space-y-5 md:space-y-6"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <ProjectCard featured project={projects[0]} isDarkMode={isDarkMode} openModal={openModal} />
-          <ProjectCard featured project={projects[1]} isDarkMode={isDarkMode} openModal={openModal} />
-        </motion.div>
-
-        {/* PROJECTS GRID - Remaining projects */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 mt-6 md:mt-8 max-w-7xl mx-auto px-4"
-          variants={container}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-        >
-          {projects.slice(2).map((project, index) => (
-            <ProjectCard key={project.id} project={project} isDarkMode={isDarkMode} openModal={openModal} index={index} />
+        {/* The drying line — polaroids strung up across the page.
+            data-doodle-ignore: these prints are tilted + animated (and hold
+            <img>s), so the site doodle layer must not treat them as colliders. */}
+        <div data-doodle-ignore className="max-w-7xl mx-auto px-4 space-y-14 md:space-y-20">
+          {rows.map((row, r) => (
+            <PhotoLine
+              key={r}
+              items={row}
+              startIndex={r * perRow}
+              isDarkMode={isDarkMode}
+              openModal={openModal}
+              reduceMotion={reduceMotion}
+            />
           ))}
-        </motion.div>
+        </div>
 
         {/* Call to Action — minimal banner */}
         <motion.div
-          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-12 md:mt-16 px-4"
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-14 md:mt-20 px-4"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
