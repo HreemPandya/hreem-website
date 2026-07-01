@@ -15,6 +15,57 @@
   --text-muted: #8B9DB0;
 }
 
+/* ---------------------------------------------------------------------------
+   shadcn/ui design tokens. Light values live in :root; dark values override
+   under html.dark-mode so shadcn components follow the existing theme toggle
+   (App.js swaps .dark-mode / .light-mode on <html>). Brand accents: primary is
+   sage in light and amber in dark, to match the rest of the site.
+--------------------------------------------------------------------------- */
+:root {
+  --background: 40 30% 97%;
+  --foreground: 0 0% 16%;
+  --card: 45 43% 98%;
+  --card-foreground: 0 0% 16%;
+  --popover: 45 43% 98%;
+  --popover-foreground: 0 0% 16%;
+  --primary: 127 18% 36%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 40 20% 92%;
+  --secondary-foreground: 0 0% 16%;
+  --muted: 40 20% 93%;
+  --muted-foreground: 0 0% 35%;
+  --accent: 40 22% 90%;
+  --accent-foreground: 0 0% 16%;
+  --destructive: 0 72% 45%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 40 15% 85%;
+  --input: 40 15% 85%;
+  --ring: 127 18% 36%;
+  --radius: 0.5rem;
+}
+
+html.dark-mode {
+  --background: 222 30% 4%;
+  --foreground: 210 25% 96%;
+  --card: 222 39% 6%;
+  --card-foreground: 210 25% 96%;
+  --popover: 222 39% 6%;
+  --popover-foreground: 210 25% 96%;
+  --primary: 38 92% 50%;
+  --primary-foreground: 26 45% 8%;
+  --secondary: 222 25% 12%;
+  --secondary-foreground: 210 25% 96%;
+  --muted: 222 25% 12%;
+  --muted-foreground: 213 15% 62%;
+  --accent: 222 25% 14%;
+  --accent-foreground: 210 25% 96%;
+  --destructive: 0 62% 40%;
+  --destructive-foreground: 210 25% 96%;
+  --border: 220 16% 16%;
+  --input: 220 16% 16%;
+  --ring: 38 92% 50%;
+}
+
 html,
 body,
 #root,
