@@ -73,11 +73,7 @@ const CreativeCarousel = ({ isDarkMode }) => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [autoRotate, direction, artworks.length]);
-
-  const moveSlide = (dir) => {
-    setCurrentIndex(prev => (prev + dir + artworks.length) % artworks.length);
-  };
+  }, [autoRotate, direction]);
 
   const getPresentableSlides = () => {
     const presentableSlides = [];
