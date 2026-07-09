@@ -2,43 +2,119 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import AnchorLink from "react-anchor-link-smooth-scroll";
 import useMediaQuery from "../hooks/useMediaQuery";
-import { FiSun, FiMoon } from "react-icons/fi";
+import { Sun, Moon } from "lucide-react";
 
-const Link = ({ page, selectedPage, setSelectedPage, isDarkMode }) => {
-  const lowerCasePage = page.toLowerCase();
-  const isSelected = selectedPage === lowerCasePage;
+// Sections in order. `page` is the anchor/selection key (must match the section
+// ids in App.js, incl. the space in "about me"); `label` is what the eye reads.
+const NAV_ITEMS = [
+  { label: "Home", page: "home" },
+  { label: "Projects", page: "projects" },
+  { label: "About", page: "about me" },
+  { label: "Contact", page: "contact" },
+];
+
+// A quick, imperfect grease-pencil underline — the mark a photographer makes on a
+// contact sheet to pick a frame. The wavy stroke stays crisp at any width
+// (non-scaling-stroke) and is revealed by a left-to-right wipe (scaleX from the
+// left edge), so it reads as being drawn in. Active is always shown; otherwise it
+// wipes in on hover/focus of the parent `group`.
+const SketchUnderline = ({ color, active }) => (
+  <span
+    className={`pointer-events-none absolute -bottom-[5px] left-0 h-[6px] w-full origin-left transition-transform duration-300 ease-out ${
+      active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100 group-focus-visible:scale-x-100"
+    }`}
+    aria-hidden="true"
+  >
+    <svg className="h-full w-full overflow-visible" viewBox="0 0 100 6" preserveAspectRatio="none" fill="none">
+      <path
+        d="M1.5,4 C22,1 30,5.4 50,3.2 C70,1 78,5 98.5,2.6"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
+  </span>
+);
+
+// A hand-drawn ring for the theme toggle — the same grease-pencil gesture, closed
+// into a wobbly circle that doesn't quite meet its own tail. Scales/fades in on hover.
+const SketchRing = ({ color }) => (
+  <span
+    className="pointer-events-none absolute -inset-1 origin-center scale-90 opacity-0 transition-all duration-300 ease-out group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100"
+    aria-hidden="true"
+  >
+    <svg className="h-full w-full" viewBox="0 0 44 44" fill="none">
+      <path
+        d="M23,4 C33,3.5 40.5,11 40.5,22 C40.5,32 32.5,40.5 21.5,40.5 C11,40.5 3.5,32.5 3.5,21.5 C3.5,11.5 12,4 22,4"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
+  </span>
+);
+
+const NavLink = ({ item, selectedPage, setSelectedPage, isDarkMode }) => {
+  const isActive = selectedPage === item.page;
+  const accent = isDarkMode ? "#F59E0B" : "#4A6B4E";
+
   return (
     <AnchorLink
-      className={`${
-        isSelected
-          ? `${isDarkMode ? 'text-[#F0F4F8]' : 'text-[var(--lm-text-primary)]'} font-bold scale-110`
-          : `${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}` 
-      } transition-all duration-300 ${isDarkMode ? 'hover:text-[#F0F4F8]' : 'hover:text-[var(--lm-text-primary)]'} hover:scale-105 relative group px-3 py-2 rounded-lg`}
-      href={`#${lowerCasePage}`}
-      onClick={() => setSelectedPage(lowerCasePage)}
+      href={`#${item.page}`}
+      onClick={() => setSelectedPage(item.page)}
+      aria-current={isActive ? "true" : undefined}
+      className="group relative py-1 outline-none"
     >
-      {page}
-      {/* Active state: arc-style underline (amber in dark, sage in light) */}
-      {isSelected && (
-        <span
-          className="absolute bottom-0 left-0 right-0 h-0.5"
-          style={{ 
-            backgroundColor: isDarkMode ? 'rgba(245, 158, 11, 0.6)' : '#5A7A5E',
-            borderRadius: '0 0 50% 50%'
-          }}
-        />
-      )}
-      {/* Hover effect underline */}
-      {!isSelected && (
-        <span
-          className="absolute bottom-0 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300"
-          style={{ 
-            backgroundColor: isDarkMode ? '#F59E0B' : '#5A7A5E',
-            borderRadius: '0 0 50% 50%'
-          }}
-        />
-      )}
+      <span
+        className={`relative font-sans text-[13px] uppercase tracking-[0.18em] transition-colors ${
+          isActive
+            ? isDarkMode
+              ? "text-[#F0F4F8]"
+              : "text-[var(--lm-text-primary)]"
+            : isDarkMode
+              ? "text-[#8B9DB0] group-hover:text-[#F0F4F8]"
+              : "text-[var(--lm-text-muted)] group-hover:text-[var(--lm-text-primary)]"
+        }`}
+      >
+        {item.label}
+        <SketchUnderline color={accent} active={isActive} />
+      </span>
     </AnchorLink>
+  );
+};
+
+const ThemeToggle = ({ isDarkMode, toggleTheme, className = "" }) => {
+  const accent = isDarkMode ? "#F59E0B" : "#4A6B4E";
+  return (
+    <button
+      type="button"
+      onClick={toggleTheme}
+      aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+      title={isDarkMode ? "Lights on" : "Lights off"}
+      className={`group relative inline-flex h-9 w-9 items-center justify-center rounded-full outline-none transition-colors ${
+        isDarkMode
+          ? "text-amber-400 hover:text-amber-300"
+          : "text-[var(--lm-accent)] hover:opacity-80"
+      } ${className}`}
+    >
+      <SketchRing color={accent} />
+      {isDarkMode ? <Moon className="h-[18px] w-[18px]" /> : <Sun className="h-[18px] w-[18px]" />}
+    </button>
+  );
+};
+
+// Compact stacked-lines menu glyph that morphs into an X. No border/pill — just
+// the mark and a small label, so it reads hand-set rather than boxed.
+const MenuGlyph = ({ open, isDarkMode }) => {
+  const bar = isDarkMode ? "bg-[#F0F4F8]" : "bg-[var(--lm-text-primary)]";
+  return (
+    <span className="relative flex h-3 w-5 flex-col justify-between">
+      <span className={`h-[2px] w-full origin-center rounded-full transition-all duration-300 ${bar} ${open ? "translate-y-[5px] rotate-45" : ""}`} />
+      <span className={`h-[2px] w-full rounded-full transition-all duration-300 ${bar} ${open ? "opacity-0" : ""}`} />
+      <span className={`h-[2px] w-full origin-center rounded-full transition-all duration-300 ${bar} ${open ? "-translate-y-[5px] -rotate-45" : ""}`} />
+    </span>
   );
 };
 
@@ -46,6 +122,7 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
   const [isMenuToggled, setIsMenuToggled] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const mobileMenuOpen = !isDesktop && isMenuToggled;
+  const accent = isDarkMode ? "#F59E0B" : "#4A6B4E";
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
@@ -69,150 +146,112 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
   }, [mobileMenuOpen]);
 
   return (
-    <>
-      <nav className={`w-full fixed top-0 py-6 transition-all duration-300 ${
+    <nav
+      data-doodle-ignore
+      className={`fixed top-0 w-full transition-all duration-300 ${
         mobileMenuOpen ? "z-[120]" : "z-40"
-      } ${
-        isTopOfPage 
-          ? 'bg-transparent backdrop-blur-none' 
-          : isDarkMode 
-            ? 'bg-[#07090D]/80 backdrop-blur-xl border-b border-white/[0.06]'
-            : 'bg-[var(--lm-bg-surface)]/95 backdrop-blur-xl border-b border-[var(--lm-border)] shadow-lg'
-      }`}>
-        <div className="relative flex w-full max-w-7xl items-center justify-between mx-auto px-4 sm:px-6 md:w-5/6 md:px-0">
-          {/* Enhanced Logo */}
-          <div className="relative group">
-            <h4 className={`font-playfair text-4xl font-extrabold transition-colors duration-300 cursor-pointer ${isDarkMode ? 'text-amber-500 hover:text-amber-400' : 'text-[var(--lm-accent)] hover:opacity-80'}`}>
-              HP
-            </h4>
-          </div>
-
-          {/* DESKTOP NAV */}
-          {isDesktop ? (
-            <div className="flex items-center justify-between gap-8 font-opensans text-sm font-semibold">
-              {/* Navigation Links with glass effect */}
-              <div className={`flex items-center gap-6 backdrop-blur-xl rounded-full px-6 py-3 border transition-all duration-300 ${
-                isDarkMode 
-                  ? 'bg-white/[0.04] border-white/[0.06]' 
-                  : 'bg-[var(--lm-bg-surface)] border-[var(--lm-border)] shadow-md'
-              }`}>
-                <Link page="Home" selectedPage={selectedPage} setSelectedPage={setSelectedPage} isDarkMode={isDarkMode} />
-                <Link page="Projects" selectedPage={selectedPage} setSelectedPage={setSelectedPage} isDarkMode={isDarkMode} />
-                <Link page="About Me" selectedPage={selectedPage} setSelectedPage={setSelectedPage} isDarkMode={isDarkMode} />
-                <Link page="Contact" selectedPage={selectedPage} setSelectedPage={setSelectedPage} isDarkMode={isDarkMode} />
-              </div>
-
-              {/* Fixed Toggle Switch */}
-              <div className="relative">
-                <label className="flex items-center cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    checked={isDarkMode}
-                    onChange={toggleTheme}
-                    className="sr-only"
-                  />
-                  <div
-                    className={`relative w-14 h-7 rounded-full transition-all duration-300 shadow-lg ${isDarkMode ? "bg-amber-500" : ""}`}
-                    style={!isDarkMode ? { backgroundColor: '#4A6B4E' } : undefined}
-                  >
-                    <div
-                      className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white transition-all duration-300 shadow-md flex items-center justify-center
-                        ${isDarkMode ? "translate-x-7" : ""}`}
-                    >
-                      {isDarkMode ? (
-                        <FiMoon className="text-[#07090D] w-3 h-3" />
-                      ) : (
-                        <FiSun className="text-[#4A6B4E] w-3 h-3" />
-                      )}
-                    </div>
-                  </div>
-                </label>
-              </div>
-            </div>
-          ) : (
-            /* Mobile Menu Button */
-            <button
-              type="button"
-              aria-expanded={isMenuToggled}
-              aria-label={isMenuToggled ? "Close menu" : "Open menu"}
-              className={`rounded-full p-3 transition-all duration-300 min-h-[44px] min-w-[44px] items-center justify-center flex hover:scale-110 ${
-                isDarkMode 
-                  ? 'border border-white/20 bg-white/10 backdrop-blur-lg hover:bg-white/20' 
-                  : 'border-2 border-[#4A6B4E]/45 bg-white shadow-md ring-1 ring-[#4A6B4E]/15 backdrop-blur-sm hover:border-[#4A6B4E]/65 hover:bg-[#faf9f6]'
-              }`}
-              onClick={() => setIsMenuToggled(!isMenuToggled)}
-            >
-              <div className="w-6 h-6 flex flex-col justify-center items-center">
-                <span className={`block w-5 h-0.5 transition-all duration-300 ${
-                  isDarkMode ? 'bg-white' : 'bg-[#2a2a2a]'
-                } ${isMenuToggled ? 'rotate-45 translate-y-1' : ''}`} />
-                <span className={`block w-5 h-0.5 transition-all duration-300 mt-1 ${
-                  isDarkMode ? 'bg-white' : 'bg-[#2a2a2a]'
-                } ${isMenuToggled ? 'opacity-0' : ''}`} />
-                <span className={`block w-5 h-0.5 transition-all duration-300 mt-1 ${
-                  isDarkMode ? 'bg-white' : 'bg-[#2a2a2a]'
-                } ${isMenuToggled ? '-rotate-45 -translate-y-1' : ''}`} />
-              </div>
-            </button>
-          )}
-
-          {/* Mobile: full-screen blur + dim; tap outside panel closes (portal = reliable hit-testing + z-index) */}
-          {mobileMenuOpen &&
-            typeof document !== "undefined" &&
-            createPortal(
-              <>
-                <button
-                  type="button"
-                  aria-label="Close menu"
-                  className={`fixed inset-0 z-[100] cursor-default border-0 p-0 touch-manipulation [-webkit-tap-highlight-color:transparent] motion-reduce:backdrop-blur-sm ${
-                    isDarkMode
-                      ? "bg-[#07090D]/55 backdrop-blur-xl supports-[backdrop-filter]:bg-[#07090D]/40"
-                      : "bg-[var(--lm-bg-base)]/70 backdrop-blur-2xl supports-[backdrop-filter]:bg-[var(--lm-bg-base)]/45"
-                  }`}
-                  onClick={() => setIsMenuToggled(false)}
+      } ${isTopOfPage ? "py-6" : "py-4"} ${
+        isTopOfPage
+          ? "bg-transparent"
+          : isDarkMode
+            ? "border-b border-white/[0.06] bg-[#07090D]/70 backdrop-blur-md"
+            : "border-b border-[var(--lm-border)] bg-[var(--lm-bg-base)]/80 backdrop-blur-md"
+      }`}
+      aria-label="Primary"
+    >
+      <div className="relative mx-auto flex w-full max-w-7xl items-center justify-end px-4 sm:px-6 md:w-5/6 md:px-0">
+        {/* DESKTOP NAV */}
+        {isDesktop ? (
+          <div className="flex items-center gap-5 md:gap-7">
+            <div className="flex items-center gap-5 md:gap-7">
+              {NAV_ITEMS.map((item) => (
+                <NavLink
+                  key={item.page}
+                  item={item}
+                  selectedPage={selectedPage}
+                  setSelectedPage={setSelectedPage}
+                  isDarkMode={isDarkMode}
                 />
-                <div
-                  className="fixed left-4 right-4 top-[calc(5.75rem+env(safe-area-inset-top,0px))] z-[130] max-h-[min(70vh,calc(100dvh-6rem-env(safe-area-inset-bottom,0px)))] overflow-y-auto overscroll-contain rounded-2xl shadow-2xl"
-                  style={{
-                    backgroundColor: isDarkMode ? "#0B0F18" : "#ffffff",
-                    boxShadow: isDarkMode
-                      ? "0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2)"
-                      : "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                    border: isDarkMode ? "1px solid rgba(255,255,255,0.06)" : "1px solid #e5e7eb",
-                  }}
-                  role="dialog"
-                  aria-modal="true"
-                  aria-label="Navigation menu"
-                >
-                  <div
-                    className="px-6 py-4 border-b"
-                    style={{
-                      backgroundColor: isDarkMode ? "#111827" : "var(--lm-bg-surface)",
-                      borderBottomColor: isDarkMode ? "rgba(255,255,255,0.06)" : "var(--lm-border)",
-                    }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span
-                        className="text-sm font-semibold"
-                        style={{ color: isDarkMode ? "#F0F4F8" : "var(--lm-text-primary)" }}
+              ))}
+            </div>
+
+            {/* Hairline divider, then the reimagined theme toggle */}
+            <span
+              className={`h-5 w-px ${isDarkMode ? "bg-white/10" : "bg-[var(--lm-accent)]/20"}`}
+              aria-hidden="true"
+            />
+            <ThemeToggle isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+          </div>
+        ) : (
+          /* MOBILE trigger — un-boxed: a small label + a stacked-lines glyph */
+          <button
+            type="button"
+            aria-expanded={isMenuToggled}
+            aria-label={isMenuToggled ? "Close menu" : "Open menu"}
+            className={`flex min-h-[44px] shrink-0 items-center gap-2 rounded-lg outline-none transition-opacity hover:opacity-80 ${
+              isDarkMode ? "text-[#F0F4F8]" : "text-[var(--lm-text-primary)]"
+            }`}
+            onClick={() => setIsMenuToggled(!isMenuToggled)}
+          >
+            <span className="font-sans text-[11px] uppercase tracking-[0.22em]">
+              {isMenuToggled ? "Close" : "Menu"}
+            </span>
+            <MenuGlyph open={isMenuToggled} isDarkMode={isDarkMode} />
+          </button>
+        )}
+
+        {/* Mobile: full-screen dim + blur; tapping outside the panel closes it.
+            Rendered through a portal for reliable hit-testing + stacking. */}
+        {mobileMenuOpen &&
+          typeof document !== "undefined" &&
+          createPortal(
+            <>
+              <button
+                type="button"
+                aria-label="Close menu"
+                className={`fixed inset-0 z-[100] cursor-default border-0 p-0 touch-manipulation [-webkit-tap-highlight-color:transparent] motion-reduce:backdrop-blur-sm ${
+                  isDarkMode
+                    ? "bg-[#07090D]/55 backdrop-blur-xl supports-[backdrop-filter]:bg-[#07090D]/40"
+                    : "bg-[var(--lm-bg-base)]/70 backdrop-blur-2xl supports-[backdrop-filter]:bg-[var(--lm-bg-base)]/45"
+                }`}
+                onClick={() => setIsMenuToggled(false)}
+              />
+              <div
+                className="fixed left-4 right-4 top-[calc(5.25rem+env(safe-area-inset-top,0px))] z-[130] max-h-[min(70vh,calc(100dvh-6rem-env(safe-area-inset-bottom,0px)))] overflow-y-auto overscroll-contain rounded-2xl"
+                style={{
+                  backgroundColor: isDarkMode ? "#0B0F18" : "var(--lm-bg-surface)",
+                  boxShadow: isDarkMode
+                    ? "0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2)"
+                    : "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                  border: isDarkMode ? "1px solid rgba(255,255,255,0.06)" : "1px solid var(--lm-border)",
+                }}
+                role="dialog"
+                aria-modal="true"
+                aria-label="Navigation menu"
+              >
+                <div className="px-3 pb-2 pt-3">
+                  {NAV_ITEMS.map((item) => {
+                    const isActive = selectedPage === item.page;
+                    return (
+                      <AnchorLink
+                        key={item.page}
+                        href={`#${item.page}`}
+                        aria-current={isActive ? "true" : undefined}
+                        className="group flex min-h-[44px] items-center rounded-xl px-3 py-3 transition-colors"
+                        style={{
+                          backgroundColor: isActive
+                            ? isDarkMode
+                              ? "rgba(245, 158, 11, 0.10)"
+                              : "rgba(74, 107, 78, 0.10)"
+                            : "transparent",
+                        }}
+                        onClick={() => {
+                          setSelectedPage(item.page);
+                          setIsMenuToggled(false);
+                        }}
                       >
-                        Navigation
-                      </span>
-                      <div
-                        className="w-8 h-[2px] rounded-full"
-                        style={{ backgroundColor: isDarkMode ? "#F59E0B" : "var(--lm-accent)" }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="py-2">
-                    {["Home", "Projects", "About Me", "Contact"].map((page) => {
-                      const isActive = selectedPage === page.toLowerCase();
-
-                      return (
-                        <AnchorLink
-                          key={page}
-                          className="flex items-center px-6 py-4 text-base font-medium transition-all duration-300 relative group"
+                        <span
+                          className="relative font-sans text-base uppercase tracking-[0.14em]"
                           style={{
                             color: isActive
                               ? isDarkMode
@@ -221,130 +260,45 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
                               : isDarkMode
                                 ? "#8B9DB0"
                                 : "var(--lm-text-muted)",
-                            backgroundColor: isActive
-                              ? isDarkMode
-                                ? "rgba(245, 158, 11, 0.15)"
-                                : "rgba(74, 107, 78, 0.2)"
-                              : "transparent",
-                          }}
-                          onMouseEnter={(e) => {
-                            if (!isActive) {
-                              e.target.style.backgroundColor = isDarkMode
-                                ? "rgba(255,255,255,0.04)"
-                                : "rgba(90, 126, 94, 0.12)";
-                              e.target.style.transform = "translateX(4px)";
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (!isActive) {
-                              e.target.style.backgroundColor = "transparent";
-                              e.target.style.transform = "translateX(0px)";
-                            }
-                          }}
-                          href={`#${page.toLowerCase()}`}
-                          onClick={() => {
-                            setSelectedPage(page.toLowerCase());
-                            setIsMenuToggled(false);
                           }}
                         >
-                          <div
-                            className="mr-3 w-1.5 h-1.5 rounded-full flex-shrink-0"
-                            style={{
-                              backgroundColor: isActive
-                                ? isDarkMode
-                                  ? "#F59E0B"
-                                  : "#4A6B4E"
-                                : isDarkMode
-                                  ? "rgba(255,255,255,0.2)"
-                                  : "rgba(74, 107, 78, 0.5)",
-                            }}
-                          />
-
-                          <span className="flex-1">{page}</span>
-
-                          {isActive && (
-                            <div
-                              className="w-1.5 h-1.5 rounded-full ml-2"
-                              style={{
-                                backgroundColor: isDarkMode ? "#F59E0B" : "var(--lm-accent)",
-                              }}
-                            />
-                          )}
-                        </AnchorLink>
-                      );
-                    })}
-                  </div>
-
-                  <div
-                    className="px-6 py-4 border-t"
-                    style={{
-                      backgroundColor: isDarkMode ? "#111827" : "var(--lm-bg-surface)",
-                      borderTopColor: isDarkMode ? "rgba(255,255,255,0.06)" : "var(--lm-border)",
-                    }}
-                  >
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="min-w-0">
-                        <p
-                          className="text-[10px] font-medium uppercase tracking-[0.2em]"
-                          style={{
-                            color: isDarkMode ? "rgba(245, 158, 11, 0.55)" : "rgba(74, 107, 78, 0.65)",
-                          }}
-                        >
-                          Theme
-                        </p>
-                        <p
-                          className="text-sm font-medium mt-0.5"
-                          style={{ color: isDarkMode ? "#F0F4F8" : "var(--lm-text-primary)" }}
-                        >
-                          {isDarkMode ? "Dark" : "Light"}
-                        </p>
-                      </div>
-
-                      <label className="relative inline-flex shrink-0 cursor-pointer items-center">
-                        <input
-                          type="checkbox"
-                          checked={isDarkMode}
-                          onChange={toggleTheme}
-                          className="sr-only peer"
-                        />
-                        <div
-                          className={`relative h-7 w-14 rounded-full transition-all duration-300 shadow-md ${isDarkMode ? "bg-amber-500" : ""}`}
-                          style={!isDarkMode ? { backgroundColor: "#4A6B4E" } : undefined}
-                        >
-                          <div
-                            className={`absolute top-0.5 left-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-md transition-all duration-300
-                            ${isDarkMode ? "translate-x-7" : ""}`}
-                          >
-                            {isDarkMode ? (
-                              <FiMoon className="h-3 w-3 text-[#07090D]" />
-                            ) : (
-                              <FiSun className="h-3 w-3 text-[#4A6B4E]" />
-                            )}
-                          </div>
-                        </div>
-                      </label>
-                    </div>
-                  </div>
+                          {item.label}
+                          <SketchUnderline color={accent} active={isActive} />
+                        </span>
+                      </AnchorLink>
+                    );
+                  })}
                 </div>
-              </>,
-              document.body
-            )}
-        </div>
-      </nav>
 
-      <style>{`
-        @keyframes slide-in {
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-        
-        .animate-slide-in {
-          animation: slide-in 0.3s ease-out;
-        }
-      `}</style>
-    </>
+                {/* Theme row — label + the same grease-pencil toggle, no switch track */}
+                <div
+                  className="mt-1 flex items-center justify-between px-6 py-4"
+                  style={{
+                    borderTop: isDarkMode ? "1px solid rgba(255,255,255,0.06)" : "1px solid var(--lm-border)",
+                  }}
+                >
+                  <div className="min-w-0">
+                    <p
+                      className="font-mono text-[10px] uppercase tracking-[0.22em]"
+                      style={{ color: isDarkMode ? "rgba(245,158,11,0.6)" : "rgba(74,107,78,0.7)" }}
+                    >
+                      {isDarkMode ? "Darkroom" : "Daylight"}
+                    </p>
+                    <p
+                      className="mt-0.5 font-sans text-sm"
+                      style={{ color: isDarkMode ? "#F0F4F8" : "var(--lm-text-primary)" }}
+                    >
+                      {isDarkMode ? "Dark mode" : "Light mode"}
+                    </p>
+                  </div>
+                  <ThemeToggle isDarkMode={isDarkMode} toggleTheme={toggleTheme} className="h-11 w-11" />
+                </div>
+              </div>
+            </>,
+            document.body
+          )}
+      </div>
+    </nav>
   );
 };
 

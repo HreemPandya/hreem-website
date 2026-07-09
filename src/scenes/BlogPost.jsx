@@ -2,9 +2,10 @@ import { motion } from "framer-motion";
 import { blogs, getBlog } from "../data/blogs";
 
 // Individual blog page. Intentionally styled as a left-aligned "draft desk"
-// (mono breadcrumb index, accent rail, blinking caret + shimmer) rather than a
-// centered article, so it reads as its own thing. Every post is currently a
-// "draft in progress" placeholder.
+// (mono breadcrumb index, accent rail) rather than a centered article, so it
+// reads as its own thing. Posts with an empty `content` array (see
+// data/blogs.js) fall back to a "draft in progress" placeholder with a
+// blinking caret + shimmer.
 const BlogPost = ({ slug, isDarkMode }) => {
   const post = getBlog(slug);
   const index = blogs.findIndex((b) => b.slug === slug);
@@ -76,37 +77,80 @@ const BlogPost = ({ slug, isDarkMode }) => {
             )}
           </div>
 
-          {/* Draft-in-progress state */}
-          <div className="mt-14 md:mt-20">
-            <p className="font-mono text-sm">
-              <span className={isDarkMode ? "text-amber-400" : "text-[var(--lm-accent)]"}>
-                &#9998; draft in progress
-              </span>
-              <motion.span
-                className={`ml-1 inline-block ${isDarkMode ? "text-amber-400" : "text-[var(--lm-accent)]"}`}
-                animate={{ opacity: [1, 1, 0, 0] }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear", times: [0, 0.5, 0.5, 1] }}
-                aria-hidden="true"
-              >
-                &#9612;
-              </motion.span>
-            </p>
-
-            <p className={`mt-3 max-w-md text-sm md:text-base ${isDarkMode ? "text-[#8B9DB0]/80" : "text-[var(--lm-text-muted)]"}`}>
-              this entry is still being written. i&apos;m putting it together now, check back soon.
-            </p>
-
-            {/* Indeterminate shimmer to signal it's being built */}
-            <div className={`mt-7 h-1 w-full max-w-xs overflow-hidden rounded-full ${isDarkMode ? "bg-white/[0.06]" : "bg-[var(--lm-accent)]/10"}`}>
-              <motion.div
-                className={`h-full w-1/3 rounded-full bg-gradient-to-r from-transparent ${
-                  isDarkMode ? "via-amber-500/70" : "via-[var(--lm-accent)]"
-                } to-transparent`}
-                animate={{ x: ["-120%", "360%"] }}
-                transition={{ duration: 1.9, repeat: Infinity, ease: "easeInOut" }}
-              />
+          {post.content && post.content.length > 0 ? (
+            /* Post body: paragraphs and images, in the order given in data/blogs.js */
+            <div className="mt-14 md:mt-20 space-y-6">
+              {post.content.map((block, i) =>
+                block.type === "image" ? (
+                  <figure key={i} className="!mt-10">
+                    <div
+                      className={`overflow-hidden rounded-sm border ${
+                        isDarkMode ? "border-white/10" : "border-[var(--lm-accent)]/15"
+                      }`}
+                    >
+                      <img
+                        src={block.src}
+                        alt={block.alt ?? ""}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full object-cover"
+                      />
+                    </div>
+                    {block.caption && (
+                      <figcaption
+                        className={`mt-2 font-mono text-xs ${
+                          isDarkMode ? "text-[#8B9DB0]/70" : "text-[var(--lm-text-muted)]/80"
+                        }`}
+                      >
+                        {block.caption}
+                      </figcaption>
+                    )}
+                  </figure>
+                ) : (
+                  <p
+                    key={i}
+                    className={`text-base md:text-lg leading-relaxed ${
+                      isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"
+                    }`}
+                  >
+                    {block.text}
+                  </p>
+                )
+              )}
             </div>
-          </div>
+          ) : (
+            /* Draft-in-progress state */
+            <div className="mt-14 md:mt-20">
+              <p className="font-mono text-sm">
+                <span className={isDarkMode ? "text-amber-400" : "text-[var(--lm-accent)]"}>
+                  &#9998; draft in progress
+                </span>
+                <motion.span
+                  className={`ml-1 inline-block ${isDarkMode ? "text-amber-400" : "text-[var(--lm-accent)]"}`}
+                  animate={{ opacity: [1, 1, 0, 0] }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear", times: [0, 0.5, 0.5, 1] }}
+                  aria-hidden="true"
+                >
+                  &#9612;
+                </motion.span>
+              </p>
+
+              <p className={`mt-3 max-w-md text-sm md:text-base ${isDarkMode ? "text-[#8B9DB0]/80" : "text-[var(--lm-text-muted)]"}`}>
+                this entry is still being written. i&apos;m putting it together now, check back soon.
+              </p>
+
+              {/* Indeterminate shimmer to signal it's being built */}
+              <div className={`mt-7 h-1 w-full max-w-xs overflow-hidden rounded-full ${isDarkMode ? "bg-white/[0.06]" : "bg-[var(--lm-accent)]/10"}`}>
+                <motion.div
+                  className={`h-full w-1/3 rounded-full bg-gradient-to-r from-transparent ${
+                    isDarkMode ? "via-amber-500/70" : "via-[var(--lm-accent)]"
+                  } to-transparent`}
+                  animate={{ x: ["-120%", "360%"] }}
+                  transition={{ duration: 1.9, repeat: Infinity, ease: "easeInOut" }}
+                />
+              </div>
+            </div>
+          )}
         </motion.article>
       </div>
     </main>
