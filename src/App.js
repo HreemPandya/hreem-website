@@ -121,7 +121,7 @@ function App() {
       {/* Content Sections - Added proper IDs for navigation */}
       <div id="home" className="max-w-7xl mx-auto min-w-0 px-4 sm:px-6">
         <motion.div onViewportEnter={() => setSelectedPage("home")}>
-          <Landing setSelectedPage={setSelectedPage} isDarkMode={isDarkMode} />
+          <Landing isDarkMode={isDarkMode} />
         </motion.div>
       </div>
 

@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import AnchorLink from "react-anchor-link-smooth-scroll";
 import useMediaQuery from "../hooks/useMediaQuery";
 import { Sun, Moon } from "lucide-react";
+import SocialMediaIcons from "../components/SocialMediaIcons";
 
 // Sections in order. `page` is the anchor/selection key (must match the section
 // ids in App.js, incl. the space in "about me"); `label` is what the eye reads.
@@ -159,7 +160,10 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
       }`}
       aria-label="Primary"
     >
-      <div className="relative mx-auto flex w-full max-w-7xl items-center justify-end px-4 sm:px-6 md:w-5/6 md:px-0">
+      <div className="relative mx-auto flex w-full max-w-7xl items-center justify-between px-4 sm:px-6 md:w-5/6 md:px-0">
+        {/* Social links live on the left of the bar (moved off the landing hero) */}
+        <SocialMediaIcons isDarkMode={isDarkMode} className="-ml-2" />
+
         {/* DESKTOP NAV */}
         {isDesktop ? (
           <div className="flex items-center gap-5 md:gap-7">
