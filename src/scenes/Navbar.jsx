@@ -183,19 +183,16 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
             <ThemeToggle isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
           </div>
         ) : (
-          /* MOBILE trigger — un-boxed: a small label + a stacked-lines glyph */
+          /* MOBILE trigger — un-boxed: just the stacked-lines glyph */
           <button
             type="button"
             aria-expanded={isMenuToggled}
             aria-label={isMenuToggled ? "Close menu" : "Open menu"}
-            className={`flex min-h-[44px] shrink-0 items-center gap-2 rounded-lg outline-none transition-opacity hover:opacity-80 ${
+            className={`flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-lg outline-none transition-opacity hover:opacity-80 ${
               isDarkMode ? "text-[#F0F4F8]" : "text-[var(--lm-text-primary)]"
             }`}
             onClick={() => setIsMenuToggled(!isMenuToggled)}
           >
-            <span className="font-sans text-[11px] uppercase tracking-[0.22em]">
-              {isMenuToggled ? "Close" : "Menu"}
-            </span>
             <MenuGlyph open={isMenuToggled} isDarkMode={isDarkMode} />
           </button>
         )}
