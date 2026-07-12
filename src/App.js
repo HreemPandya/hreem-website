@@ -53,6 +53,18 @@ function App() {
     if (route.name === "blog") window.scrollTo(0, 0);
   }, [route]);
 
+  // gtag's initial pageview only fires once on load, so blog navigation
+  // (a hash change, not a full reload) needs its own manual page_view.
+  useEffect(() => {
+    if (typeof window.gtag !== "function") return;
+    const page_path = route.name === "blog" ? `/blog/${route.slug}` : "/";
+    window.gtag("event", "page_view", {
+      page_path,
+      page_location: window.location.href,
+      page_title: document.title,
+    });
+  }, [route]);
+
   useEffect(() => {
     // rAF-coalesce scroll work to once per frame, and keep the layout reads and
     // the style write together so they never interleave into a forced reflow.
