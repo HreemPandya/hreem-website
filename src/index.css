@@ -885,35 +885,54 @@ html.light-mode .polaroid__peg {
   background: rgba(0, 0, 0, 0.22);
 }
 
-/* The print itself: off-white card with the classic thick bottom border. */
+/* The print itself: off-white card with the classic thick bottom border.
+   A faint diagonal paper gradient + inset top sheen give it real photo-paper
+   depth instead of reading as a flat white rectangle. */
 .polaroid {
-  background: #fbfaf6;
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.3), 0 3px 7px rgba(0, 0, 0, 0.2);
-  transition: box-shadow 300ms ease, background-color 300ms ease;
+  background: linear-gradient(158deg, #fefdfb 0%, #f6f4ee 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 16px 32px rgba(0, 0, 0, 0.34),
+    0 5px 12px rgba(0, 0, 0, 0.22);
+  transition: box-shadow 300ms ease, transform 300ms ease, background-color 300ms ease;
 }
 html.light-mode .polaroid {
-  background: #fdfcf9;
-  box-shadow: 0 12px 24px rgba(74, 107, 78, 0.18), 0 3px 7px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(158deg, #ffffff 0%, #faf8f3 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 14px 28px rgba(74, 107, 78, 0.18),
+    0 4px 10px rgba(0, 0, 0, 0.08);
 }
 .polaroid:hover {
-  box-shadow: 0 24px 44px rgba(0, 0, 0, 0.42), 0 8px 16px rgba(0, 0, 0, 0.26);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 28px 50px rgba(0, 0, 0, 0.46),
+    0 10px 20px rgba(0, 0, 0, 0.28);
 }
 html.light-mode .polaroid:hover {
-  box-shadow: 0 24px 40px rgba(74, 107, 78, 0.26), 0 8px 16px rgba(0, 0, 0, 0.14);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.85) inset,
+    0 26px 44px rgba(74, 107, 78, 0.28),
+    0 10px 18px rgba(0, 0, 0, 0.14);
 }
 
-/* Handwritten caption in the bottom border. Dark ink on the light print. */
+/* Handwritten project name, stretched to span the print like someone inked it
+   across the bottom border. Width fitting is done in JS (see FitCaption); this
+   just sets the pen. */
 .polaroid__caption {
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
   text-align: center;
-  font-family: "Caveat", cursive;
-  font-weight: 600;
-  font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.3rem);
-  line-height: 1.05;
-  color: #2a2a2a;
-  white-space: nowrap;
+  line-height: 1;
+  color: #263238;
   overflow: hidden;
-  text-overflow: ellipsis;
+}
+.polaroid__caption-ink {
+  display: inline-block;
+  white-space: nowrap;
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: clamp(1.55rem, 1.2rem + 1.4vw, 2rem);
+  line-height: 1;
 }
 
 /* A little tilted sticker/stamp for award or release badges. */

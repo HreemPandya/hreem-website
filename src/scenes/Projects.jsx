@@ -1,6 +1,6 @@
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { FaGithub, FaYoutube, FaTimes, FaExternalLinkAlt} from "react-icons/fa";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import useMediaQuery from "../hooks/useMediaQuery";
 import { createPortal } from "react-dom";
 
@@ -145,6 +145,60 @@ const chunk = (arr, size) => {
   return rows;
 };
 
+// Handwritten project name that stretches to span the print, so each one reads
+// like it was inked across the bottom border by hand. Long names shrink just
+// enough to fit; short names spread their letters out to fill the same width,
+// so every caption spans the card at a consistent height.
+const FitCaption = ({ text }) => {
+  const wrapRef = useRef(null);
+  const inkRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const wrap = wrapRef.current;
+    const ink = inkRef.current;
+    if (!wrap || !ink) return undefined;
+
+    const fit = () => {
+      // Reset any prior fit so we measure the natural, unstyled width.
+      ink.style.letterSpacing = "0px";
+      ink.style.paddingLeft = "0px";
+      ink.style.fontSize = "";
+      const base = parseFloat(getComputedStyle(ink).fontSize) || 28;
+      const target = wrap.clientWidth * 0.9;
+      const natural = ink.scrollWidth;
+      if (!natural) return;
+
+      if (natural > target) {
+        // Too long: scale the ink down so it fits inside the print.
+        ink.style.fontSize = `${(base * target) / natural}px`;
+      } else {
+        // Room to spare: spread the letters to fill the width. letter-spacing
+        // adds a gap after every glyph (N of them, trailing one included), and
+        // we pad the leading edge by one more to re-center, so the extra width
+        // is spacing * (N + 1) -- divide by that so we hit the target exactly.
+        const spacing = Math.min((target - natural) / (text.length + 1), base * 0.6);
+        ink.style.letterSpacing = `${spacing}px`;
+        ink.style.paddingLeft = `${spacing}px`;
+      }
+    };
+
+    fit();
+    window.addEventListener("resize", fit);
+    // Refit once the handwriting font finishes loading (first paint may measure
+    // the fallback font and get the width wrong).
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+    return () => window.removeEventListener("resize", fit);
+  }, [text]);
+
+  return (
+    <div ref={wrapRef} className="polaroid__caption">
+      <span ref={inkRef} className="polaroid__caption-ink">
+        {text}
+      </span>
+    </div>
+  );
+};
+
 // A single polaroid pinned to the wire. The clip (peg) stays upright while the
 // print tilts around its top-center, so it pivots from the clip like a real
 // hanging photo. Click / Enter / Space opens the existing modal.
@@ -186,22 +240,23 @@ const Polaroid = ({ project, isDarkMode, openModal, index = 0, reduceMotion }) =
         whileHover={reduceMotion ? {} : { rotate: 0, y: -8, scale: 1.04 }}
         whileTap={{ scale: 0.97 }}
       >
-        <div className="relative overflow-hidden rounded-[2px]">
+        <div className="relative overflow-hidden rounded-[2px] ring-1 ring-black/[0.06]">
           <img
             src={project.image}
             alt={project.title}
             loading="lazy"
             decoding="async"
-            className={`aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-105 ${
+            className={`aspect-square w-full object-cover [filter:saturate(1.08)_contrast(1.03)] transition-transform duration-700 group-hover:scale-105 ${
               project.cardImageObjectClass ?? project.imageObjectClass ?? ""
             }`}
           />
+          {/* Color tint kept light so the photo stays true; it lifts a little on hover. */}
           <div
-            className={`pointer-events-none absolute inset-0 bg-gradient-to-t ${project.gradient} opacity-[0.14] transition-opacity duration-500 group-hover:opacity-25`}
+            className={`pointer-events-none absolute inset-0 bg-gradient-to-t ${project.gradient} opacity-[0.08] transition-opacity duration-500 group-hover:opacity-[0.16]`}
           />
           {project.sticker && <span className="polaroid__sticker">{project.sticker}</span>}
         </div>
-        <p className="polaroid__caption">{project.caption ?? project.title}</p>
+        <FitCaption text={project.caption ?? project.title} />
       </motion.div>
     </div>
   );

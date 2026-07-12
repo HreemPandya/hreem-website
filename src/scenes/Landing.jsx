@@ -146,13 +146,6 @@ const Landing = ({ isDarkMode }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.9 }}
           >
-            <p
-              className={`mb-1 font-mono text-[11px] uppercase tracking-[0.2em] ${
-                isDarkMode ? 'text-amber-400/80' : 'text-[var(--lm-accent)]'
-              }`}
-            >
-              Experience
-            </p>
             <ExperienceList isDarkMode={isDarkMode} />
           </motion.div>
         </div>

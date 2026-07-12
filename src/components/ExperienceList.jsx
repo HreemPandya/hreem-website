@@ -10,29 +10,29 @@ const EXPERIENCE = [
     title: "Data & AI Engineer",
     org: "Compass Data & AI (CDAI)",
     logo: "cdai.png",
-    date: "", // e.g. "2025 - Present"
-    description: "Brief description coming soon.",
+    date: "Sept 2026 - Dec 2026", // e.g. "2025 - Present"
+    description: "incoming for fall 2026",
   },
   {
     title: "AI Intern",
     org: "Environics Analytics",
     logo: "environics.png",
-    date: "",
-    description: "Brief description coming soon.",
+    date: "Jan 2026 - Apr 2026",
+    description: "building ai tools for canada's largest collection of actionable marketing data",
   },
   {
     title: "Founding Software Engineer",
     org: "Skrimp.ai",
     logo: "skrimp.png",
-    date: "",
-    description: "Brief description coming soon.",
+    date: "May 2025 - Aug 2025",
+    description: "founding engineer for a waterloo based startup, turning messy grocery flyers into structured data powering smarter, discounted meal planning for canadians.",
   },
   {
     title: "Autonomy Software Engineer",
     org: "WARG",
     logo: "warg.png",
     date: "",
-    description: "Brief description coming soon.",
+    description: "ml-powered landing detection with yolov8 and built control algorithms for autonomous drone navigation",
   },
 ];
 
@@ -72,12 +72,12 @@ const ExperienceRow = ({ item, isDarkMode }) => {
           <p className={`truncate font-semibold leading-tight ${isDarkMode ? "text-white" : "text-[var(--lm-text-primary)]"}`}>
             {item.title}
           </p>
-          <p className={`truncate text-sm ${isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"}`}>
+          <p className={`truncate text-sm font-medium ${isDarkMode ? "text-amber-400/90" : "text-[var(--lm-accent)]"}`}>
             {item.org}
           </p>
         </div>
         {item.date && (
-          <span className={`shrink-0 text-xs ${isDarkMode ? "text-[#8B9DB0]/80" : "text-[var(--lm-text-muted)]/80"}`}>
+          <span className={`shrink-0 font-mono text-[11px] uppercase tracking-wider tabular-nums ${isDarkMode ? "text-[#8B9DB0]/70" : "text-[var(--lm-text-muted)]/70"}`}>
             {item.date}
           </span>
         )}
