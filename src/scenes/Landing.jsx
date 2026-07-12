@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion, useReducedMotion } from "framer-motion";
+import ExperienceList from "../components/ExperienceList";
 
 const PUBLIC = process.env.PUBLIC_URL || "";
 
@@ -48,10 +49,10 @@ const Landing = ({ isDarkMode }) => {
       )}
 
       <section
-        className={`${isDarkMode ? 'bg-transparent' : 'bg-transparent'} flex min-h-screen min-w-0 flex-col md:flex-row md:justify-between md:items-center gap-6 md:gap-12 py-6 md:py-8 pt-20 md:pt-28 relative z-10 px-4 sm:px-5`}
+        className={`${isDarkMode ? 'bg-transparent' : 'bg-transparent'} flex min-w-0 flex-col md:flex-row md:justify-between md:items-start gap-6 md:gap-12 py-6 md:py-8 pt-20 md:pt-28 pb-8 md:pb-12 relative z-10 px-4 sm:px-5`}
       >
         {/* IMAGE SECTION - Overlap for asymmetry, flip between dark/light pics */}
-        <div className="basis-3/5 z-10 flex justify-center md:order-2 order-1 md:-ml-8 lg:-ml-12">
+        <div className="basis-1/2 z-10 flex justify-center md:order-2 order-1 md:-ml-8 lg:-ml-12">
           <motion.div 
             className="relative z-0 w-full max-w-[260px] md:max-w-[360px] lg:max-w-[520px] overflow-hidden rounded-3xl"
             initial={{ opacity: 0, scale: 0.9, x: 20 }}
@@ -111,9 +112,8 @@ const Landing = ({ isDarkMode }) => {
           </motion.div>
         </div>
 
-        {/* MAIN TEXT - Below image on mobile. Just the name + role + a handwritten
-            note; the photo carries the rest. */}
-        <div className="z-30 basis-2/5 order-2 md:order-1">
+        {/* MAIN TEXT - Below image on mobile. Name + role, then experience list. */}
+        <div className="z-30 basis-1/2 order-2 md:order-1 w-full">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -125,7 +125,7 @@ const Landing = ({ isDarkMode }) => {
             }}
           >
             <motion.h1
-              className={`text-[clamp(2.75rem,10vw,3.5rem)] sm:text-6xl md:text-6xl lg:text-7xl font-playfair z-10 text-center md:text-start break-words ${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'} mb-4 md:mb-5 leading-[1.02] font-bold`}
+              className={`text-[clamp(2.5rem,8vw,3rem)] sm:text-5xl md:text-5xl lg:text-6xl font-playfair z-10 text-center md:text-start break-words ${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'} mb-3 md:mb-4 leading-[1.02] font-bold`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
@@ -137,17 +137,23 @@ const Landing = ({ isDarkMode }) => {
             </motion.h1>
 
             <LandingTagline isDarkMode={isDarkMode} />
+          </motion.div>
 
-            {/* Handwritten signature line (placeholder — edit the text freely) */}
-            <motion.p
-              className={`mt-6 md:mt-8 text-center md:text-start text-3xl md:text-4xl leading-none ${isDarkMode ? 'text-amber-400/90' : 'text-[var(--lm-accent)]'}`}
-              style={{ fontFamily: '"Caveat", cursive' }}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.95 }}
+          {/* EXPERIENCE */}
+          <motion.div
+            className="mt-7 md:mt-9 mx-auto max-w-md md:mx-0 md:max-w-none text-left"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.9 }}
+          >
+            <p
+              className={`mb-1 font-mono text-[11px] uppercase tracking-[0.2em] ${
+                isDarkMode ? 'text-amber-400/80' : 'text-[var(--lm-accent)]'
+              }`}
             >
-              always building something
-            </motion.p>
+              Experience
+            </p>
+            <ExperienceList isDarkMode={isDarkMode} />
           </motion.div>
         </div>
       </section>
