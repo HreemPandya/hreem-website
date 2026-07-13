@@ -31,7 +31,7 @@ const EXPERIENCE = [
     title: "Autonomy Software Engineer",
     org: "WARG",
     logo: "warg.png",
-    date: "",
+    date: "Sept 2024 - Feb 2025",
     description: "ml-powered landing detection with yolov8 and built control algorithms for autonomous drone navigation",
   },
 ];
