@@ -84,6 +84,14 @@ html {
   overflow-x: clip;
 }
 
+/* Site-wide default zoom: makes the page render as if the visitor had zoomed
+   their browser out to 90%, so more content fits without changing any
+   layout code. Uses `zoom` (not transform: scale) so the browser actually
+   reflows at the new effective size instead of just visually shrinking. */
+html {
+  zoom: 0.9;
+}
+
 /* Dark mode: single directional light, reduced gradient */
 .dark-mode {
   @apply text-white;
