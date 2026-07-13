@@ -547,10 +547,11 @@ html {
 
 /* Footer cat - Coding Artist sleeping cat tutorial */
 .footer-cat-container {
-  height: 140px;
+  height: 96px; /* was 140px: the cat art only rises to ~90px, so this trims the
+                   dead space above it and keeps the footer compact */
   width: 245px;
   position: relative;
-  transform: scale(0.85);
+  transform: scale(0.72);
   transform-origin: bottom right;
   --footer-cat-offset: 45px;
 }

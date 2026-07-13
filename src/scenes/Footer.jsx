@@ -48,7 +48,7 @@ const Footer = ({ isDarkMode }) => {
   return (
     <footer
       id="site-footer"
-      className={`relative w-full py-12 md:py-16 mt-8 md:mt-24 overflow-hidden ${
+      className={`relative w-full py-6 md:py-7 mt-6 md:mt-12 overflow-hidden transition-colors duration-300 ${
         isDarkMode ? "bg-[#07090D]" : "bg-[var(--lm-bg-base)]"
       }`}
     >
@@ -65,10 +65,10 @@ const Footer = ({ isDarkMode }) => {
       )}
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 md:gap-16">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-10">
           {/* Brand + nav; on small screens name row shares a line with a compact cat */}
           <motion.div
-            className="flex min-w-0 flex-1 flex-col gap-6"
+            className="flex min-w-0 flex-1 flex-col gap-3"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -77,14 +77,14 @@ const Footer = ({ isDarkMode }) => {
             <div className="flex flex-row items-end justify-between gap-3 md:block">
               <div className="min-w-0">
                 <h2
-                  className={`font-playfair font-bold text-xl md:text-2xl ${
+                  className={`font-playfair font-bold text-lg md:text-xl transition-colors duration-300 ${
                     isDarkMode ? "text-amber-400" : "text-[var(--lm-accent)]"
                   }`}
                 >
                   Hreem Pandya
                 </h2>
                 <p
-                  className={`mt-1 font-mono text-xs uppercase tracking-wider ${
+                  className={`mt-1 font-mono text-xs uppercase tracking-wider transition-colors duration-300 ${
                     isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"
                   }`}
                 >
@@ -132,21 +132,21 @@ const Footer = ({ isDarkMode }) => {
 
         {/* Bottom bar */}
         <motion.div
-          className={`mt-12 md:mt-16 pt-6 md:pt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t ${isDarkMode ? "border-white/[0.06]" : "border-[var(--lm-border)]"}`}
+          className={`mt-5 md:mt-6 pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-t transition-colors duration-300 ${isDarkMode ? "border-white/[0.06]" : "border-[var(--lm-border)]"}`}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
           viewport={{ once: true }}
         >
           <p
-            className={`text-xs ${
+            className={`text-xs transition-colors duration-300 ${
               isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"
             }`}
           >
             © {new Date().getFullYear()} Hreem Pandya
           </p>
           <p
-            className={`text-xs ${
+            className={`text-xs transition-colors duration-300 ${
               isDarkMode ? "text-[#8B9DB0]/80" : "text-[var(--lm-text-muted)]/80"
             }`}
           >
