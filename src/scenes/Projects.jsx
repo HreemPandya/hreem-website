@@ -515,14 +515,31 @@ const Projects = ({ isDarkMode }) => {
                     isDarkMode ? "" : "bg-lm-bg-surface"
                   }`}
                 >
-                  <h2
-                    id="project-modal-title"
-                    className={`font-playfair text-2xl font-bold md:text-4xl ${
-                      isDarkMode ? "text-[#F0F4F8]" : "text-[var(--lm-text-primary)]"
-                    }`}
-                  >
-                    {selectedProject.title}
-                  </h2>
+                  <div className="flex flex-col gap-3">
+                    {selectedProject.badge && (
+                      <span
+                        className={`inline-flex w-fit items-center gap-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.18em] ${
+                          isDarkMode ? "text-amber-400" : "text-[var(--lm-accent)]"
+                        }`}
+                      >
+                        <span aria-hidden="true">★</span>
+                        {selectedProject.badge}
+                      </span>
+                    )}
+                    <h2
+                      id="project-modal-title"
+                      className={`font-playfair text-2xl font-bold md:text-4xl ${
+                        isDarkMode ? "text-[#F0F4F8]" : "text-[var(--lm-text-primary)]"
+                      }`}
+                    >
+                      {selectedProject.title}
+                    </h2>
+                    <div
+                      className={`h-[2px] w-12 rounded-full ${
+                        isDarkMode ? "bg-amber-500/60" : "bg-[var(--lm-accent)]/60"
+                      }`}
+                    />
+                  </div>
                   <p
                     className={`text-base leading-relaxed md:text-lg ${
                       isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"
@@ -548,20 +565,35 @@ const Projects = ({ isDarkMode }) => {
                     </p>
                   </div>
 
-                  {/* All Tags */}
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProject.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className={`rounded-full border px-2.5 py-1 text-xs md:px-3 md:py-2 md:text-sm ${
-                          isDarkMode
-                            ? "border-amber-500/[0.2] bg-amber-500/[0.12] text-amber-300"
-                            : "border-[var(--lm-border)] bg-[var(--lm-accent-muted)] text-[var(--lm-accent)]"
-                        }`}
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                  {/* Tech stack — a monospace "spec sheet" line rather than generic
+                      pill tags, so it reads as a build credit and feels less templated. */}
+                  <div className={`border-t pt-4 ${isDarkMode ? "border-white/[0.06]" : "border-[var(--lm-border)]"}`}>
+                    <p
+                      className={`mb-2.5 font-mono text-[11px] uppercase tracking-[0.2em] ${
+                        isDarkMode ? "text-amber-500/80" : "text-[var(--lm-accent)]/80"
+                      }`}
+                    >
+                      Built with
+                    </p>
+                    <div
+                      className={`flex flex-wrap items-center gap-x-2 gap-y-1.5 font-mono text-xs md:text-sm ${
+                        isDarkMode ? "text-[#B8C7D6]" : "text-[var(--lm-text-primary)]"
+                      }`}
+                    >
+                      {selectedProject.tags.map((tag, i) => (
+                        <span key={tag} className="inline-flex items-center gap-2">
+                          {i > 0 && (
+                            <span
+                              className={isDarkMode ? "text-amber-500/40" : "text-[var(--lm-accent)]/40"}
+                              aria-hidden="true"
+                            >
+                              ·
+                            </span>
+                          )}
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
 
                   {/* Project Links */}
