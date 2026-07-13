@@ -9,6 +9,7 @@ const projects = [
     id: 1,
     title: "FridgeMind: Winner of Hack the 6ix, Deloitte AI For Green",
     caption: "FridgeMind",
+    letterSpacingCap: 0.6,
     sticker: "Winner",
     badge: "Hack the 6ix Winner",
     description: "An intelligent recipe recommendation system built on a custom OS using QNX that analyzes available ingredients in your fridge and suggests personalized meals based on dietary preferences and nutritional goals.",
@@ -27,6 +28,7 @@ const projects = [
     id: 2,
     title: "Cliara: AI-Powered Shell with Natural Language & Macros",
     caption: "Cliara",
+    letterSpacingCap: 0.1,
     sticker: "PyPI",
     description: "An AI-powered shell that wraps your existing terminal (bash, zsh, PowerShell) and adds natural language commands, reusable macros, and smart workflows. Use ? <query> to describe what you want and get shell commands, or ? fix to correct failed commands. Includes Cliara Cloud (GitHub login, 150 free queries/month), semantic history search, smart push and smart deploy (auto-detects Vercel, Netlify, Docker).",
     hoverText: "Built with Python, OpenAI, and Anthropic APIs for natural language command generation. Uses prompt-toolkit for a rich REPL experience and Rich for formatted terminal output. The FastAPI backend powers Cliara Cloud with GitHub OAuth and usage tracking. Features include semantic history search across your shell history, smart push that generates commit messages from diffs, and smart deploy that auto-detects Vercel, Netlify, Docker, and PyPI deployment targets. Wraps bash, zsh, and PowerShell so you keep your existing setup while adding AI superpowers.",
@@ -46,6 +48,7 @@ const projects = [
     id: 3,
     title: "InvestEd: AI-Powered Financial Education @ Hack the North",
     caption: "InvestEd",
+    letterSpacingCap: 0.1,
     description: "Banking app that turns finances into something engaging. Portfolius AI explains spending habits, highlights overspending, and generates personalized explainer videos so you know exactly where your money goes and how to invest smarter.",
     hoverText: "Frontend: Next.js and Tailwind with a banking-inspired layout, including trend charts, portfolio views, and interactive elements like rebalance actions, wired to a FastAPI service layer. Backend: REST endpoints orchestrate an async pipeline where user and spending context is summarized, then Cohere's LLM drafts structured, plain-language narration and scene beats for each explainer. Manim (Python) renders motion graphics and captions at 720p/30fps; audio is synthesized with ElevenLabs so Portfolius has a consistent voice. Finished assets land in Supabase Storage with URLs served back to the client for reliable in-app playback without blocking the UI during generation.",
     image: `${process.env.PUBLIC_URL}/assets/project-8.webp`,
@@ -59,6 +62,7 @@ const projects = [
     id: 4,
     title: "BeMyEyes: Accessibility Tool",
     caption: "BeMyEyes",
+    letterSpacingCap: 0.6,
     description: "A wearable assistive device for visually impaired users that integrates ultrasonic distance sensors for obstacle detection auricularly, real-time object recognition via OpenCV using an embedded camera, and Google TTS output for contextual feedback.",
     hoverText: "Built on an Arduino microcontroller with ultrasonic distance sensors for auricular obstacle detection and an embedded camera for real-time image capture. Uses a Python-based companion system with OpenCV for object recognition and Google TTS for contextual audio feedback. Communication between hardware and processing modules is handled via serial over USB, ensuring low-latency data transfer. The system implements non-blocking sensor polling for continuous environment scanning, progressive alert tones mapped to obstacle proximity, and modular firmware for easy expansion to additional sensors or features.",
     image: `${process.env.PUBLIC_URL}/assets/base-bemyeyes-crop.webp`,
@@ -76,6 +80,7 @@ const projects = [
     id: 8,
     title: "HackCanada Judging: Scale Without the Spreadsheet Chaos",
     caption: "HackCanada",
+    letterSpacingCap: 0.6,
     description: "Judging platform for HackCanada 2026 that absorbed the operational friction of a massive event: 210+ projects, 50+ judges, and 700+ participants. One place to manage projects, judges, rooms, and schedules; deployed on Vercel with TypeScript and Supabase.",
     hoverText: "Instead of brittle spreadsheets and scattered updates, judges allocate virtual investment across projects so rankings reflect relative preference and budget constraints, not opaque 1 to 10 scores, while organizers configure tracks, rooms, and calendar blocks from one admin surface. The Next.js App Router frontend uses React Server and Client Components where it matters, TypeScript end to end, Tailwind and shadcn/ui for consistent forms and tables, and Recharts for live breakdowns of allocations and progress. Supabase backs auth, relational data for projects, judges, rooms, and schedules, and row level security so each role only sees what it should. Queries stay indexed for list views at hundreds of rows, and the app is deployed on Vercel with preview environments so the team could iterate safely right up to event day.",
     image: `${process.env.PUBLIC_URL}/assets/project-4.webp`,
@@ -91,6 +96,7 @@ const projects = [
     id: 5,
     title: "GestureGroove: AI Music Controller",
     caption: "GestureGroove",
+    letterSpacingCap: 0.6,
     description: "A real-time gesture recognition app built on React that translates hand movements into music control using OpenCV for hand tracking and MediaPipe for gesture classification",
     hoverText: "The browser captures webcam frames through getUserMedia, then OpenCV handles acquisition and preprocessing while MediaPipe Hands tracks 21 landmarks per hand at interactive frame rates. Landmarks are normalized to screen space, smoothed over a short sliding window, and fed into rules that look at palm orientation, finger spread, and motion vectors so static poses and swipes map to different commands. Debouncing and minimum hold times cut accidental toggles when the hand jitters. The React UI runs the loop with requestAnimationFrame-friendly updates so the overlay and control panel stay responsive. Playback and library access go through the Spotify Web API with OAuth, mapping gestures to skip, play, pause, volume, and effect parameters so the whole stack stays in the browser without a native plugin.",
     image: `${process.env.PUBLIC_URL}/assets/project-6.webp`,
@@ -106,6 +112,7 @@ const projects = [
     id: 6,
     title: "CrisisCompass: First Responder's Emergency Management Tool",
     caption: "CrisisCompass",
+    letterSpacingCap: 0.6,
     description: "Developed at NewHacks 2024, this React web application helps first responders and volunteers prioritize and manage local emergencies by aggregating and scraping real-time data from news outlets using OpenAI API to analyze and rank incidents based on urgency and using geolocation to rank incidents by proximity.",
     hoverText: "Designed to help first responders and volunteers act faster during emergencies, CrisisCompass merges ingestion, scoring, and map-ready views in one place. A Flask REST API exposes routes for listing incidents, triggering refresh jobs, and serving ranked results to the client. Workers scrape and normalize headlines and blurbs from news and social-style sources, strip boilerplate, then call the OpenAI API with structured prompts to label incident type, extract location hints and severity cues, and produce a comparable urgency score. Geolocation or inferred coordinates feed a proximity sort alongside urgency so nearby high-risk events bubble up. The React front end polls or refetches on an interval, renders cards with urgency badges and severity icons, and keeps layout responsive for laptops in a command center. Error handling and timeouts on external calls prevent one slow source from stalling the whole dashboard when every second counts.",
     image: `${process.env.PUBLIC_URL}/assets/base-crisis.webp`,
@@ -121,6 +128,7 @@ const projects = [
     id: 7,
     title: "SecureEdu: Educational Material Encryption System",
     caption: "SecureEdu",
+    letterSpacingCap: 0.6,
     description: "A secure learning platform built from STM32 microcontrollers that encrypts and transmits educational materials, using AES-based encryption and EEPROM-stored keys. Implements a progressive hint-based learning system where content is unlocked incrementally via access keys, ensuring controlled information disclosure",
     hoverText: "SecureEdu runs on STM32 microcontrollers that use AES encryption to keep textbook sections, quiz solutions, and hints safe from unauthorized access. For secure communication between devices, it integrates Diffie-Hellman Key Exchange so encryption keys are never exposed during transfer. On the hardware side, we configured UART, I2C, and GPIO peripherals to connect an LCD display, which gives students real-time feedback as they interact with the system, and a 4x4 keypad, which they use to securely enter access keys. The whole setup powers a progressive hint-based learning system, where you can unlock just the right amount of help without giving away the entire answer, all while keeping the data transmission secure.",
     image: `${process.env.PUBLIC_URL}/assets/base-securedu-copy.webp`,
@@ -149,7 +157,7 @@ const chunk = (arr, size) => {
 // like it was inked across the bottom border by hand. Long names shrink just
 // enough to fit; short names spread their letters out to fill the same width,
 // so every caption spans the card at a consistent height.
-const FitCaption = ({ text }) => {
+const FitCaption = ({ text, letterSpacingCap = 0.6 }) => {
   const wrapRef = useRef(null);
   const inkRef = useRef(null);
 
@@ -176,7 +184,8 @@ const FitCaption = ({ text }) => {
         // adds a gap after every glyph (N of them, trailing one included), and
         // we pad the leading edge by one more to re-center, so the extra width
         // is spacing * (N + 1) -- divide by that so we hit the target exactly.
-        const spacing = Math.min((target - natural) / (text.length + 1), base * 0.6);
+        // letterSpacingCap (per-project) caps how wide that gap is allowed to get.
+        const spacing = Math.min((target - natural) / (text.length + 1), base * letterSpacingCap);
         ink.style.letterSpacing = `${spacing}px`;
         ink.style.paddingLeft = `${spacing}px`;
       }
@@ -188,7 +197,7 @@ const FitCaption = ({ text }) => {
     // the fallback font and get the width wrong).
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
     return () => window.removeEventListener("resize", fit);
-  }, [text]);
+  }, [text, letterSpacingCap]);
 
   return (
     <div ref={wrapRef} className="polaroid__caption">
@@ -256,7 +265,10 @@ const Polaroid = ({ project, isDarkMode, openModal, index = 0, reduceMotion }) =
           />
           {project.sticker && <span className="polaroid__sticker">{project.sticker}</span>}
         </div>
-        <FitCaption text={project.caption ?? project.title} />
+        <FitCaption
+          text={project.caption ?? project.title}
+          letterSpacingCap={project.letterSpacingCap}
+        />
       </motion.div>
     </div>
   );
@@ -380,7 +392,7 @@ const Projects = ({ isDarkMode }) => {
   return (
     <section
       id="projects"
-      className={`pt-12 md:pt-20 pb-16 md:pb-24 transition-colors duration-300 ${isDarkMode ? "bg-transparent" : "bg-transparent"} relative overflow-hidden`}
+      className={`pt-12 md:pt-20 pb-8 md:pb-12 transition-colors duration-300 ${isDarkMode ? "bg-transparent" : "bg-transparent"} relative overflow-hidden`}
     >
       {/* Darkroom safelight: a warm glow behind the hung prints */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -427,29 +439,6 @@ const Projects = ({ isDarkMode }) => {
           ))}
         </div>
 
-        {/* Call to Action — minimal banner */}
-        <motion.div
-          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-14 md:mt-20 px-4"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <p className={`text-sm md:text-base ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
-            Interested in collaborating?
-          </p>
-          <motion.a
-            href="#contact"
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm border-2 transition-colors shadow-md ${isDarkMode ? 'border-amber-500/40 text-amber-400 hover:bg-amber-500/10' : 'bg-white border-[#4A6B4E]/55 text-[#2D4A32] hover:bg-[#4A6B4E]/12 hover:border-[#4A6B4E] hover:shadow-lg'}`}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            Let's Connect
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </motion.a>
-        </motion.div>
       </div>
 
       {/* PROJECT MODAL — portaled to body so fixed + z-index aren’t trapped by section overflow-hidden */}
