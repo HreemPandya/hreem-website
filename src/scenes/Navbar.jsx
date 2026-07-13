@@ -155,8 +155,8 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
         isTopOfPage
           ? "bg-transparent"
           : isDarkMode
-            ? "border-b border-white/[0.06] bg-[#07090D]/70 backdrop-blur-md"
-            : "border-b border-[var(--lm-border)] bg-[var(--lm-bg-base)]/80 backdrop-blur-md"
+            ? "border-b border-white/[0.06] bg-[#07090D]/95"
+            : "border-b border-[var(--lm-border)] bg-[var(--lm-bg-base)]/95"
       }`}
       aria-label="Primary"
     >

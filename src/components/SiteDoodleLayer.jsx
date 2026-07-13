@@ -997,7 +997,7 @@ const SiteDoodleLayer = ({ isDarkMode }) => {
           {/* Holder — stays put. Filled circle when the pen is resting in it;
               an empty dashed ring (the drop target) while the pen is out. */}
           <div
-            className={`pointer-events-none absolute inset-0 rounded-full shadow-lg backdrop-blur-xl transition-all duration-200 ${
+            className={`pointer-events-none absolute inset-0 rounded-full shadow-lg transition-all duration-200 ${
               penOut
                 ? `border-2 border-dashed ${
                     nearHolder

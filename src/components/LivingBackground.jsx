@@ -242,6 +242,7 @@ const LivingBackground = ({ isDarkMode }) => {
 
     let raf = null;
     let last = performance.now();
+    let scrollPaused = false;
     const loop = (now) => {
       raf = requestAnimationFrame(loop);
       const elapsed = now - last;
@@ -250,17 +251,37 @@ const LivingBackground = ({ isDarkMode }) => {
       step(Math.min(DT_CAP, elapsed / 1000), now);
       render();
     };
+    const startLoop = () => {
+      if (raf || document.hidden || scrollPaused) return;
+      last = performance.now();
+      raf = requestAnimationFrame(loop);
+    };
+    const stopLoop = () => {
+      if (raf) cancelAnimationFrame(raf);
+      raf = null;
+    };
     raf = requestAnimationFrame(loop);
 
     // Don't burn cycles painting a tab nobody's looking at.
     const onVisibility = () => {
-      if (document.hidden) {
-        if (raf) cancelAnimationFrame(raf);
-        raf = null;
-      } else if (!raf) {
-        last = performance.now();
-        raf = requestAnimationFrame(loop);
-      }
+      if (document.hidden) stopLoop();
+      else startLoop();
+    };
+
+    // Scrolling already asks a weak/integrated GPU to composite the whole page;
+    // pausing this purely-decorative loop for the scroll's duration (resuming
+    // shortly after it settles) removes that contention without the slow drift
+    // ever reading as interrupted.
+    const SCROLL_RESUME_DELAY = 150;
+    let scrollTimer = null;
+    const onScroll = () => {
+      scrollPaused = true;
+      stopLoop();
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        scrollPaused = false;
+        startLoop();
+      }, SCROLL_RESUME_DELAY);
     };
 
     let resizeTimer = null;
@@ -269,19 +290,22 @@ const LivingBackground = ({ isDarkMode }) => {
       resizeTimer = setTimeout(() => {
         sizeCanvas();
         seed();
-        if (document.hidden) render();
+        if (document.hidden || scrollPaused) render();
       }, 150);
     };
 
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     window.addEventListener("resize", onResize);
+    window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
-      if (raf) cancelAnimationFrame(raf);
+      stopLoop();
       clearTimeout(resizeTimer);
+      clearTimeout(scrollTimer);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("scroll", onScroll);
       document.removeEventListener("visibilitychange", onVisibility);
     };
   }, [isDarkMode, reduceMotion, isMobile]);
