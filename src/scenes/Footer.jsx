@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import AnchorLink from "react-anchor-link-smooth-scroll";
 
 const FooterCatIllustration = ({ theme, twitch }) => (
   <div className={`footer-cat-wrapper ${twitch ? "footer-cat-twitch" : ""}`} data-theme={theme}>
@@ -38,13 +37,6 @@ const Footer = ({ isDarkMode }) => {
     };
   }, []);
 
-  const navLinks = [
-    { href: "#home", label: "Home" },
-    { href: "#projects", label: "Projects" },
-    { href: "#about me", label: "About" },
-    { href: "#contact", label: "Contact" },
-  ];
-
   return (
     <footer
       id="site-footer"
@@ -66,7 +58,7 @@ const Footer = ({ isDarkMode }) => {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-10">
-          {/* Brand + nav; on small screens name row shares a line with a compact cat */}
+          {/* Brand; on small screens the name row shares a line with a compact cat */}
           <motion.div
             className="flex min-w-0 flex-1 flex-col gap-3"
             initial={{ opacity: 0, y: 20 }}
@@ -101,22 +93,6 @@ const Footer = ({ isDarkMode }) => {
                 />
               </div>
             </div>
-
-            <nav className="flex flex-wrap gap-x-6 gap-y-1">
-              {navLinks.map((link) => (
-                <AnchorLink
-                  key={link.label}
-                  href={link.href}
-                  className={`text-sm transition-colors duration-300 ${
-                    isDarkMode
-                      ? "text-[#8B9DB0] hover:text-amber-400"
-                      : "text-[var(--lm-text-muted)] hover:text-[var(--lm-accent)]"
-                  }`}
-                >
-                  {link.label}
-                </AnchorLink>
-              ))}
-            </nav>
           </motion.div>
 
           <motion.div
