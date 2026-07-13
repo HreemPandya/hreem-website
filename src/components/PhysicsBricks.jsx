@@ -105,9 +105,17 @@ const PhysicsArena = ({ isDarkMode, onFail }) => {
       if (cancelled || !containerRef.current) return;
 
       const { Engine, Bodies, Body, Composite, Mouse, MouseConstraint, Events, Sleeping } = Matter;
-      const rect = container.getBoundingClientRect();
-      const W = rect.width;
-      const H = rect.height;
+      // Measure the arena in LAYOUT pixels via offsetWidth/Height, NOT
+      // getBoundingClientRect. The site sets a global CSS `zoom`, under which
+      // getBoundingClientRect returns zoomed/visual px while offsetWidth (used to
+      // size the bricks below) and the CSS transforms written in render() are in
+      // unzoomed layout px. Mixing the two put the physics world in an
+      // inconsistent coordinate space and the bricks never fell. Keeping the
+      // arena, the brick sizes, and the render transforms all in layout px makes
+      // them agree again.
+      const zoom = parseFloat(getComputedStyle(document.documentElement).zoom) || 1;
+      const W = container.offsetWidth;
+      const H = container.offsetHeight;
       if (W < 50 || H < 50) {
         onFail();
         return;
@@ -139,6 +147,13 @@ const PhysicsArena = ({ isDarkMode, onFail }) => {
       Composite.add(engine.world, bodies);
 
       const mouse = Mouse.create(container);
+      // matter maps pointer coords through getBoundingClientRect (zoomed/visual
+      // px), but our world is in layout px; rescale so a grab lands on the brick
+      // actually under the cursor when the site-wide zoom is in effect.
+      if (zoom !== 1) {
+        mouse.scale.x = 1 / zoom;
+        mouse.scale.y = 1 / zoom;
+      }
       const mouseConstraint = MouseConstraint.create(engine, {
         mouse,
         constraint: { stiffness: 0.2, damping: 0.1, render: { visible: false } },
@@ -307,11 +322,18 @@ const PhysicsArena = ({ isDarkMode, onFail }) => {
     );
     observer.observe(container);
 
-    // arena width changes (window resize) → rebuild the world
+    // arena width changes (window resize) → rebuild the world. Baseline the
+    // width from the ResizeObserver's OWN first callback, not getBoundingClientRect:
+    // under the site-wide CSS `zoom`, getBoundingClientRect returns zoomed px while
+    // ResizeObserver.contentRect returns unzoomed layout px, so seeding from the
+    // former made every callback look like a >40px "resize" and rebuilt the world
+    // on a loop — which reset the falling bricks every few frames so they never
+    // dropped. Comparing the RO's metric only against itself keeps them in sync.
     let resizeTimer = null;
-    let lastW = container.getBoundingClientRect().width;
+    let lastW = null;
     const ro = new ResizeObserver((entries) => {
       const w = entries[0]?.contentRect?.width ?? 0;
+      if (lastW === null) { lastW = w; return; } // establish baseline, don't rebuild
       if (Math.abs(w - lastW) < 40) return;
       lastW = w;
       clearTimeout(resizeTimer);
