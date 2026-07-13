@@ -4,7 +4,10 @@ import DotGroup from "./scenes/DotGroup";
 import LineGradient from "./components/LineGradient";
 import useMediaQuery from "./hooks/useMediaQuery";
 import { useEffect, useState, lazy, Suspense } from "react";
-import { motion } from "framer-motion";
+
+// Section anchors, top to bottom — used by the scroll-spy that highlights the
+// nav/dot for whichever section you're currently viewing.
+const SECTION_IDS = ["home", "projects", "about me", "contact"];
 
 // Below-the-fold / non-critical scenes are code-split so the initial download is
 // just the shell + the above-the-fold hero. Each loads its own chunk right after
@@ -74,12 +77,23 @@ function App() {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
       const scrollMax = scrollHeight - clientHeight;
 
-      if (scrollTop === 0) {
-        setIsTopOfPage(true);
-        setSelectedPage("home");
-      } else {
-        setIsTopOfPage(false);
+      setIsTopOfPage(scrollTop === 0);
+
+      // Scroll-spy: the active section is the last one whose top has scrolled
+      // above a reference line in the upper part of the viewport. This replaces
+      // framer-motion's onViewportEnter, which tracked the wrong section here:
+      // the lazy sections all mount at zero height, so every section's "enter"
+      // fired at once on load (leaving the last, contact, wrongly selected) and
+      // never re-fired for projects/home on scroll — and CSS zoom skewed its
+      // IntersectionObserver math. A per-frame geometry check is reliable.
+      const refLine = clientHeight * 0.4;
+      let active = "home";
+      for (const id of SECTION_IDS) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= refLine) active = id;
       }
+      if (scrollTop === 0) active = "home";
+      setSelectedPage(active);
 
       const indicator = document.querySelector(".scroll-indicator");
       if (indicator) indicator.style.width = (scrollMax > 0 ? (scrollTop / scrollMax) * 100 : 0) + "%";
@@ -132,39 +146,31 @@ function App() {
 
       {/* Content Sections - Added proper IDs for navigation */}
       <div id="home" className="max-w-7xl mx-auto min-w-0 px-4 sm:px-6">
-        <motion.div onViewportEnter={() => setSelectedPage("home")}>
-          <Landing isDarkMode={isDarkMode} />
-        </motion.div>
+        <Landing isDarkMode={isDarkMode} />
       </div>
 
       <LineGradient isDarkMode={isDarkMode} />
 
       <div id="projects" className="max-w-7xl mx-auto min-w-0 px-4 sm:px-6">
-        <motion.div onViewportEnter={() => setSelectedPage("projects")}>
-          <Suspense fallback={null}>
-            <Projects isDarkMode={isDarkMode} />
-          </Suspense>
-        </motion.div>
+        <Suspense fallback={null}>
+          <Projects isDarkMode={isDarkMode} />
+        </Suspense>
       </div>
 
       <LineGradient isDarkMode={isDarkMode} />
 
       <div id="about me" className="max-w-7xl mx-auto min-w-0 px-4 sm:px-6">
-        <motion.div onViewportEnter={() => setSelectedPage("about me")}>
-          <Suspense fallback={null}>
-            <AboutMe isDarkMode={isDarkMode} />
-          </Suspense>
-        </motion.div>
+        <Suspense fallback={null}>
+          <AboutMe isDarkMode={isDarkMode} />
+        </Suspense>
       </div>
 
       <LineGradient isDarkMode={isDarkMode} />
 
       <div id="contact" className="max-w-7xl mx-auto min-w-0 px-4 sm:px-6">
-        <motion.div onViewportEnter={() => setSelectedPage("contact")}>
-          <Suspense fallback={null}>
-            <Contact isDarkMode={isDarkMode} />
-          </Suspense>
-        </motion.div>
+        <Suspense fallback={null}>
+          <Contact isDarkMode={isDarkMode} />
+        </Suspense>
       </div>
 
       <Suspense fallback={null}>
