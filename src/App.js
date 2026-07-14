@@ -37,7 +37,6 @@ function App() {
   const [route, setRoute] = useState(() =>
     parseRoute(typeof window !== "undefined" ? window.location.hash : "")
   );
-
   const toggleTheme = () => setIsDarkMode((prev) => !prev);
 
   useEffect(() => {

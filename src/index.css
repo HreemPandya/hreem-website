@@ -74,7 +74,9 @@ body,
   font-family: 'DM Sans', system-ui, sans-serif;
 }
 
-/* Theme swap: only animate root background — avoids transition thrash on every descendant */
+/* Theme swap: animate the single root background. Content sections and the footer
+   are transparent, so they show this one background and cross-fade with it in
+   lockstep — nothing paints its own duplicate background to fall out of sync. */
 html {
   transition: background-color 0.22s ease;
 }

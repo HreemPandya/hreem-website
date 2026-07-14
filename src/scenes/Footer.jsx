@@ -40,9 +40,7 @@ const Footer = ({ isDarkMode }) => {
   return (
     <footer
       id="site-footer"
-      className={`relative w-full py-6 md:py-7 mt-6 md:mt-12 overflow-hidden transition-colors duration-300 ${
-        isDarkMode ? "bg-[#07090D]" : "bg-[var(--lm-bg-base)]"
-      }`}
+      className="relative w-full py-6 md:py-7 mt-6 md:mt-12 overflow-hidden bg-transparent"
     >
       {/* Subtle top border + accent glow */}
       <div
