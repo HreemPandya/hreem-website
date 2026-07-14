@@ -1,5 +1,5 @@
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { FaGithub, FaYoutube, FaTimes, FaExternalLinkAlt} from "react-icons/fa";
+import { Github, Youtube, ExternalLink, Globe, X, ArrowUpRight } from "lucide-react";
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import useMediaQuery from "../hooks/useMediaQuery";
 import { createPortal } from "react-dom";
@@ -19,9 +19,9 @@ const projects = [
     gradient: "from-indigo-500 to-purple-500",
     tags: ['Raspberry Pi/QNX', 'Yolov5', 'Python', 'FastAPI', 'Expo Go' ],
     links: [
-      { href: "https://devpost.com/software/fridge-mind", icon: <FaExternalLinkAlt size={20} />, label: "Devpost" },
-      { href: "https://youtube.com/shorts/sylrchlKfYk?feature=share", icon: <FaYoutube size={20} />, label: "Demo" },
-      { href: "https://github.com/HreemPandya/fridge-mind", icon: <FaGithub size={20} />, label: "Code" },
+      { href: "https://devpost.com/software/fridge-mind", icon: <ExternalLink size={16} />, label: "Devpost" },
+      { href: "https://youtube.com/shorts/sylrchlKfYk?feature=share", icon: <Youtube size={16} />, label: "Demo" },
+      { href: "https://github.com/HreemPandya/fridge-mind", icon: <Github size={16} />, label: "Code" },
     ],
   },
   {
@@ -40,8 +40,8 @@ const projects = [
     tags: ['Python', 'LLMs', 'FastAPI', 'OpenAI', 'Anthropic', 'Shell', 'PyPI'],
     badge: "Published on PyPI",
     links: [
-      { href: "https://github.com/HreemPandya/cliara-app", icon: <FaGithub size={20} />, label: "Code" },
-      { href: "https://pypi.org/project/cliara/", icon: <FaExternalLinkAlt size={20} />, label: "PyPI" },
+      { href: "https://github.com/HreemPandya/cliara-app", icon: <Github size={16} />, label: "Code" },
+      { href: "https://pypi.org/project/cliara/", icon: <ExternalLink size={16} />, label: "PyPI" },
     ],
   },
   {
@@ -55,7 +55,7 @@ const projects = [
     gradient: "from-emerald-500 to-cyan-500",
     tags: ['Next.js', 'Tailwind', 'FastAPI', 'Cohere', 'Manim', 'ElevenLabs', 'Supabase'],
     links: [
-      { href: "https://github.com/HreemPandya/invested", icon: <FaGithub size={20} />, label: "Code" },
+      { href: "https://github.com/HreemPandya/invested", icon: <Github size={16} />, label: "Code" },
     ],
   },
   {
@@ -72,8 +72,8 @@ const projects = [
     gradient: "from-green-500 to-blue-500",
     tags: ['Arduino', 'OpenCV', 'IoT', 'Embedded System'],
     links: [
-      { href: "https://devpost.com/software/bemyeyes", icon: <FaExternalLinkAlt size={20} />, label: "Devpost" },
-      { href: "https://github.com/HreemPandya/be-my-eyes", icon: <FaGithub size={20} />, label: "Code" },
+      { href: "https://devpost.com/software/bemyeyes", icon: <ExternalLink size={16} />, label: "Devpost" },
+      { href: "https://github.com/HreemPandya/be-my-eyes", icon: <Github size={16} />, label: "Code" },
     ],
   },
   {
@@ -88,8 +88,8 @@ const projects = [
     gradient: "from-violet-500 to-indigo-500",
     tags: ['Next.js', 'TypeScript', 'Supabase', 'Vercel', 'Tailwind'],
     links: [
-      { href: "https://hackcanada-judging.vercel.app/", icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.559-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.559.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clipRule="evenodd"></path></svg>, label: "Website" },
-      { href: "https://github.com/Hack-Canada/judging-platform", icon: <FaGithub size={20} />, label: "Code" },
+      { href: "https://hackcanada-judging.vercel.app/", icon: <Globe size={16} />, label: "Website" },
+      { href: "https://github.com/Hack-Canada/judging-platform", icon: <Github size={16} />, label: "Code" },
     ],
   },
   {
@@ -104,8 +104,8 @@ const projects = [
     gradient: "from-cyan-500 to-blue-500",
     tags: ['OpenCV', 'MediaPipe', 'Spotify API', 'React'],
     links: [
-      { href: "https://gesturegroove.vercel.app/", icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.559-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.559.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clipRule="evenodd"></path></svg>, label: "Demo" },
-      { href: "https://github.com/HreemPandya/GestureGroove", icon: <FaGithub size={20} />, label: "Code" },
+      { href: "https://gesturegroove.vercel.app/", icon: <Globe size={16} />, label: "Demo" },
+      { href: "https://github.com/HreemPandya/GestureGroove", icon: <Github size={16} />, label: "Code" },
     ],
   },
   {
@@ -120,8 +120,8 @@ const projects = [
     gradient: "from-red-500 to-orange-500",
     tags: ['React', 'OpenAI API', 'Flask', 'Web Scraping'],
     links: [
-      { href: "https://github.com/HreemPandya/Crisis-Compass", icon: <FaGithub size={20} />, label: "Code" },
-      { href: "https://youtu.be/pfCfrTvsKqc", icon: <FaYoutube size={20} />, label: "Demo" },
+      { href: "https://github.com/HreemPandya/Crisis-Compass", icon: <Github size={16} />, label: "Code" },
+      { href: "https://youtu.be/pfCfrTvsKqc", icon: <Youtube size={16} />, label: "Demo" },
     ],
   },
   {
@@ -136,8 +136,8 @@ const projects = [
     gradient: "from-blue-500 to-teal-500",
     tags: ['STM32', 'C Programming', 'Embedded Systems','AES Encryption'],
     links: [
-      { href: "https://github.com/HreemPandya/SecureEdu", icon: <FaGithub size={20} />, label: "Code" },
-      { href: "https://youtube.com/shorts/-U43X7I6Ihs?feature=share", icon: <FaYoutube size={20} />, label: "Demo" },
+      { href: "https://github.com/HreemPandya/SecureEdu", icon: <Github size={16} />, label: "Code" },
+      { href: "https://youtube.com/shorts/-U43X7I6Ihs?feature=share", icon: <Youtube size={16} />, label: "Demo" },
     ],
   },
 ];
@@ -483,7 +483,7 @@ const Projects = ({ isDarkMode }) => {
                     : "border border-[var(--lm-border)] bg-white/95 text-[var(--lm-text-primary)] shadow-sm hover:bg-white"
                 }`}
               >
-                <FaTimes
+                <X
                   className={`h-4 w-4 md:h-5 md:w-5 ${isDarkMode ? "text-white" : "text-[var(--lm-text-primary)]"}`}
                 />
               </button>
@@ -596,18 +596,19 @@ const Projects = ({ isDarkMode }) => {
                     </div>
                   </div>
 
-                  {/* Project Links */}
-                  <div className="flex flex-wrap gap-3 md:gap-4">
+                  {/* Project Links — small, translucent pills that inherit the
+                      accent color (icons are lucide outlines, matching the navbar). */}
+                  <div className="flex flex-wrap gap-2 md:gap-2.5">
                     {selectedProject.links.map((link, idx) => (
                       <motion.a
                         key={idx}
                         href={link.href}
                         target="_blank"
                         rel="noreferrer"
-                        className={`flex items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-semibold transition-all duration-200 hover:scale-[1.02] active:scale-[0.95] md:gap-3 md:px-6 md:py-3 md:text-base ${
+                        className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors duration-200 md:text-sm [&_svg]:shrink-0 ${
                           isDarkMode
-                            ? "border-transparent bg-amber-500 text-[#07090D] hover:opacity-90 [&_svg]:text-[#07090D]"
-                            : "border-[var(--lm-accent)] bg-[var(--lm-bg-surface)] text-[var(--lm-accent)] shadow-sm hover:bg-[var(--lm-accent-muted)] [&_svg]:shrink-0 [&_svg]:text-[var(--lm-accent)]"
+                            ? "border-amber-500/25 bg-amber-500/10 text-amber-400 hover:border-amber-500/40 hover:bg-amber-500/20"
+                            : "border-[var(--lm-accent)]/30 bg-[var(--lm-accent)]/[0.08] text-[var(--lm-accent)] hover:border-[var(--lm-accent)]/50 hover:bg-[var(--lm-accent)]/15"
                         }`}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.95 }}
