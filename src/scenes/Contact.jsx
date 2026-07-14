@@ -52,7 +52,7 @@ const Contact = ({ isDarkMode }) => {
     }
   };
 
-  const inputBase = `w-full py-2.5 text-[15px] md:text-base border-b bg-transparent focus:outline-none transition-colors placeholder:opacity-50 disabled:opacity-60 disabled:cursor-not-allowed ${
+  const inputBase = `w-full py-2 text-sm md:text-[15px] border-b bg-transparent focus:outline-none transition-colors placeholder:opacity-50 disabled:opacity-60 disabled:cursor-not-allowed ${
     isDarkMode
       ? "text-white placeholder-[#8B9DB0]"
       : "text-[var(--lm-text-primary)] placeholder-[var(--lm-text-muted)]"
@@ -89,7 +89,7 @@ const Contact = ({ isDarkMode }) => {
   return (
     <section
       id="contact"
-      className={`pt-12 md:pt-20 pb-8 md:pb-32 transition-colors duration-300 relative overflow-hidden`}
+      className={`pt-8 md:pt-12 pb-8 md:pb-14 transition-colors duration-300 relative overflow-hidden`}
     >
       {isDarkMode && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -97,94 +97,68 @@ const Contact = ({ isDarkMode }) => {
         </div>
       )}
 
-      <div className="relative z-10 max-w-3xl mx-auto px-4 md:px-6">
-        {/* Minimal header */}
+      <div className="relative z-10 max-w-2xl mx-auto px-4 md:px-6">
+        {/* Minimal: one-line caption, then a compact horizontal form */}
         <motion.div
-          className="mb-8 md:mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <p
-            className={`font-mono text-xs uppercase tracking-[0.2em] mb-2 ${
-              isDarkMode ? "text-amber-500/70" : "text-[var(--lm-accent)]/70"
-            }`}
-          >
-            Contact
-          </p>
-          <h1
-            className={`font-playfair text-2xl md:text-3xl font-bold ${
+          <h2
+            className={`mb-5 font-playfair text-lg md:text-xl font-bold ${
               isDarkMode ? "text-white" : "text-[var(--lm-text-primary)]"
             }`}
           >
-            Get in touch
-          </h1>
-          <div
-            className={`mt-3 w-12 h-[1px] ${
-              isDarkMode ? "bg-amber-500/60" : "bg-[var(--lm-accent)]/60"
-            }`}
-          />
-        </motion.div>
-
-        {/* Simple form — no box */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <p
-            className={`text-sm md:text-base mb-6 ${
-              isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"
-            }`}
-          >
-            Have a project in mind or just want to say hello? Drop a message.
-          </p>
+            Drop me a message
+          </h2>
 
           <form
             action="https://formsubmit.co/hreempandya@gmail.com"
             method="POST"
-            className="space-y-5"
+            className="space-y-4"
             onSubmit={handleSubmit(onSubmit)}
             noValidate
           >
             <input type="hidden" name="_captcha" value="false" />
 
-            <div>
-              <input
-                className={`${inputBase} ${borderClass(!!errors.name)}`}
-                type="text"
-                placeholder="Your name"
-                aria-invalid={!!errors.name}
-                aria-describedby={errors.name ? "name-error" : undefined}
-                disabled={sent}
-                {...register("name", { required: "Please enter your name." })}
-              />
-              {fieldError("name", "name-error")}
-            </div>
+            {/* Name + email side by side */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
+              <div>
+                <input
+                  className={`${inputBase} ${borderClass(!!errors.name)}`}
+                  type="text"
+                  placeholder="Your name"
+                  aria-invalid={!!errors.name}
+                  aria-describedby={errors.name ? "name-error" : undefined}
+                  disabled={sent}
+                  {...register("name", { required: "Please enter your name." })}
+                />
+                {fieldError("name", "name-error")}
+              </div>
 
-            <div>
-              <input
-                className={`${inputBase} ${borderClass(!!errors.email)}`}
-                type="email"
-                placeholder="Email"
-                aria-invalid={!!errors.email}
-                aria-describedby={errors.email ? "email-error" : undefined}
-                disabled={sent}
-                {...register("email", {
-                  required: "Please enter your email.",
-                  pattern: { value: EMAIL_PATTERN, message: "Enter a valid email address." },
-                })}
-              />
-              {fieldError("email", "email-error")}
+              <div>
+                <input
+                  className={`${inputBase} ${borderClass(!!errors.email)}`}
+                  type="email"
+                  placeholder="Email"
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? "email-error" : undefined}
+                  disabled={sent}
+                  {...register("email", {
+                    required: "Please enter your email.",
+                    pattern: { value: EMAIL_PATTERN, message: "Enter a valid email address." },
+                  })}
+                />
+                {fieldError("email", "email-error")}
+              </div>
             </div>
 
             <div>
               <textarea
-                className={`${inputBase} ${borderClass(!!errors.message)} resize-none min-h-[100px]`}
+                className={`${inputBase} ${borderClass(!!errors.message)} resize-none min-h-[72px]`}
                 placeholder="Your message"
-                rows={3}
+                rows={2}
                 aria-invalid={!!errors.message}
                 aria-describedby={errors.message ? "message-error" : undefined}
                 disabled={sent}
@@ -273,7 +247,7 @@ const Contact = ({ isDarkMode }) => {
 
         {/* Email + social — inline, no boxes */}
         <motion.div
-          className="mt-8 pt-6 border-t flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 md:mt-12 md:pt-8"
+          className="mt-6 pt-5 border-t flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 md:mt-8 md:pt-6"
           style={{
             borderColor: isDarkMode ? "rgba(255,255,255,0.06)" : "var(--lm-border)",
           }}

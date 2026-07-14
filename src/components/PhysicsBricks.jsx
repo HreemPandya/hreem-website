@@ -372,20 +372,6 @@ const PhysicsArena = ({ isDarkMode, onFail }) => {
           </div>
         ))}
       </div>
-      <p className={`mt-2 text-xs ${isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"}`}>
-        These obey real gravity, grab one.{" "}
-        <button
-          type="button"
-          onClick={() => worldRef.current?.reset()}
-          className={`underline hover:no-underline ${
-            isDarkMode
-              ? "text-amber-500/80 hover:text-amber-400"
-              : "text-[var(--lm-accent)]/80 hover:text-[var(--lm-accent)]"
-          }`}
-        >
-          Drop again
-        </button>
-      </p>
     </div>
   );
 };
