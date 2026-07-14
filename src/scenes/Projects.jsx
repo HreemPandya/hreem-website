@@ -596,25 +596,31 @@ const Projects = ({ isDarkMode }) => {
                     </div>
                   </div>
 
-                  {/* Project Links — small, translucent pills that inherit the
-                      accent color (icons are lucide outlines, matching the navbar). */}
-                  <div className="flex flex-wrap gap-2 md:gap-2.5">
+                  {/* Project Links — editorial text links (icon + label + arrow),
+                      not buttons. Neutral at rest; brighten to the accent with an
+                      underline + arrow nudge on hover. lucide icons match the navbar. */}
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
                     {selectedProject.links.map((link, idx) => (
                       <motion.a
                         key={idx}
                         href={link.href}
                         target="_blank"
                         rel="noreferrer"
-                        className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors duration-200 md:text-sm [&_svg]:shrink-0 ${
+                        className={`group inline-flex items-center gap-2 text-sm font-medium transition-colors [&_svg]:shrink-0 ${
                           isDarkMode
-                            ? "border-amber-500/25 bg-amber-500/10 text-amber-400 hover:border-amber-500/40 hover:bg-amber-500/20"
-                            : "border-[var(--lm-accent)]/30 bg-[var(--lm-accent)]/[0.08] text-[var(--lm-accent)] hover:border-[var(--lm-accent)]/50 hover:bg-[var(--lm-accent)]/15"
+                            ? "text-[#B8C7D6] hover:text-amber-400"
+                            : "text-[var(--lm-text-primary)] hover:text-[var(--lm-accent)]"
                         }`}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.95 }}
+                        whileHover={{ x: 1 }}
                       >
                         {link.icon}
-                        {link.label}
+                        <span className="border-b border-transparent pb-0.5 transition-colors group-hover:border-current">
+                          {link.label}
+                        </span>
+                        <ArrowUpRight
+                          size={14}
+                          className="opacity-50 transition-all group-hover:opacity-100 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                        />
                       </motion.a>
                     ))}
                   </div>
