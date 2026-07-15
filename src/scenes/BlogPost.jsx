@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { blogs, getBlog } from "../data/blogs";
 
@@ -9,6 +10,22 @@ import { blogs, getBlog } from "../data/blogs";
 const BlogPost = ({ slug, isDarkMode }) => {
   const post = getBlog(slug);
   const index = blogs.findIndex((b) => b.slug === slug);
+  const [BlogContent, setBlogContent] = useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+    // Try dynamically importing a JSX blog component at src/content/blogs/<slug>.jsx
+    import(`../content/blogs/${slug}.jsx`)
+      .then((mod) => {
+        if (mounted && mod && mod.default) setBlogContent(() => mod.default);
+      })
+      .catch(() => {
+        // no custom component — leave BlogContent null to fall back to data blocks
+      });
+    return () => {
+      mounted = false;
+    };
+  }, [slug]);
 
   const goBack = () => {
     if (window.history.length > 1) window.history.back();
@@ -77,7 +94,11 @@ const BlogPost = ({ slug, isDarkMode }) => {
             )}
           </div>
 
-          {post.content && post.content.length > 0 ? (
+          {BlogContent ? (
+            <div className="mt-14 md:mt-20">
+              <BlogContent isDarkMode={isDarkMode} />
+            </div>
+          ) : post.content && post.content.length > 0 ? (
             /* Post body: paragraphs and images, in the order given in data/blogs.js */
             <div className="mt-14 md:mt-20 space-y-6">
               {post.content.map((block, i) =>
