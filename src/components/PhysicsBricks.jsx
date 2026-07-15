@@ -223,8 +223,14 @@ const PhysicsArena = ({ isDarkMode, onFail }) => {
           stepped = true;
         }
         if (stepped) render();
-        // idle the loop once everything settles; a grab (mousedown) restarts it
-        if (allAsleep() && !mouseConstraint.body) {
+        // Idle the loop once everything settles — but NOT while the mouse button
+        // is held (mouse.button !== -1). A grab on an already-asleep brick is only
+        // registered inside Engine.update, and the first tick after a wake steps 0ms
+        // (delta ≈ 0), so stopping here on an asleep-but-just-pressed brick would
+        // kill the loop before the grab is ever processed. That's what made the
+        // bricks undraggable after scrolling away and back (they're fully asleep by
+        // then). Keeping the loop alive during the press lets the grab engage.
+        if (allAsleep() && !mouseConstraint.body && mouse.button === -1) {
           running = false;
           raf = null;
           return;
