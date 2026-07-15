@@ -211,11 +211,20 @@ const FitCaption = ({ text, letterSpacingCap = 0.6 }) => {
 // A single polaroid pinned to the wire. The clip (peg) stays upright while the
 // print tilts around its top-center, so it pivots from the clip like a real
 // hanging photo. Click / Enter / Space opens the existing modal.
-const Polaroid = ({ project, isDarkMode, openModal, index = 0, reduceMotion }) => {
+const Polaroid = ({
+  project,
+  isDarkMode,
+  openModal,
+  index = 0,
+  reduceMotion,
+  // Fixed responsive widths for the multi-row wall; "w-full" when a polaroid
+  // should fill its grid column in the single-line layout.
+  widthClass = "w-40 xs:w-44 sm:w-48 md:w-52",
+}) => {
   const angle = HANG_ANGLES[index % HANG_ANGLES.length];
 
   return (
-    <div className="relative flex w-40 flex-col items-center xs:w-44 sm:w-48 md:w-52">
+    <div className={`relative flex flex-col items-center ${widthClass}`}>
       <span
         className="polaroid__peg absolute left-1/2 top-[-13px] z-20 -translate-x-1/2"
         aria-hidden="true"
@@ -275,13 +284,21 @@ const Polaroid = ({ project, isDarkMode, openModal, index = 0, reduceMotion }) =
 };
 
 // One wire's worth of polaroids. The wire shows in the gaps between prints.
-const PhotoLine = ({ items, startIndex, isDarkMode, openModal, reduceMotion }) => (
+// oneLine: all projects hang on a single wire spread across the page as an
+// 8-column grid (each print fills its column), instead of the wrapping wall.
+const PhotoLine = ({ items, startIndex, isDarkMode, openModal, reduceMotion, oneLine }) => (
   <div className="photo-line relative">
     <span
       className="photo-line__string absolute left-[6%] right-[6%] top-0"
       aria-hidden="true"
     />
-    <div className="relative flex flex-wrap items-start justify-center gap-x-8 gap-y-14 md:gap-x-12">
+    <div
+      className={
+        oneLine
+          ? "relative grid grid-cols-8 items-start gap-x-3 lg:gap-x-4"
+          : "relative flex flex-wrap items-start justify-center gap-x-8 gap-y-14 md:gap-x-12"
+      }
+    >
       {items.map((project, i) => (
         <Polaroid
           key={project.id}
@@ -290,6 +307,7 @@ const PhotoLine = ({ items, startIndex, isDarkMode, openModal, reduceMotion }) =
           openModal={openModal}
           index={startIndex + i}
           reduceMotion={reduceMotion}
+          widthClass={oneLine ? "w-full" : undefined}
         />
       ))}
     </div>
@@ -307,7 +325,10 @@ const Projects = ({ isDarkMode }) => {
   const isXS = useMediaQuery("(max-width: 479px)");
   const isSM = useMediaQuery("(max-width: 767px)");
   const isMD = useMediaQuery("(max-width: 1059px)");
-  const perRow = isXS ? 1 : isSM ? 2 : isMD ? 3 : 4;
+  // Wide enough to hang all 8 prints on a single wire, spread across the page.
+  const isWide = useMediaQuery("(min-width: 1280px)");
+  const oneLine = isWide;
+  const perRow = isXS ? 1 : isSM ? 2 : isMD ? 3 : oneLine ? 8 : 4;
   const rows = chunk(projects, perRow);
 
   const openModal = (project) => {
@@ -426,7 +447,12 @@ const Projects = ({ isDarkMode }) => {
         {/* The drying line — polaroids strung up across the page.
             data-doodle-ignore: these prints are tilted + animated (and hold
             <img>s), so the site doodle layer must not treat them as colliders. */}
-        <div data-doodle-ignore className="max-w-7xl mx-auto px-4 space-y-14 md:space-y-20">
+        <div
+          data-doodle-ignore
+          className={`mx-auto space-y-14 md:space-y-20 ${
+            oneLine ? "max-w-none px-0" : "max-w-7xl px-4"
+          }`}
+        >
           {rows.map((row, r) => (
             <PhotoLine
               key={r}
@@ -435,6 +461,7 @@ const Projects = ({ isDarkMode }) => {
               isDarkMode={isDarkMode}
               openModal={openModal}
               reduceMotion={reduceMotion}
+              oneLine={oneLine}
             />
           ))}
         </div>

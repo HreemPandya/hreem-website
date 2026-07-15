@@ -150,7 +150,7 @@ function App() {
 
       <LineGradient isDarkMode={isDarkMode} />
 
-      <div id="projects" className="max-w-7xl mx-auto min-w-0 px-4 sm:px-6">
+      <div id="projects" className="max-w-[1700px] mx-auto min-w-0 px-4 sm:px-6">
         <Suspense fallback={null}>
           <Projects isDarkMode={isDarkMode} />
         </Suspense>
