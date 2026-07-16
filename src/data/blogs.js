@@ -47,6 +47,13 @@ export const blogs = [
     readTime: "5 min read",
     content: [],
   },
+  {
+    slug: "yc-ai-startup-school-2025",
+    title: "yc ai startup school 2025",
+    kicker: "startup school",
+    blurb: "part of the first ever cohort of y combinator's ai startup school.",
+    content: [],
+  },
 ];
 
 export const getBlog = (slug) => blogs.find((b) => b.slug === slug);

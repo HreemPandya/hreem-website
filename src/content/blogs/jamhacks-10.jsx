@@ -12,7 +12,7 @@ export default function Jamhacks10({ isDarkMode }) {
       </p>
 
       <p className={`text-base md:text-lg leading-relaxed ${isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"}`}>
-        Notes to self: describe highlights, mention memorable projects, and include any lessons learned for future organizers.
+        in progress.
       </p>
 
       {/* Example image — drop your file in public/assets/blog/ and update `src` accordingly */}
