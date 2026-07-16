@@ -21,6 +21,9 @@ export const blogs = [
     title: "judging @ jamhacks 10",
     kicker: "judging",
     blurb: "judging at canada's largest high school hackathon.",
+    author: "Hreem Pandya",
+    updated: "Jul 16, 2026",
+    readTime: "4 min read",
     content: [],
   },
   {
