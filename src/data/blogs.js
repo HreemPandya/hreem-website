@@ -28,6 +28,9 @@ export const blogs = [
     title: "organizing hack canada '26",
     kicker: "organizing",
     blurb: "helping run hack canada 2026.",
+    author: "Hreem Pandya",
+    updated: "Jul 16, 2026",
+    readTime: "6 min read",
     content: [],
   },
   {
@@ -35,6 +38,9 @@ export const blogs = [
     title: "intern exp @ environics analytics",
     kicker: "internship",
     blurb: "ai internship at environics analytics.",
+    author: "Hreem Pandya",
+    updated: "Jul 16, 2026",
+    readTime: "4 min read",
     content: [],
   },
   {
