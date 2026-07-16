@@ -86,7 +86,7 @@ const NavLink = ({ item, selectedPage, setSelectedPage, isDarkMode }) => {
   );
 };
 
-const ThemeToggle = ({ isDarkMode, toggleTheme, className = "" }) => {
+export const ThemeToggle = ({ isDarkMode, toggleTheme, className = "" }) => {
   const accent = isDarkMode ? "#F59E0B" : "#4A6B4E";
   return (
     <button

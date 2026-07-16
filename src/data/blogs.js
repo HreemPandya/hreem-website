@@ -42,6 +42,9 @@ export const blogs = [
     title: "exp with uw comp eng",
     kicker: "school",
     blurb: "studying computer engineering at waterloo.",
+    author: "Hreem Pandya",
+    updated: "Jul 16, 2026",
+    readTime: "5 min read",
     content: [],
   },
 ];

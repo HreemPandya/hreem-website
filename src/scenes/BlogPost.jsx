@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { blogs, getBlog } from "../data/blogs";
+import { ThemeToggle } from "./Navbar";
 
 // Individual blog page. Intentionally styled as a left-aligned "draft desk"
 // (mono breadcrumb index, accent rail) rather than a centered article, so it
 // reads as its own thing. Posts with an empty `content` array (see
 // data/blogs.js) fall back to a "draft in progress" placeholder with a
 // blinking caret + shimmer.
-const BlogPost = ({ slug, isDarkMode }) => {
+const BlogPost = ({ slug, isDarkMode, toggleTheme }) => {
   const post = getBlog(slug);
   const index = blogs.findIndex((b) => b.slug === slug);
   const [BlogContent, setBlogContent] = useState(null);
@@ -46,11 +47,18 @@ const BlogPost = ({ slug, isDarkMode }) => {
     </button>
   );
 
+  const topBar = (
+    <div className="flex items-center justify-between">
+      {backLink}
+      {toggleTheme && <ThemeToggle isDarkMode={isDarkMode} toggleTheme={toggleTheme} />}
+    </div>
+  );
+
   if (!post) {
     return (
       <main className="min-h-screen">
         <div className="mx-auto max-w-2xl px-6 py-12">
-          {backLink}
+          {topBar}
           <div className="mt-24">
             <h1 className={`font-playfair text-3xl font-bold ${isDarkMode ? "text-white" : "text-[var(--lm-text-primary)]"}`}>
               post not found
@@ -66,11 +74,11 @@ const BlogPost = ({ slug, isDarkMode }) => {
 
   return (
     <main className="min-h-screen">
-      <div className="mx-auto max-w-2xl px-6 py-10 md:py-14">
-        {backLink}
+      <div className="mx-auto max-w-2xl px-6 pt-6 pb-10 md:pt-8 md:pb-14">
+        {topBar}
 
         <motion.article
-          className="mt-16 md:mt-24"
+          className="mt-6 md:mt-8"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
@@ -88,8 +96,17 @@ const BlogPost = ({ slug, isDarkMode }) => {
               {post.title}
             </h1>
             {post.blurb && (
-              <p className={`mt-3 text-base md:text-lg ${isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"}`}>
+              <p className={`mt-5 text-base md:text-lg ${isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"}`}>
                 {post.blurb}
+              </p>
+            )}
+            {(post.author || post.updated || post.readTime) && (
+              <p className={`mt-4 flex flex-wrap items-center gap-x-2 text-sm ${isDarkMode ? "text-[#8B9DB0]/70" : "text-[var(--lm-text-muted)]/80"}`}>
+                {post.author && <span>{post.author}</span>}
+                {post.author && (post.updated || post.readTime) && <span aria-hidden="true">&middot;</span>}
+                {post.updated && <span>Last updated {post.updated}</span>}
+                {post.updated && post.readTime && <span aria-hidden="true">&middot;</span>}
+                {post.readTime && <span>{post.readTime}</span>}
               </p>
             )}
           </div>

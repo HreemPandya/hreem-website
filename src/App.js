@@ -115,7 +115,7 @@ function App() {
           <LivingBackground isDarkMode={isDarkMode} />
         </Suspense>
         <Suspense fallback={null}>
-          <BlogPost slug={route.slug} isDarkMode={isDarkMode} />
+          <BlogPost slug={route.slug} isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
         </Suspense>
       </div>
     );
