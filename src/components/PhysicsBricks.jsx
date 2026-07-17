@@ -14,21 +14,21 @@ const PILLARS = [
 // theme toggle never re-renders the physics-driven brick DOM.
 // No backdrop-blur: the brick backgrounds are fully opaque, so a blur renders
 // nothing while still forcing an expensive backdrop-filter pass. Dropped it.
-const BRICK_CLASS = "expertise-brick rounded-xl px-4 py-3 md:px-5 md:py-4";
+const BRICK_CLASS = "expertise-brick rounded-xl px-3 py-2 md:px-4 md:py-2.5";
 
 const BrickContent = ({ pillar }) => (
   <>
-    <h3 className="expertise-brick-title font-playfair font-bold text-sm md:text-base mb-1">
+    <h3 className="expertise-brick-title font-playfair font-bold text-xs md:text-sm mb-0.5">
       {pillar.title}
     </h3>
-    <p className="expertise-brick-tech text-xs md:text-sm">{pillar.tech}</p>
+    <p className="expertise-brick-tech text-[10px] md:text-xs">{pillar.tech}</p>
   </>
 );
 
 // Original framer-motion version: mobile, coarse pointers, reduced motion,
 // or if the physics engine fails to load.
 const StaticBricks = () => (
-  <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-8 md:mb-16">
+  <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-6 md:mb-10">
     {PILLARS.map((pillar, index) => (
       <motion.div
         key={pillar.title}
@@ -357,10 +357,10 @@ const PhysicsArena = ({ isDarkMode, onFail }) => {
   }, [simKey, onFail, spawnFor]);
 
   return (
-    <div className="mb-8 md:mb-16">
+    <div className="mb-6 md:mb-10">
       <div
         ref={containerRef}
-        className={`relative h-52 w-full overflow-hidden border-b ${
+        className={`relative h-36 md:h-40 w-full overflow-hidden border-b ${
           isDarkMode ? "border-white/10" : "border-[var(--lm-accent)]/25"
         }`}
         style={{ touchAction: "pan-y" }}

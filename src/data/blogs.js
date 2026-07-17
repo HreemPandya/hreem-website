@@ -61,6 +61,9 @@ export const blogs = [
     title: "yc ai startup school 2025",
     kicker: "startup school",
     blurb: "part of the first ever cohort of y combinator's ai startup school.",
+    author: "Hreem Pandya",
+    updated: "Jul 16, 2026",
+    readTime: "5 min read",
     content: [],
   },
 ];
