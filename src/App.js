@@ -17,7 +17,6 @@ const Projects = lazy(() => import("./scenes/Projects"));
 const AboutMe = lazy(() => import("./scenes/AboutMe"));
 const Contact = lazy(() => import("./scenes/Contact"));
 const Footer = lazy(() => import("./scenes/Footer"));
-const SiteDoodleLayer = lazy(() => import("./components/SiteDoodleLayer"));
 const LivingBackground = lazy(() => import("./components/LivingBackground"));
 const BlogPost = lazy(() => import("./scenes/BlogPost"));
 
@@ -174,10 +173,6 @@ function App() {
 
       <Suspense fallback={null}>
         <Footer isDarkMode={isDarkMode} />
-      </Suspense>
-
-      <Suspense fallback={null}>
-        <SiteDoodleLayer isDarkMode={isDarkMode} />
       </Suspense>
     </div>
   );

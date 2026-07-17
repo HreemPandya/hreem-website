@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
-const FooterCatIllustration = ({ theme, twitch }) => (
-  <div className={`footer-cat-wrapper ${twitch ? "footer-cat-twitch" : ""}`} data-theme={theme}>
+const FooterCatIllustration = ({ theme }) => (
+  <div className="footer-cat-wrapper" data-theme={theme}>
     <div className="footer-cat-container" data-theme={theme}>
       <div className="footer-cat-shadow" />
       <div className="footer-cat">
@@ -19,24 +18,6 @@ const FooterCatIllustration = ({ theme, twitch }) => (
 );
 
 const Footer = ({ isDarkMode }) => {
-  // ear twitch when a site doodle lands near the cat (see SiteDoodleLayer)
-  const [twitch, setTwitch] = useState(false);
-  const twitchTimerRef = useRef(null);
-
-  useEffect(() => {
-    const onDoodleLanded = () => {
-      setTwitch(false);
-      clearTimeout(twitchTimerRef.current);
-      requestAnimationFrame(() => setTwitch(true));
-      twitchTimerRef.current = setTimeout(() => setTwitch(false), 950);
-    };
-    window.addEventListener("hreem:doodle-landed", onDoodleLanded);
-    return () => {
-      window.removeEventListener("hreem:doodle-landed", onDoodleLanded);
-      clearTimeout(twitchTimerRef.current);
-    };
-  }, []);
-
   return (
     <footer
       id="site-footer"
@@ -85,10 +66,7 @@ const Footer = ({ isDarkMode }) => {
                 className="footer-cat-beside shrink-0 md:hidden"
                 aria-hidden="true"
               >
-                <FooterCatIllustration
-                  theme={isDarkMode ? "dark" : "light"}
-                  twitch={twitch}
-                />
+                <FooterCatIllustration theme={isDarkMode ? "dark" : "light"} />
               </div>
             </div>
           </motion.div>
@@ -100,7 +78,7 @@ const Footer = ({ isDarkMode }) => {
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
           >
-            <FooterCatIllustration theme={isDarkMode ? "dark" : "light"} twitch={twitch} />
+            <FooterCatIllustration theme={isDarkMode ? "dark" : "light"} />
           </motion.div>
         </div>
 
