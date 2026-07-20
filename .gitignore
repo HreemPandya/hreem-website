@@ -36,3 +36,6 @@ CLAUDE.md
 
 #todo
 todo.txt
+
+# local-only archive of removed projects (not part of the live site)
+src/scenes/archived-projects.jsx

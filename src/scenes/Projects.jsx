@@ -45,6 +45,21 @@ const projects = [
     ],
   },
   {
+    id: 9,
+    title: "EcoRoute: Carbon-Aware AI Gateway",
+    caption: "EcoRoute",
+    letterSpacingCap: 0.6,
+    description: "An OpenAI-compatible AI gateway that decides how every prompt gets answered. It reuses cached answers, weighs each request's complexity and risk, and checks live grid carbon intensity, so simple prompts run on lean or self-hosted models while only the hard, risky ones reach a frontier model. Every response ships with an energy, carbon, and cost label.",
+    hoverText: "Built on FastAPI (Pydantic v2) with PostgreSQL/SQLAlchemy, Redis, and pgvector. Each prompt clears a deterministic safety scan, then a dual-layer cache: exact matches in Redis and semantic matches via Sentence-Transformers embeddings (384-dim, HNSW search). On a miss, a FreeSOLO-trained Qwen 2B router classifies complexity and risk, and a multi-objective scorer weighs carbon, cost, latency, and quality. High-risk or complex work goes straight to a frontier model; everything else routes by live grid carbon, favoring a lean general model on clean grids and a specialized self-hosted Qwen 4B SLM on dirty ones. LiteLLM normalizes providers, and a quality gate validates small-model output with automatic fallback. The self-hosted node runs on Linux with GPU power caps, cgroup tuning, and a custom sched_ext scheduler on an NVIDIA RTX 5090, while the Next.js frontend uses Recharts and TanStack Query for a live operator dashboard.",
+    image: `${process.env.PUBLIC_URL}/assets/ecoroute-dash.png`,
+    gradient: "from-emerald-500 to-green-500",
+    tags: ['FastAPI', 'PostgreSQL/pgvector', 'Redis', 'LiteLLM', 'PyTorch', 'Next.js'],
+    links: [
+      { href: "https://devpost.com/software/ecoroute-nz62h9", icon: <ExternalLink size={16} />, label: "Devpost" },
+      { href: "https://github.com/HreemPandya/ecoroute", icon: <Github size={16} />, label: "Code" },
+    ],
+  },
+  {
     id: 3,
     title: "InvestEd: AI-Powered Financial Education @ Hack the North",
     caption: "InvestEd",
@@ -90,54 +105,6 @@ const projects = [
     links: [
       { href: "https://hackcanada-judging.vercel.app/", icon: <Globe size={16} />, label: "Website" },
       { href: "https://github.com/Hack-Canada/judging-platform", icon: <Github size={16} />, label: "Code" },
-    ],
-  },
-  {
-    id: 5,
-    title: "GestureGroove: AI Music Controller",
-    caption: "GestureGroove",
-    letterSpacingCap: 0.6,
-    description: "A real-time gesture recognition app built on React that translates hand movements into music control using OpenCV for hand tracking and MediaPipe for gesture classification",
-    hoverText: "The browser captures webcam frames through getUserMedia, then OpenCV handles acquisition and preprocessing while MediaPipe Hands tracks 21 landmarks per hand at interactive frame rates. Landmarks are normalized to screen space, smoothed over a short sliding window, and fed into rules that look at palm orientation, finger spread, and motion vectors so static poses and swipes map to different commands. Debouncing and minimum hold times cut accidental toggles when the hand jitters. The React UI runs the loop with requestAnimationFrame-friendly updates so the overlay and control panel stay responsive. Playback and library access go through the Spotify Web API with OAuth, mapping gestures to skip, play, pause, volume, and effect parameters so the whole stack stays in the browser without a native plugin.",
-    image: `${process.env.PUBLIC_URL}/assets/project-6.webp`,
-    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-gesture.webp`,
-    gradient: "from-cyan-500 to-blue-500",
-    tags: ['OpenCV', 'MediaPipe', 'Spotify API', 'React'],
-    links: [
-      { href: "https://gesturegroove.vercel.app/", icon: <Globe size={16} />, label: "Demo" },
-      { href: "https://github.com/HreemPandya/GestureGroove", icon: <Github size={16} />, label: "Code" },
-    ],
-  },
-  {
-    id: 6,
-    title: "CrisisCompass: First Responder's Emergency Management Tool",
-    caption: "CrisisCompass",
-    letterSpacingCap: 0.6,
-    description: "Developed at NewHacks 2024, this React web application helps first responders and volunteers prioritize and manage local emergencies by aggregating and scraping real-time data from news outlets using OpenAI API to analyze and rank incidents based on urgency and using geolocation to rank incidents by proximity.",
-    hoverText: "Designed to help first responders and volunteers act faster during emergencies, CrisisCompass merges ingestion, scoring, and map-ready views in one place. A Flask REST API exposes routes for listing incidents, triggering refresh jobs, and serving ranked results to the client. Workers scrape and normalize headlines and blurbs from news and social-style sources, strip boilerplate, then call the OpenAI API with structured prompts to label incident type, extract location hints and severity cues, and produce a comparable urgency score. Geolocation or inferred coordinates feed a proximity sort alongside urgency so nearby high-risk events bubble up. The React front end polls or refetches on an interval, renders cards with urgency badges and severity icons, and keeps layout responsive for laptops in a command center. Error handling and timeouts on external calls prevent one slow source from stalling the whole dashboard when every second counts.",
-    image: `${process.env.PUBLIC_URL}/assets/base-crisis.webp`,
-    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-crisis.webp`,
-    gradient: "from-red-500 to-orange-500",
-    tags: ['React', 'OpenAI API', 'Flask', 'Web Scraping'],
-    links: [
-      { href: "https://github.com/HreemPandya/Crisis-Compass", icon: <Github size={16} />, label: "Code" },
-      { href: "https://youtu.be/pfCfrTvsKqc", icon: <Youtube size={16} />, label: "Demo" },
-    ],
-  },
-  {
-    id: 7,
-    title: "SecureEdu: Educational Material Encryption System",
-    caption: "SecureEdu",
-    letterSpacingCap: 0.6,
-    description: "A secure learning platform built from STM32 microcontrollers that encrypts and transmits educational materials, using AES-based encryption and EEPROM-stored keys. Implements a progressive hint-based learning system where content is unlocked incrementally via access keys, ensuring controlled information disclosure",
-    hoverText: "SecureEdu runs on STM32 microcontrollers that use AES encryption to keep textbook sections, quiz solutions, and hints safe from unauthorized access. For secure communication between devices, it integrates Diffie-Hellman Key Exchange so encryption keys are never exposed during transfer. On the hardware side, we configured UART, I2C, and GPIO peripherals to connect an LCD display, which gives students real-time feedback as they interact with the system, and a 4x4 keypad, which they use to securely enter access keys. The whole setup powers a progressive hint-based learning system, where you can unlock just the right amount of help without giving away the entire answer, all while keeping the data transmission secure.",
-    image: `${process.env.PUBLIC_URL}/assets/base-securedu-copy.webp`,
-    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-secure.webp`,
-    gradient: "from-blue-500 to-teal-500",
-    tags: ['STM32', 'C Programming', 'Embedded Systems','AES Encryption'],
-    links: [
-      { href: "https://github.com/HreemPandya/SecureEdu", icon: <Github size={16} />, label: "Code" },
-      { href: "https://youtube.com/shorts/-U43X7I6Ihs?feature=share", icon: <Youtube size={16} />, label: "Demo" },
     ],
   },
 ];
@@ -295,9 +262,12 @@ const PhotoLine = ({ items, startIndex, isDarkMode, openModal, reduceMotion, one
     <div
       className={
         oneLine
-          ? "relative grid grid-cols-8 items-start gap-x-3 lg:gap-x-4"
+          ? "relative grid items-start justify-center gap-x-3 lg:gap-x-4"
           : "relative flex flex-wrap items-start justify-center gap-x-8 gap-y-14 md:gap-x-12"
       }
+      // In the single-wire layout, size the grid to the actual number of prints
+      // so the row stays centered instead of left-filling a fixed 8 columns.
+      style={oneLine ? { gridTemplateColumns: `repeat(${items.length}, minmax(0, 9rem))` } : undefined}
     >
       {items.map((project, i) => (
         <Polaroid
