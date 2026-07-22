@@ -52,6 +52,9 @@ const projects = [
     description: "An OpenAI-compatible AI gateway that decides how every prompt gets answered. It reuses cached answers, weighs each request's complexity and risk, and checks live grid carbon intensity, so simple prompts run on lean or self-hosted models while only the hard, risky ones reach a frontier model. Every response ships with an energy, carbon, and cost label.",
     hoverText: "Built on FastAPI (Pydantic v2) with PostgreSQL/SQLAlchemy, Redis, and pgvector. Each prompt clears a deterministic safety scan, then a dual-layer cache: exact matches in Redis and semantic matches via Sentence-Transformers embeddings (384-dim, HNSW search). On a miss, a FreeSOLO-trained Qwen 2B router classifies complexity and risk, and a multi-objective scorer weighs carbon, cost, latency, and quality. High-risk or complex work goes straight to a frontier model; everything else routes by live grid carbon, favoring a lean general model on clean grids and a specialized self-hosted Qwen 4B SLM on dirty ones. LiteLLM normalizes providers, and a quality gate validates small-model output with automatic fallback. The self-hosted node runs on Linux with GPU power caps, cgroup tuning, and a custom sched_ext scheduler on an NVIDIA RTX 5090, while the Next.js frontend uses Recharts and TanStack Query for a live operator dashboard.",
     image: `${process.env.PUBLIC_URL}/assets/ecoroute-dash.png`,
+    modalImage: `${process.env.PUBLIC_URL}/assets/expanded-ecoroute.png`,
+    modalImageFit: "contain",
+    modalImageBg: "#e8f5ea",
     gradient: "from-emerald-500 to-green-500",
     tags: ['FastAPI', 'PostgreSQL/pgvector', 'Redis', 'LiteLLM', 'PyTorch', 'Next.js'],
     links: [
@@ -492,12 +495,19 @@ const Projects = ({ isDarkMode }) => {
                   className={`relative h-64 overflow-hidden md:h-full md:min-h-0 ${
                     isDarkMode ? "" : "bg-lm-bg-surface"
                   }`}
+                  style={
+                    selectedProject.modalImageFit === "contain"
+                      ? { backgroundColor: selectedProject.modalImageBg }
+                      : undefined
+                  }
                 >
                   <img
                     src={selectedProject.modalImage ?? selectedProject.image}
                     alt={selectedProject.title}
                     decoding="async"
-                    className={`w-full h-full object-cover ${selectedProject.imageObjectClass ?? ""}`}
+                    className={`w-full h-full ${
+                      selectedProject.modalImageFit === "contain" ? "object-contain p-6" : "object-cover"
+                    } ${selectedProject.imageObjectClass ?? ""}`}
                   />
                   <div
                     className={`absolute inset-0 bg-gradient-to-t ${selectedProject.gradient} ${
