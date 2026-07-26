@@ -4,6 +4,7 @@ import DoodleBoard from "../components/DoodleBoard";
 import PhysicsBricks from "../components/PhysicsBricks";
 import GitHubContributions from "../components/GitHubContributions";
 import BlogList from "../components/BlogList";
+import SpotifyNowPlaying from "../components/SpotifyNowPlaying";
 
 // 8 artwork images (shared)
 const artworks = [
@@ -307,6 +308,7 @@ const AboutMe = ({ isDarkMode }) => {
               </p>
               <div data-doodle-ignore>
                 <DoodleBoard isDarkMode={isDarkMode} topSpacing="2rem" />
+                <SpotifyNowPlaying isDarkMode={isDarkMode} />
               </div>
             </motion.div>
           </motion.div>
