@@ -52,44 +52,50 @@ const SpotifyNowPlaying = ({ isDarkMode }) => {
   const mutedText = isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]";
   const accentDot = isDarkMode ? "bg-amber-400" : "bg-[var(--lm-accent)]";
 
+  const captionColor = isDarkMode ? "text-amber-500/80" : "text-[var(--lm-accent)]/80";
+
   return (
-    <a
-      href={track.songUrl || "https://open.spotify.com"}
-      target="_blank"
-      rel="noreferrer"
-      data-doodle-ignore
-      className={`group mt-2.5 flex max-w-full items-center gap-2 rounded-md border px-2 py-1.5 transition-colors ${
-        isDarkMode
-          ? "border-white/10 bg-[#07090D]/50 hover:border-amber-500/30"
-          : "border-[var(--lm-accent)]/15 bg-[color:rgba(248,246,242,0.6)] hover:border-[var(--lm-accent)]/40"
-      }`}
-    >
-      <div className="h-7 w-7 shrink-0 overflow-hidden rounded-sm">
-        {track.albumArt ? (
-          <img src={track.albumArt} alt="" className="h-full w-full object-cover" loading="lazy" />
-        ) : (
-          <div className={`h-full w-full ${isDarkMode ? "bg-white/10" : "bg-black/10"}`} />
-        )}
-      </div>
-
-      <div className="min-w-0 flex-1 leading-tight">
-        <p className={`truncate text-[11px] font-medium ${isDarkMode ? "text-[#F0F4F8]" : "text-[var(--lm-text-primary)]"}`}>
-          {track.title}
-        </p>
-        <p className={`truncate font-mono text-[9px] ${mutedText}`}>{track.artist}</p>
-      </div>
-
-      <span className="relative flex h-1.5 w-1.5 shrink-0">
-        <span className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-75 ${accentDot}`} />
-        <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${accentDot}`} />
-      </span>
-
-      <SpotifyGlyph
-        className={`h-3 w-3 shrink-0 transition-colors ${
-          isDarkMode ? "text-white/40 group-hover:text-amber-400" : "text-black/30 group-hover:text-[var(--lm-accent)]"
+    <div data-doodle-ignore className="mt-2.5">
+      <p className={`mb-1.5 font-mono text-[10px] uppercase tracking-wider ${captionColor}`}>
+        Currently playing
+      </p>
+      <a
+        href={track.songUrl || "https://open.spotify.com"}
+        target="_blank"
+        rel="noreferrer"
+        className={`group flex max-w-full items-center gap-2.5 rounded-md border px-2.5 py-2 transition-colors ${
+          isDarkMode
+            ? "border-white/10 bg-[#07090D]/50 hover:border-amber-500/30"
+            : "border-[var(--lm-accent)]/15 bg-[color:rgba(248,246,242,0.6)] hover:border-[var(--lm-accent)]/40"
         }`}
-      />
-    </a>
+      >
+        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-sm">
+          {track.albumArt ? (
+            <img src={track.albumArt} alt="" className="h-full w-full object-cover" loading="lazy" />
+          ) : (
+            <div className={`h-full w-full ${isDarkMode ? "bg-white/10" : "bg-black/10"}`} />
+          )}
+        </div>
+
+        <div className="min-w-0 flex-1 leading-tight">
+          <p className={`truncate text-[13px] font-medium ${isDarkMode ? "text-[#F0F4F8]" : "text-[var(--lm-text-primary)]"}`}>
+            {track.title}
+          </p>
+          <p className={`truncate font-mono text-[10px] ${mutedText}`}>{track.artist}</p>
+        </div>
+
+        <span className="relative flex h-1.5 w-1.5 shrink-0">
+          <span className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-75 ${accentDot}`} />
+          <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${accentDot}`} />
+        </span>
+
+        <SpotifyGlyph
+          className={`h-3.5 w-3.5 shrink-0 transition-colors ${
+            isDarkMode ? "text-white/40 group-hover:text-amber-400" : "text-black/30 group-hover:text-[var(--lm-accent)]"
+          }`}
+        />
+      </a>
+    </div>
   );
 };
 
