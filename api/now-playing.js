@@ -1,8 +1,10 @@
-// Vercel serverless function: proxies the Spotify "currently playing" endpoint
-// so the client secret and refresh token never reach the browser. Deployed
-// separately from the GitHub Pages static site — see api/README.md.
+// Vercel serverless function: proxies the Spotify playback endpoints so the
+// client secret and refresh token never reach the browser. Returns the live
+// track when playing, else the most recently played track. Deployed separately
+// from the GitHub Pages static site — see api/README.md.
 const TOKEN_URL = "https://accounts.spotify.com/api/token";
 const NOW_PLAYING_URL = "https://api.spotify.com/v1/me/player/currently-playing";
+const RECENT_URL = "https://api.spotify.com/v1/me/player/recently-played?limit=1";
 
 async function getAccessToken() {
   const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REFRESH_TOKEN } = process.env;
@@ -25,9 +27,34 @@ async function getAccessToken() {
   return data.access_token;
 }
 
+// Normalize a Spotify track object into the shape the widget consumes.
+function shapeTrack(item, isPlaying) {
+  if (!item) return null;
+  return {
+    isPlaying,
+    title: item.name,
+    artist: (item.artists || []).map((a) => a.name).join(", "),
+    album: item.album?.name ?? null,
+    albumArt: item.album?.images?.[1]?.url || item.album?.images?.[0]?.url || null,
+    songUrl: item.external_urls?.spotify ?? null,
+  };
+}
+
+async function getRecent(accessToken) {
+  const res = await fetch(RECENT_URL, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!res.ok) return { isPlaying: false };
+  const data = await res.json();
+  const item = data?.items?.[0]?.track;
+  return shapeTrack(item, false) || { isPlaying: false };
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Cache-Control", "s-maxage=15, stale-while-revalidate=30");
+  // Short shared cache: bounds how often the function actually runs while
+  // keeping the widget within a few seconds of live.
+  res.setHeader("Cache-Control", "s-maxage=5, stale-while-revalidate=10");
 
   try {
     const accessToken = await getAccessToken();
@@ -35,8 +62,9 @@ module.exports = async function handler(req, res) {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
 
+    // 204/202 = nothing playing → fall back to recently played.
     if (nowRes.status === 204 || nowRes.status === 202) {
-      return res.status(200).json({ isPlaying: false });
+      return res.status(200).json(await getRecent(accessToken));
     }
     if (!nowRes.ok) {
       throw new Error(`now-playing failed: ${nowRes.status}`);
@@ -45,17 +73,10 @@ module.exports = async function handler(req, res) {
     const data = await nowRes.json();
     const item = data?.item;
     if (!item || !data.is_playing) {
-      return res.status(200).json({ isPlaying: false });
+      return res.status(200).json(await getRecent(accessToken));
     }
 
-    return res.status(200).json({
-      isPlaying: true,
-      title: item.name,
-      artist: (item.artists || []).map((a) => a.name).join(", "),
-      album: item.album?.name ?? null,
-      albumArt: item.album?.images?.[1]?.url || item.album?.images?.[0]?.url || null,
-      songUrl: item.external_urls?.spotify ?? null,
-    });
+    return res.status(200).json(shapeTrack(item, true));
   } catch (err) {
     return res.status(500).json({ isPlaying: false, error: "spotify_unavailable" });
   }
