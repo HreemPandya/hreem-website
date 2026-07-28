@@ -68,7 +68,7 @@ const SpotifyNowPlaying = ({ isDarkMode }) => {
 
   const isPlaying = !!track?.isPlaying;
   const hasTrack = !!track?.title;
-  const caption = isPlaying ? "Currently playing" : hasTrack ? "Last played" : "Not playing";
+  const caption = isPlaying ? "banger song, give it a listen" : hasTrack ? "Last played" : "Not playing";
 
   return (
     <div data-doodle-ignore className="mt-2.5">
