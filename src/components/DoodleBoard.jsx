@@ -519,15 +519,8 @@ const DoodleBoard = ({ isDarkMode, topSpacing = "2.5rem" }) => {
           ))}
         </div>
       </div>
-      <p className={`text-xs ${isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"}`}>
-        Draw: {MODE_HINTS[mode] ?? "it draws"}.{" "}
-        <button
-          type="button"
-          onClick={handleClear}
-          className={`underline hover:no-underline ${isDarkMode ? "text-amber-500/80 hover:text-amber-400" : "text-[var(--lm-accent)]/80 hover:text-[var(--lm-accent)]"}`}
-        >
-          Clear
-        </button>
+      <p className={`text-xs italic ${isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"}`}>
+        {MODE_HINTS[mode] ?? "it draws"}
       </p>
     </div>
   );

@@ -20,9 +20,6 @@ const BlogList = ({ isDarkMode }) => {
           Latest Blogs
         </p>
         <span className={`h-px flex-1 ${isDarkMode ? "bg-white/10" : "bg-[var(--lm-border)]"}`} />
-        <span className={`font-mono text-[10px] tabular-nums ${isDarkMode ? "text-[#8B9DB0]/60" : "text-[var(--lm-text-muted)]/60"}`}>
-          {String(blogs.length).padStart(2, "0")}
-        </span>
       </div>
 
       <div className="space-y-0.5">

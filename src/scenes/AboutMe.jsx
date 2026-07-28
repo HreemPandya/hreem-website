@@ -234,11 +234,8 @@ const AboutMe = ({ isDarkMode }) => {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <p className={`font-mono text-[11px] md:text-xs uppercase tracking-[0.2em] mb-1.5 ${isDarkMode ? 'text-amber-500/70' : 'text-[var(--lm-accent)]/70'}`}>
-            About
-          </p>
           <h1 className={`font-playfair text-2xl md:text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-[var(--lm-text-primary)]'}`}>
-            Hreem Pandya
+            Who Am I?
           </h1>
         </motion.div>
 
@@ -322,10 +319,7 @@ const AboutMe = ({ isDarkMode }) => {
             viewport={{ once: true }}
           >
             <div className="space-y-3 md:space-y-4">
-              <div className="flex items-center justify-between">
-                <p className={`font-mono text-[11px] uppercase tracking-wider ${isDarkMode ? 'text-amber-500/80' : 'text-[var(--lm-accent)]/80'}`}>
-                  Art
-                </p>
+              <div className="flex items-center justify-end">
                 <motion.a
                   href="https://www.instagram.com/hreemdoodles"
                   target="_blank"
