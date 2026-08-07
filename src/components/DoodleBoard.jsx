@@ -127,6 +127,7 @@ const DoodleBoard = ({ isDarkMode, topSpacing = "2.5rem" }) => {
     const w = canvas.width;
     const h = canvas.height;
     const t = frameCountRef.current * 0.016;
+    const mode = modeRef.current;
 
     strokesRef.current.forEach((stroke) => {
       const pts = stroke.points;
@@ -285,7 +286,7 @@ const DoodleBoard = ({ isDarkMode, topSpacing = "2.5rem" }) => {
     });
 
     frameCountRef.current += 1;
-  }, [mode]);
+  }, []);
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
@@ -294,6 +295,7 @@ const DoodleBoard = ({ isDarkMode, topSpacing = "2.5rem" }) => {
     const ctx = canvas.getContext("2d");
     const w = canvas.width;
     const h = canvas.height;
+    const mode = modeRef.current;
 
     ctx.clearRect(0, 0, w, h);
 
@@ -341,7 +343,7 @@ const DoodleBoard = ({ isDarkMode, topSpacing = "2.5rem" }) => {
         draw();
       });
     }
-  }, [strokeColor, glowColor, mode, runPhysics]);
+  }, [strokeColor, glowColor, runPhysics]);
 
   const kickAnimation = useCallback(() => {
     if (rafRef.current !== null) return;
