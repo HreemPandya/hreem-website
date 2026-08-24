@@ -59,7 +59,7 @@ const Footer = ({ isDarkMode }) => {
                     isDarkMode ? "text-[#8B9DB0]" : "text-[var(--lm-text-muted)]"
                   }`}
                 >
-                  19 | Comp Eng @ uWaterloo
+                  20 | Comp Eng @ uWaterloo
                 </p>
               </div>
               <div

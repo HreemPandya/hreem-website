@@ -261,7 +261,7 @@ const AboutMe = ({ isDarkMode }) => {
               className={`space-y-3 pl-0 md:pl-6 md:border-l-2 md:border-transparent transition-colors duration-300 ${isDarkMode ? 'md:hover:border-amber-500/40' : 'md:hover:border-[#4A6B4E]'}`}
             >
               <p className={`text-base md:text-lg leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
-                19, in Computer Engineering at Waterloo. Most of what I do these days spins around AI: how people actually use it, not just demos, plus full-stack work and the occasional hardware project when something needs to exist in the real world.
+                20, in Computer Engineering at Waterloo. Most of what I do these days spins around AI: how people actually use it, not just demos, plus full-stack work and the occasional hardware project when something needs to exist in the real world.
               </p>
               <p className={`text-sm md:text-base leading-relaxed ${isDarkMode ? 'text-[#8B9DB0]' : 'text-[var(--lm-text-muted)]'}`}>
                 I love working with the tech community, whether that&apos;s organizing hackathons, showing up at events, or just meeting people who build things. That side of things matters to me about as much as what happens on my own screen.
