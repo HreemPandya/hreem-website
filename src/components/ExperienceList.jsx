@@ -23,12 +23,12 @@ const EXPERIENCE = [
     description: "building ai tools for canada's largest collection of actionable marketing data",
   },
   {
-    title: "Founding Software Engineer",
+    title: "Software Engineer",
     org: "Skrimp.ai",
     url: "https://www.skrimp.ai/",
     logo: "skrimp.png",
     date: "May 2025 - Aug 2025",
-    description: "founding engineer for a waterloo based startup, turning messy grocery flyers into structured data powering smarter, discounted meal planning for canadians.",
+    description: "engineer for a waterloo based startup, turning messy grocery flyers into structured data powering smarter, discounted meal planning for canadians.",
   },
   {
     title: "Autonomy Software Engineer",
