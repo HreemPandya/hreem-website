@@ -10,7 +10,7 @@ const EXPERIENCE = [
     title: "Data & AI Engineer",
     org: "Compass Data & AI (CDAI)",
     url: "https://www.cdai.ai/",
-    logo: "cdai.png",
+    logo: "cdai.jpg",
     date: "Sept 2026 - Dec 2026", // e.g. "2025 - Present"
     description: "incoming for fall 2026",
   },
