@@ -12,7 +12,7 @@ const EXPERIENCE = [
     url: "https://www.cdai.ai/",
     logo: "cdai.jpg",
     date: "Sept 2026 - Dec 2026", // e.g. "2025 - Present"
-    description: "incoming for fall 2026",
+    description: "working on data tools for food hospitality operations serving millions across north america",
   },
   {
     title: "AI Intern",
