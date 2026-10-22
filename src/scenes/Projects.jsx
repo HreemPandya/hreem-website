@@ -6,6 +6,19 @@ import { createPortal } from "react-dom";
 
 const projects = [
   {
+    id: 10,
+    title: "StickDrift: Catching Movement Changes Early Through Play",
+    caption: "StickDrift",
+    letterSpacingCap: 0.6,
+    description: "Basically a PS5 controller that doubles as a movement check for seniors in long-term care. They walk around a little 3D lobby and play 3 games (apple picking, fishing, rat catching) and just see scores and stars, but behind the scenes we're tracking things like reaction time and hand shake. Nurses get a live view, trends across visits and a PDF report. It doesn't diagnose anything, it just flags when something might be worth checking.",
+    hoverText: "I made the lobby and levels in Blender and got it running in the browser with three.js, and also moved our data over to Tiger Data (first time using it, so that was a bit of a learning curve). The web app is React + TypeScript with separate logins for residents and staff, and the backend is FastAPI. For the live view we used Postgres LISTEN/NOTIFY over websockets, with fallbacks in case it drops. My teammates trained a PyTorch model on the movement data that gives a resemblance score for a few patterns, and a Gemini assistant that only answers from the recorded numbers.",
+    image: `${process.env.PUBLIC_URL}/assets/stickdrift.webp`,
+    modalImage: `${process.env.PUBLIC_URL}/assets/stickdrift-expanded.jpg`,
+    gradient: "from-red-500 to-rose-500",
+    tags: ['Three.js', 'Blender', 'React', 'TypeScript', 'FastAPI', 'Tiger Data/TimescaleDB', 'PyTorch', 'Gemini'],
+    links: [],
+  },
+  {
     id: 1,
     title: "FridgeMind: Winner of Hack the 6ix, Deloitte AI For Green",
     caption: "FridgeMind",
@@ -302,7 +315,7 @@ const Projects = ({ isDarkMode }) => {
   // Wide enough to hang all 8 prints on a single wire, spread across the page.
   const isWide = useMediaQuery("(min-width: 1280px)");
   const oneLine = isWide;
-  const perRow = isXS ? 1 : isSM ? 2 : isMD ? 3 : oneLine ? 8 : 4;
+  const perRow = isXS ? 1 : isSM ? 2 : isMD ? 3 : oneLine ? projects.length : 4;
   const rows = chunk(projects, perRow);
 
   const openModal = (project) => {
