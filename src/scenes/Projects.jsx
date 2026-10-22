@@ -3,6 +3,7 @@ import { Github, Youtube, ExternalLink, Globe, X, ArrowUpRight } from "lucide-re
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import useMediaQuery from "../hooks/useMediaQuery";
 import { createPortal } from "react-dom";
+import LobbyPreview from "../components/LobbyPreview";
 
 const projects = [
   {
@@ -14,6 +15,8 @@ const projects = [
     hoverText: "I made the lobby and levels in Blender and got it running in the browser with three.js, and also moved our data over to Tiger Data (first time using it, so that was a bit of a learning curve). The web app is React + TypeScript with separate logins for residents and staff, and the backend is FastAPI. For the live view we used Postgres LISTEN/NOTIFY over websockets, with fallbacks in case it drops. My teammates trained a PyTorch model on the movement data that gives a resemblance score for a few patterns, and a Gemini assistant that only answers from the recorded numbers.",
     image: `${process.env.PUBLIC_URL}/assets/stickdrift.webp`,
     modalImage: `${process.env.PUBLIC_URL}/assets/stickdrift-expanded.jpg`,
+    modalLive: true,
+    liveStill: `${process.env.PUBLIC_URL}/assets/stickdrift-lobby-still.jpg`,
     gradient: "from-red-500 to-rose-500",
     tags: ['Three.js', 'Blender', 'React', 'TypeScript', 'FastAPI', 'Tiger Data/TimescaleDB', 'PyTorch', 'Gemini'],
     links: [],
@@ -475,7 +478,7 @@ const Projects = ({ isDarkMode }) => {
               aria-modal="true"
               aria-labelledby="project-modal-title"
               tabIndex={-1}
-              className={`max-h-[90vh] w-full max-w-6xl overflow-y-auto rounded-3xl border shadow-2xl outline-none ${
+              className={`max-h-[90vh] w-full ${selectedProject.modalLive ? "max-w-7xl" : "max-w-6xl"} overflow-y-auto rounded-3xl border shadow-2xl outline-none ${
                 isDarkMode
                   ? "border-white/[0.06] bg-[#0B0F18] backdrop-blur-xl"
                   : "lm-project-modal border-[var(--lm-border)] bg-lm-bg-surface text-[var(--lm-text-primary)] shadow-[0_24px_64px_-16px_rgba(42,42,42,0.18)]"
@@ -503,10 +506,10 @@ const Projects = ({ isDarkMode }) => {
               </button>
 
               {/* Mobile: Stack layout, Desktop: Side by side — content top-aligned so short copy (e.g. InvestEd) does not float with huge vertical gaps */}
-              <div className="grid grid-cols-1 md:grid-cols-2 md:items-stretch min-h-[400px] md:min-h-[min(700px,85vh)]">
+              <div className={`grid grid-cols-1 md:items-stretch ${selectedProject.modalLive ? "md:grid-cols-[1.6fr_1fr]" : "md:grid-cols-2"} min-h-[400px] md:min-h-[min(700px,85vh)]`}>
                 {/* Image Section */}
                 <div
-                  className={`relative h-64 overflow-hidden md:h-full md:min-h-0 ${
+                  className={`relative overflow-hidden md:h-full md:min-h-0 ${selectedProject.modalLive ? "aspect-[16/10] md:aspect-auto" : "h-64"} ${
                     isDarkMode ? "" : "bg-lm-bg-surface"
                   }`}
                   style={
@@ -515,14 +518,21 @@ const Projects = ({ isDarkMode }) => {
                       : undefined
                   }
                 >
-                  <img
-                    src={selectedProject.modalImage ?? selectedProject.image}
-                    alt={selectedProject.title}
-                    decoding="async"
-                    className={`w-full h-full ${
-                      selectedProject.modalImageFit === "contain" ? "object-contain p-6" : "object-cover"
-                    } ${selectedProject.imageObjectClass ?? ""}`}
-                  />
+                  {selectedProject.modalLive ? (
+                    <LobbyPreview
+                      still={selectedProject.liveStill ?? selectedProject.modalImage}
+                      alt={`Live 3D view of ${selectedProject.caption}`}
+                    />
+                  ) : (
+                    <img
+                      src={selectedProject.modalImage ?? selectedProject.image}
+                      alt={selectedProject.title}
+                      decoding="async"
+                      className={`w-full h-full ${
+                        selectedProject.modalImageFit === "contain" ? "object-contain p-6" : "object-cover"
+                      } ${selectedProject.imageObjectClass ?? ""}`}
+                    />
+                  )}
                   <div
                     className={`absolute inset-0 bg-gradient-to-t ${selectedProject.gradient} ${
                       isDarkMode ? "opacity-30" : "opacity-[0.12]"
