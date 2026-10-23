@@ -885,11 +885,11 @@ html.light-mode .polaroid__peg {
   transition: box-shadow 300ms ease, transform 300ms ease, background-color 300ms ease;
 }
 html.light-mode .polaroid {
-  background: linear-gradient(158deg, #1a1b1f 0%, #0e0f12 100%);
+  background: linear-gradient(158deg, #ffffff 0%, #f7f7f5 100%);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.08) inset,
-    0 14px 28px rgba(0, 0, 0, 0.22),
-    0 4px 10px rgba(0, 0, 0, 0.16);
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 14px 28px rgba(0, 0, 0, 0.16),
+    0 4px 10px rgba(0, 0, 0, 0.1);
 }
 .polaroid:hover {
   box-shadow:
@@ -899,9 +899,9 @@ html.light-mode .polaroid {
 }
 html.light-mode .polaroid:hover {
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.1) inset,
-    0 26px 44px rgba(0, 0, 0, 0.3),
-    0 10px 18px rgba(0, 0, 0, 0.2);
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 26px 44px rgba(0, 0, 0, 0.24),
+    0 10px 18px rgba(0, 0, 0, 0.14);
 }
 
 /* Handwritten project name, stretched to span the print like someone inked it
@@ -914,9 +914,9 @@ html.light-mode .polaroid:hover {
   color: #263238;
   overflow: hidden;
 }
-/* Light mode uses a black print, so the handwriting flips to white ink. */
+/* Light mode uses a white print with black ink. */
 html.light-mode .polaroid__caption {
-  color: #f2f2f2;
+  color: #000;
 }
 .polaroid__caption-ink {
   display: inline-block;
@@ -950,4 +950,29 @@ html.light-mode .polaroid__sticker {
   background: #4a6b4e;
   color: #fff;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+/* Wind on the drying line: each print drifts around its clip on an uneven loop
+   (a gust, a lull, a smaller gust). Per-print duration and a staggered delay,
+   set inline, make the gusts roll along the wire instead of moving in unison. */
+@keyframes polaroid-wind {
+  0%   { transform: rotate(0deg) translateX(0); }
+  14%  { transform: rotate(calc(var(--wind, 1) * 2.2deg)) translateX(calc(var(--wind, 1) * 1.5px)); }
+  27%  { transform: rotate(calc(var(--wind, 1) * 0.6deg)) translateX(calc(var(--wind, 1) * 0.4px)); }
+  44%  { transform: rotate(calc(var(--wind, 1) * -1.4deg)) translateX(calc(var(--wind, 1) * -1px)); }
+  58%  { transform: rotate(calc(var(--wind, 1) * 3deg)) translateX(calc(var(--wind, 1) * 2px)); }
+  72%  { transform: rotate(calc(var(--wind, 1) * 1deg)) translateX(calc(var(--wind, 1) * 0.6px)); }
+  86%  { transform: rotate(calc(var(--wind, 1) * -0.8deg)) translateX(calc(var(--wind, 1) * -0.5px)); }
+  100% { transform: rotate(0deg) translateX(0); }
+}
+.polaroid-wind {
+  transform-origin: top center;
+  animation: polaroid-wind var(--wind-dur, 6s) ease-in-out var(--wind-delay, 0s) infinite;
+  will-change: transform;
+}
+.polaroid-wind:hover,
+.polaroid-wind:focus-within {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .polaroid-wind { animation: none; }
 }

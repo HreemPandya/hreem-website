@@ -216,6 +216,14 @@ const Polaroid = ({
         className="polaroid__peg absolute left-1/2 top-[-13px] z-20 -translate-x-1/2"
         aria-hidden="true"
       />
+      <div
+        className="polaroid-wind w-full"
+        style={{
+          "--wind-dur": `${5.2 + (index % 4) * 0.7}s`,
+          "--wind-delay": `${-index * 0.9}s`,
+          "--wind": index % 2 ? -1 : 1,
+        }}
+      >
       <motion.div
         role="button"
         tabIndex={0}
@@ -266,6 +274,7 @@ const Polaroid = ({
           letterSpacingCap={project.letterSpacingCap}
         />
       </motion.div>
+      </div>
     </div>
   );
 };
