@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import SocialMediaIcons from "../components/SocialMediaIcons";
+import LockInput from "../components/ui/lock-input";
+import MorphingButton from "../components/ui/morphing-button";
 
 const CONTACT_SENT_KEY = "hreem-contact-form-sent";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -10,6 +12,8 @@ const Contact = ({ isDarkMode }) => {
   const reduceMotion = useReducedMotion();
   const [sent, setSent] = useState(false);
   const [error, setError] = useState(null);
+  // Brief "Failed" flash on the button; the error text below stays until the next try.
+  const [failedFlash, setFailedFlash] = useState(false);
 
   const {
     register,
@@ -49,24 +53,17 @@ const Contact = ({ isDarkMode }) => {
       }
     } catch {
       setError("Something went wrong. Please try again or email directly.");
+      setFailedFlash(true);
     }
   };
 
-  const inputBase = `w-full py-2 text-sm md:text-[15px] border-b bg-transparent focus:outline-none transition-colors placeholder:opacity-50 disabled:opacity-60 disabled:cursor-not-allowed ${
-    isDarkMode
-      ? "text-white placeholder-[#8B9DB0]"
-      : "text-[var(--lm-text-primary)] placeholder-[var(--lm-text-muted)]"
-  }`;
+  useEffect(() => {
+    if (!failedFlash) return undefined;
+    const t = setTimeout(() => setFailedFlash(false), 2500);
+    return () => clearTimeout(t);
+  }, [failedFlash]);
 
-  // Border color reflects validity: red once a field has an error, accent otherwise.
-  const borderClass = (hasError) =>
-    hasError
-      ? isDarkMode
-        ? "border-red-400/70 focus:border-red-400"
-        : "border-red-500/70 focus:border-red-500"
-      : isDarkMode
-        ? "border-white/[0.1] focus:border-amber-500/60"
-        : "border-[var(--lm-border)] focus:border-[var(--lm-accent)]/60";
+  const buttonStatus = sent ? "success" : isSubmitting ? "loading" : failedFlash ? "error" : "idle";
 
   const fieldError = (name, id) => (
     <AnimatePresence initial={false}>
@@ -125,8 +122,9 @@ const Contact = ({ isDarkMode }) => {
             {/* Name + email side by side */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
               <div>
-                <input
-                  className={`${inputBase} ${borderClass(!!errors.name)}`}
+                <LockInput
+                  isDarkMode={isDarkMode}
+                  hasError={!!errors.name}
                   type="text"
                   placeholder="Your name"
                   aria-invalid={!!errors.name}
@@ -138,8 +136,9 @@ const Contact = ({ isDarkMode }) => {
               </div>
 
               <div>
-                <input
-                  className={`${inputBase} ${borderClass(!!errors.email)}`}
+                <LockInput
+                  isDarkMode={isDarkMode}
+                  hasError={!!errors.email}
                   type="email"
                   placeholder="Email"
                   aria-invalid={!!errors.email}
@@ -155,10 +154,13 @@ const Contact = ({ isDarkMode }) => {
             </div>
 
             <div>
-              <textarea
-                className={`${inputBase} ${borderClass(!!errors.message)} resize-none min-h-[72px]`}
+              <LockInput
+                as="textarea"
+                isDarkMode={isDarkMode}
+                hasError={!!errors.message}
+                className="min-h-[96px] resize-none"
                 placeholder="Your message"
-                rows={2}
+                rows={3}
                 aria-invalid={!!errors.message}
                 aria-describedby={errors.message ? "message-error" : undefined}
                 disabled={sent}
@@ -171,70 +173,16 @@ const Contact = ({ isDarkMode }) => {
             </div>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-1">
-              <AnimatePresence mode="wait" initial={false}>
-                {sent ? (
-                  <motion.div
-                    key="success"
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.25 }}
-                    className={`inline-flex items-center gap-2.5 text-sm font-medium ${
-                      isDarkMode ? "text-amber-400" : "text-[var(--lm-accent)]"
-                    }`}
-                  >
-                    <motion.span
-                      initial={reduceMotion ? {} : { scale: 0.5 }}
-                      animate={{ scale: 1 }}
-                      transition={{ type: "spring", stiffness: 500, damping: 18 }}
-                      className={`inline-flex h-7 w-7 items-center justify-center rounded-full ${
-                        isDarkMode ? "bg-amber-500/15" : "bg-[var(--lm-accent)]/12"
-                      }`}
-                    >
-                      <motion.svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                      >
-                        <motion.path
-                          d="M5 13l4 4L19 7"
-                          initial={reduceMotion ? { pathLength: 1 } : { pathLength: 0 }}
-                          animate={{ pathLength: 1 }}
-                          transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
-                        />
-                      </motion.svg>
-                    </motion.span>
-                    Message sent. Thanks for reaching out!
-                  </motion.div>
-                ) : (
-                  <motion.button
-                    key="btn"
-                    type="submit"
-                    disabled={isSubmitting}
-                    exit={{ opacity: 0 }}
-                    className={`inline-flex min-h-[44px] items-center justify-center px-6 py-2.5 rounded-full font-medium text-sm border transition-colors ${
-                      isDarkMode
-                        ? "border-amber-500/40 text-amber-400 hover:bg-amber-500/10"
-                        : "border-[var(--lm-accent)]/40 text-[var(--lm-accent)] hover:bg-[var(--lm-accent)]/10"
-                    } ${isSubmitting ? "opacity-60 cursor-wait" : ""}`}
-                    whileHover={isSubmitting ? undefined : { scale: 1.02 }}
-                    whileTap={isSubmitting ? undefined : { scale: 0.98 }}
-                  >
-                    {isSubmitting && (
-                      <span
-                        className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
-                        aria-hidden="true"
-                      />
-                    )}
-                    {isSubmitting ? "Sending…" : "Send message"}
-                  </motion.button>
-                )}
-              </AnimatePresence>
+              <MorphingButton
+                type="submit"
+                status={buttonStatus}
+                disabled={sent}
+                isDarkMode={isDarkMode}
+                idleText="Send message"
+                loadingText="Sending..."
+                successText="Message sent, thanks!"
+                errorText="Not sent"
+              />
 
               {error && (
                 <span className={`text-sm ${isDarkMode ? "text-red-400" : "text-red-600"}`} role="alert">

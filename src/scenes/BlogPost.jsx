@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { blogs, getBlog } from "../data/blogs";
 import { ThemeToggle } from "./Navbar";
+import { Skeleton, SkeletonText } from "../components/ui/skeleton";
 
 // Individual blog page. Intentionally styled as a left-aligned "draft desk"
 // (mono breadcrumb index, accent rail) rather than a centered article, so it
@@ -177,15 +178,11 @@ const BlogPost = ({ slug, isDarkMode, toggleTheme }) => {
                 this entry is still being written. i&apos;m putting it together now, check back soon.
               </p>
 
-              {/* Indeterminate shimmer to signal it's being built */}
-              <div className={`mt-7 h-1 w-full max-w-xs overflow-hidden rounded-full ${isDarkMode ? "bg-white/[0.06]" : "bg-[var(--lm-accent)]/10"}`}>
-                <motion.div
-                  className={`h-full w-1/3 rounded-full bg-gradient-to-r from-transparent ${
-                    isDarkMode ? "via-amber-500/70" : "via-[var(--lm-accent)]"
-                  } to-transparent`}
-                  animate={{ x: ["-120%", "360%"] }}
-                  transition={{ duration: 1.9, repeat: Infinity, ease: "easeInOut" }}
-                />
+              {/* Skeleton of the post-to-be: a heading bar and two paragraphs. */}
+              <div className="mt-8 max-w-xl space-y-7" role="status" aria-label="Post loading">
+                <Skeleton isDarkMode={isDarkMode} className="h-5 w-2/5" />
+                <SkeletonText lines={4} isDarkMode={isDarkMode} />
+                <SkeletonText lines={3} isDarkMode={isDarkMode} />
               </div>
             </div>
           )}

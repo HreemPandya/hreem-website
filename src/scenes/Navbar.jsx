@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
+import { useState, useCallback } from "react";
 import AnchorLink from "react-anchor-link-smooth-scroll";
 import useMediaQuery from "../hooks/useMediaQuery";
 import { Sun, Moon } from "lucide-react";
 import SocialMediaIcons from "../components/SocialMediaIcons";
+import MorphingIcon from "../components/ui/morphing-icon";
+import Sheet from "../components/ui/sheet";
 
 // Sections in order. `page` is the anchor/selection key (must match the section
 // ids in App.js, incl. the space in "about me"); `label` is what the eye reads.
@@ -101,7 +102,11 @@ export const ThemeToggle = ({ isDarkMode, toggleTheme, className = "" }) => {
       } ${className}`}
     >
       <SketchRing color={accent} />
-      {isDarkMode ? <Moon className="h-[18px] w-[18px]" /> : <Sun className="h-[18px] w-[18px]" />}
+      <MorphingIcon
+        active={isDarkMode}
+        from={<Sun className="h-[18px] w-[18px]" />}
+        to={<Moon className="h-[18px] w-[18px]" />}
+      />
     </button>
   );
 };
@@ -125,26 +130,7 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
   const mobileMenuOpen = !isDesktop && isMenuToggled;
   const accent = isDarkMode ? "#F59E0B" : "#4A6B4E";
 
-  useEffect(() => {
-    if (!mobileMenuOpen) return;
-    const prevOverflow = document.body.style.overflow;
-    const prevOverscroll = document.body.style.overscrollBehavior;
-    document.body.style.overflow = "hidden";
-    document.body.style.overscrollBehavior = "none";
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      document.body.style.overscrollBehavior = prevOverscroll;
-    };
-  }, [mobileMenuOpen]);
-
-  useEffect(() => {
-    if (!mobileMenuOpen) return;
-    const onKeyDown = (e) => {
-      if (e.key === "Escape") setIsMenuToggled(false);
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [mobileMenuOpen]);
+  const closeMenu = useCallback(() => setIsMenuToggled(false), []);
 
   return (
     <nav
@@ -201,103 +187,91 @@ const Navbar = ({ isTopOfPage, selectedPage, setSelectedPage, isDarkMode, toggle
           </button>
         )}
 
-        {/* Mobile: full-screen dim + blur; tapping outside the panel closes it.
-            Rendered through a portal for reliable hit-testing + stacking. */}
-        {mobileMenuOpen &&
-          typeof document !== "undefined" &&
-          createPortal(
-            <>
-              <button
-                type="button"
-                aria-label="Close menu"
-                className={`fixed inset-0 z-[100] cursor-default border-0 p-0 touch-manipulation [-webkit-tap-highlight-color:transparent] motion-reduce:backdrop-blur-sm ${
-                  isDarkMode
-                    ? "bg-[#07090D]/55 backdrop-blur-xl supports-[backdrop-filter]:bg-[#07090D]/40"
-                    : "bg-[var(--lm-bg-base)]/70 backdrop-blur-2xl supports-[backdrop-filter]:bg-[var(--lm-bg-base)]/45"
-                }`}
-                onClick={() => setIsMenuToggled(false)}
-              />
-              <div
-                className="fixed left-4 right-4 top-[calc(5.25rem+env(safe-area-inset-top,0px))] z-[130] max-h-[min(70vh,calc(100dvh-6rem-env(safe-area-inset-bottom,0px)))] overflow-y-auto overscroll-contain rounded-2xl"
-                style={{
-                  backgroundColor: isDarkMode ? "#0B0F18" : "var(--lm-bg-surface)",
-                  boxShadow: isDarkMode
-                    ? "0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2)"
-                    : "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                  border: isDarkMode ? "1px solid rgba(255,255,255,0.06)" : "1px solid var(--lm-border)",
-                }}
-                role="dialog"
-                aria-modal="true"
-                aria-label="Navigation menu"
-              >
-                <div className="px-3 pb-2 pt-3">
-                  {NAV_ITEMS.map((item) => {
-                    const isActive = selectedPage === item.page;
-                    return (
-                      <AnchorLink
-                        key={item.page}
-                        href={`#${item.page}`}
-                        aria-current={isActive ? "true" : undefined}
-                        className="group flex min-h-[44px] items-center rounded-xl px-3 py-3 transition-colors"
-                        style={{
-                          backgroundColor: isActive
-                            ? isDarkMode
-                              ? "rgba(245, 158, 11, 0.10)"
-                              : "rgba(74, 107, 78, 0.10)"
-                            : "transparent",
-                        }}
-                        onClick={() => {
-                          setSelectedPage(item.page);
-                          setIsMenuToggled(false);
-                        }}
-                      >
-                        <span
-                          className="relative font-sans text-base uppercase tracking-[0.14em]"
-                          style={{
-                            color: isActive
-                              ? isDarkMode
-                                ? "#F0F4F8"
-                                : "var(--lm-text-primary)"
-                              : isDarkMode
-                                ? "#8B9DB0"
-                                : "var(--lm-text-muted)",
-                          }}
-                        >
-                          {item.label}
-                          <SketchUnderline color={accent} active={isActive} />
-                        </span>
-                      </AnchorLink>
-                    );
-                  })}
-                </div>
-
-                {/* Theme row — label + the same grease-pencil toggle, no switch track */}
-                <div
-                  className="mt-1 flex items-center justify-between px-6 py-4"
+        {/* Mobile: right-side drawer. Drag/swipe it right, tap outside, or Esc to close. */}
+        <Sheet open={mobileMenuOpen} onClose={closeMenu} isDarkMode={isDarkMode} label="Navigation menu">
+          <div className="flex items-center justify-between px-6 pb-2 pt-6">
+            <p
+              className="font-mono text-[10px] uppercase tracking-[0.22em]"
+              style={{ color: isDarkMode ? "rgba(245,158,11,0.6)" : "rgba(74,107,78,0.7)" }}
+            >
+              Menu
+            </p>
+            <button
+              type="button"
+              aria-label="Close menu"
+              onClick={closeMenu}
+              className={`flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg outline-none ${
+                isDarkMode ? "text-[#F0F4F8]" : "text-[var(--lm-text-primary)]"
+              }`}
+            >
+              <MenuGlyph open isDarkMode={isDarkMode} />
+            </button>
+          </div>
+          <div className="px-3 pb-2 pt-3">
+            {NAV_ITEMS.map((item) => {
+              const isActive = selectedPage === item.page;
+              return (
+                <AnchorLink
+                  key={item.page}
+                  href={`#${item.page}`}
+                  aria-current={isActive ? "true" : undefined}
+                  className="group flex min-h-[44px] items-center rounded-xl px-3 py-3 transition-colors"
                   style={{
-                    borderTop: isDarkMode ? "1px solid rgba(255,255,255,0.06)" : "1px solid var(--lm-border)",
+                    backgroundColor: isActive
+                      ? isDarkMode
+                        ? "rgba(245, 158, 11, 0.10)"
+                        : "rgba(74, 107, 78, 0.10)"
+                      : "transparent",
+                  }}
+                  onClick={() => {
+                    setSelectedPage(item.page);
+                    setIsMenuToggled(false);
                   }}
                 >
-                  <div className="min-w-0">
-                    <p
-                      className="font-mono text-[10px] uppercase tracking-[0.22em]"
-                      style={{ color: isDarkMode ? "rgba(245,158,11,0.6)" : "rgba(74,107,78,0.7)" }}
-                    >
-                      {isDarkMode ? "Darkroom" : "Daylight"}
-                    </p>
-                    <p
-                      className="mt-0.5 font-sans text-sm"
-                      style={{ color: isDarkMode ? "#F0F4F8" : "var(--lm-text-primary)" }}
-                    >
-                      {isDarkMode ? "Dark mode" : "Light mode"}
-                    </p>
-                  </div>
-                  <ThemeToggle isDarkMode={isDarkMode} toggleTheme={toggleTheme} className="h-11 w-11" />
-                </div>
-              </div>
-            </>,
-            document.body
-          )}
+                  <span
+                    className="relative font-sans text-base uppercase tracking-[0.14em]"
+                    style={{
+                      color: isActive
+                        ? isDarkMode
+                          ? "#F0F4F8"
+                          : "var(--lm-text-primary)"
+                        : isDarkMode
+                          ? "#8B9DB0"
+                          : "var(--lm-text-muted)",
+                    }}
+                  >
+                    {item.label}
+                    <SketchUnderline color={accent} active={isActive} />
+                  </span>
+                </AnchorLink>
+              );
+            })}
+          </div>
+
+          {/* Theme row — label + the same grease-pencil toggle, no switch track */}
+          <div
+            className="mt-1 flex items-center justify-between px-6 py-4"
+            style={{
+              borderTop: isDarkMode ? "1px solid rgba(255,255,255,0.06)" : "1px solid var(--lm-border)",
+            }}
+          >
+            <div className="min-w-0">
+              <p
+                className="font-mono text-[10px] uppercase tracking-[0.22em]"
+                style={{ color: isDarkMode ? "rgba(245,158,11,0.6)" : "rgba(74,107,78,0.7)" }}
+              >
+                {isDarkMode ? "Darkroom" : "Daylight"}
+              </p>
+              <p
+                className="mt-0.5 font-sans text-sm"
+                style={{ color: isDarkMode ? "#F0F4F8" : "var(--lm-text-primary)" }}
+              >
+                {isDarkMode ? "Dark mode" : "Light mode"}
+              </p>
+            </div>
+            <ThemeToggle isDarkMode={isDarkMode} toggleTheme={toggleTheme} className="h-11 w-11" />
+          </div>
+        </Sheet>
       </div>
     </nav>
   );

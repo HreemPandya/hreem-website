@@ -1,5 +1,6 @@
 import React from "react";
 import { Github, Linkedin, Mail } from "lucide-react";
+import FloatingActionDock from "./ui/floating-action-dock";
 
 // lucide ships only the legacy Twitter bird, so draw the current X mark inline.
 const XMark = ({ size = 18 }) => (
@@ -16,31 +17,10 @@ const LINKS = [
   { label: "Email", href: "mailto:hreempandya@gmail.com", Icon: Mail },
 ];
 
-// Compact, theme-aware social row. Icons inherit the current text color, so a
-// single color class themes them and lets each link hover to the accent.
-const SocialMediaIcons = ({ isDarkMode, size = 18, className = "" }) => {
-  const tone = isDarkMode
-    ? "text-[#8B9DB0] hover:text-amber-400"
-    : "text-[var(--lm-text-muted)] hover:text-[var(--lm-accent)]";
-
-  return (
-    <div className={`flex items-center gap-0.5 sm:gap-1.5 ${className}`}>
-      {LINKS.map(({ label, href, Icon }) => {
-        const external = href.startsWith("http");
-        return (
-          <a
-            key={label}
-            href={href}
-            aria-label={label}
-            {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
-            className={`inline-flex h-9 w-9 items-center justify-center rounded-lg outline-none transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${tone}`}
-          >
-            <Icon size={size} />
-          </a>
-        );
-      })}
-    </div>
-  );
-};
+// Theme-aware social row, rendered as a magnifying dock (icons swell toward
+// the cursor, with a label tooltip).
+const SocialMediaIcons = ({ isDarkMode, size = 18, className = "" }) => (
+  <FloatingActionDock items={LINKS} isDarkMode={isDarkMode} iconSize={size} className={className} />
+);
 
 export default SocialMediaIcons;
